@@ -2,29 +2,26 @@
 
 namespace App\Entity;
 
-use App\Repository\CocheRepository;
+use App\Repository\MecanicoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CocheRepository::class)]
-class Coche
+#[ORM\Entity(repositoryClass: MecanicoRepository::class)]
+class Mecanico
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Usuario::class,inversedBy: 'coches')]
-    private ?usuario $usuario = null;
-
-    #[ORM\ManyToOne(inversedBy: 'coches')]
-    private ?marca $marca = null;
+    #[ORM\ManyToOne(inversedBy: 'mecanicos')]
+    private ?administrador $administrador = null;
 
     /**
      * @var Collection<int, Reparaciones>
      */
-    #[ORM\OneToMany(targetEntity: Reparaciones::class, mappedBy: 'coche')]
+    #[ORM\OneToMany(targetEntity: Reparaciones::class, mappedBy: 'mecanico')]
     private Collection $reparaciones;
 
     public function __construct()
@@ -32,32 +29,19 @@ class Coche
         $this->reparaciones = new ArrayCollection();
     }
 
-
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUsuarioId(): ?usuario
+    public function getAdministrador(): ?administrador
     {
-        return $this->usuario;
+        return $this->administrador;
     }
 
-    public function setUsuarioId(?usuario $usuario): static
+    public function setAdministrador(?administrador $administrador): static
     {
-        $this->usuario = $usuario;
-
-        return $this;
-    }
-
-    public function getMarca(): ?marca
-    {
-        return $this->marca;
-    }
-
-    public function setMarca(?marca $marca): static
-    {
-        $this->marca = $marca;
+        $this->administrador = $administrador;
 
         return $this;
     }
@@ -74,7 +58,7 @@ class Coche
     {
         if (!$this->reparaciones->contains($reparacione)) {
             $this->reparaciones->add($reparacione);
-            $reparacione->setCoche($this);
+            $reparacione->setMecanico($this);
         }
 
         return $this;
@@ -84,13 +68,11 @@ class Coche
     {
         if ($this->reparaciones->removeElement($reparacione)) {
             // set the owning side to null (unless already changed)
-            if ($reparacione->getCoche() === $this) {
-                $reparacione->setCoche(null);
+            if ($reparacione->getMecanico() === $this) {
+                $reparacione->setMecanico(null);
             }
         }
 
         return $this;
     }
-
-    
 }
