@@ -15,8 +15,8 @@ class Mecanico
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'mecanicos')]
-    private ?administrador $administrador = null;
+    #[ORM\ManyToOne(inversedBy: 'mecanico')]
+    private ?Administrador $administrador = null;
 
     /**
      * @var Collection<int, Reparaciones>
@@ -34,12 +34,12 @@ class Mecanico
         return $this->id;
     }
 
-    public function getAdministrador(): ?administrador
+    public function getAdministrador(): ?Administrador
     {
         return $this->administrador;
     }
 
-    public function setAdministrador(?administrador $administrador): static
+    public function setAdministrador(?Administrador $administrador): static
     {
         $this->administrador = $administrador;
 

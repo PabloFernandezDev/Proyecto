@@ -15,11 +15,12 @@ class Coche
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Usuario::class,inversedBy: 'coches')]
-    private ?usuario $usuario = null;
+    #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'coches')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Usuario $usuario = null;
 
     #[ORM\ManyToOne(inversedBy: 'coches')]
-    private ?marca $marca = null;
+    private ?Marca $marca = null;
 
     /**
      * @var Collection<int, Reparaciones>
@@ -38,24 +39,23 @@ class Coche
         return $this->id;
     }
 
-    public function getUsuarioId(): ?usuario
+    public function getUsuario(): ?Usuario
     {
         return $this->usuario;
     }
 
-    public function setUsuarioId(?usuario $usuario): static
+    public function setUsuario(?Usuario $usuario): static
     {
         $this->usuario = $usuario;
-
         return $this;
     }
 
-    public function getMarca(): ?marca
+    public function getMarca(): ?Marca
     {
         return $this->marca;
     }
 
-    public function setMarca(?marca $marca): static
+    public function setMarca(?Marca $marca): static
     {
         $this->marca = $marca;
 

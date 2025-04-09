@@ -16,7 +16,7 @@ class Taller
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'tallers')]
-    private ?provincia $provincia = null;
+    private ?Provincia $provincia = null;
 
     #[ORM\Column(length: 200)]
     private ?string $direccion = null;
@@ -37,12 +37,12 @@ class Taller
         return $this->id;
     }
 
-    public function getProvincia(): ?provincia
+    public function getProvincia(): ?Provincia
     {
         return $this->provincia;
     }
 
-    public function setProvincia(?provincia $provincia): static
+    public function setProvincia(?Provincia $provincia): static
     {
         $this->provincia = $provincia;
 

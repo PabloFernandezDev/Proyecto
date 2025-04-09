@@ -40,12 +40,12 @@ class Modelo
         return $this;
     }
 
-    public function getMarcaId(): ?marca
+    public function getMarca(): ?marca
     {
         return $this->marca;
     }
 
-    public function setMarcaId(?marca $marca): static
+    public function setMarca(?marca $marca): static
     {
         $this->marca = $marca;
 

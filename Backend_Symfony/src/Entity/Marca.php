@@ -22,7 +22,7 @@ class Marca
     /**
      * @var Collection<int, Modelo>
      */
-    #[ORM\OneToMany(targetEntity: Modelo::class, mappedBy: 'marca_id')]
+    #[ORM\OneToMany(targetEntity: Modelo::class, mappedBy: 'marca')]
     private Collection $modelos;
 
     /**
@@ -68,7 +68,7 @@ class Marca
     {
         if (!$this->modelos->contains($modelo)) {
             $this->modelos->add($modelo);
-            $modelo->setMarcaId($this);
+            $modelo->setMarca($this);
         }
 
         return $this;
@@ -78,8 +78,8 @@ class Marca
     {
         if ($this->modelos->removeElement($modelo)) {
             // set the owning side to null (unless already changed)
-            if ($modelo->getMarcaId() === $this) {
-                $modelo->setMarcaId(null);
+            if ($modelo->getMarca() === $this) {
+                $modelo->setMarca(null);
             }
         }
 

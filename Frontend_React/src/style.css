@@ -28,6 +28,7 @@
   padding: 0.75rem;
   border-radius: 10px;
   background-color: var(--color_boton);
+  cursor: pointer;
 }
 
 .navbar a {
