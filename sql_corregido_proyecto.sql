@@ -63,6 +63,7 @@ CREATE TABLE `coche` (
   `usuario_id` INT(11) DEFAULT NULL,
   `marca_id` INT(11) DEFAULT NULL,
   `modelo_id` INT(11) DEFAULT NULL,
+  `imagen` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`),
   FOREIGN KEY (`marca_id`) REFERENCES `marca` (`id`),
@@ -84,7 +85,7 @@ CREATE TABLE `reparaciones` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `mecanico_id` INT(11) DEFAULT NULL,
   `coche_id` INT(11) DEFAULT NULL,
-  `estado` ENUM('PENDIENTE', 'EN PROCESO', 'FINALIZADA') NOT NULL,
+  `estado` VARCHAR(200),
   PRIMARY KEY (`id`),
   FOREIGN KEY (`mecanico_id`) REFERENCES `mecanico` (`id`),
   FOREIGN KEY (`coche_id`) REFERENCES `coche` (`id`)

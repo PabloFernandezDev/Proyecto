@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\ModeloRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ModeloRepository::class)]
@@ -16,6 +18,7 @@ class Modelo
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
+    #[Groups(['modelo:read'])]
     private ?string $nombre = null;
 
     #[ORM\ManyToOne(inversedBy: 'modelos')]

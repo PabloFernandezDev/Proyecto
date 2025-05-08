@@ -24,6 +24,12 @@ class Coche
     #[ORM\ManyToOne(inversedBy: 'coches')]
     private ?Modelo $modelo = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imagen = null;
+
+    #[ORM\Column(type: 'integer')]
+    private ?int $año = null;
+
     /**
      * @var Collection<int, Reparaciones>
      */
@@ -73,6 +79,28 @@ class Coche
     {
         $this->modelo = $modelo;
 
+        return $this;
+    }
+
+    public function getImagen(): ?string
+    {
+        return $this->imagen;
+    }
+
+    public function setImagen(?string $imagen): static
+    {
+        $this->imagen = $imagen;
+        return $this;
+    }
+
+    public function getAño(): ?int
+    {
+        return $this->año;
+    }
+
+    public function setAño(?int $año): static
+    {
+        $this->año = $año;
         return $this;
     }
 

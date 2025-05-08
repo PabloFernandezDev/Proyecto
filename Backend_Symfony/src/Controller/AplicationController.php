@@ -2,20 +2,24 @@
 
 namespace App\Controller;
 
+use App\Entity\Coche;
 use App\Entity\Usuario;
+use App\Repository\MarcaRepository;
+use App\Repository\ModeloRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class AplicationController extends AbstractController
 {
-    #[Route('/users', name: 'users_index')]
+    #[Route('/users', name: 'users_index', methods: ['GET'])]
     public function index(UsuarioRepository $userRepository, SerializerInterface $serializer): JsonResponse
     {
         // Obtiene todos los usuarios de la base de datos
@@ -30,15 +34,16 @@ final class AplicationController extends AbstractController
             // Si usas grupos, también los puedes incluir:
             // 'groups' => 'usuario:read',
         ];
-    
+
         // Serializa los usuarios con el contexto configurado
         $jsonUsuarios = $serializer->serialize($usuarios, 'json', $context);
-    
+
         return new JsonResponse($jsonUsuarios, 200, [], true);
     }
 
     #[Route('/login', name: 'api_login', methods: ['POST'])]
-    public function login(Request $request, UsuarioRepository $userRepository): JsonResponse {
+    public function login(Request $request, UsuarioRepository $userRepository): JsonResponse
+    {
         $data = json_decode($request->getContent(), true);
 
         $email = $data['email'] ?? null;
@@ -59,18 +64,21 @@ final class AplicationController extends AbstractController
             return new JsonResponse(['error' => 'Contraseña incorrecta'], 401);
         }
 
-        return new JsonResponse(['message' => 'Login exitoso', 'usuario' => [
-            'id' => $usuario->getId(),
-            'email' => $usuario->getEmail(),
-            'nombre' => $usuario->getNombre()
-        ]], 200);
+        return new JsonResponse([
+            'message' => 'Login exitoso',
+            'usuario' => [
+                'id' => $usuario->getId(),
+                'email' => $usuario->getEmail(),
+                'nombre' => $usuario->getNombre()
+            ]
+        ], 200);
     }
 
 
     #[Route('/register', name: 'api_register', methods: ['POST'])]
     public function register(
-        Request $request, 
-        UsuarioRepository $userRepository, 
+        Request $request,
+        UsuarioRepository $userRepository,
         EntityManagerInterface $entityManager
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -113,6 +121,94 @@ final class AplicationController extends AbstractController
             ]
         ], 201); // 201 Created
     }
+
+    #[Route('/marca', name: 'marca', methods: ['GET'])]
+    public function marca(MarcaRepository $marcaRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $marcas = $marcaRepository->findAll();
+
+        $context = [
+            'circular_reference_handler' => function ($object, string $format, array $context) {
+                return $object->getId();
+            },
+            'groups' => ['marca:read']
+        ];
+
+        $jsonUsuarios = $serializer->serialize($marcas, 'json', $context);
+
+        return new JsonResponse($jsonUsuarios, 200, [], true);
+    }
+
+    #[Route('/marca/{nombre}/modelos', name: 'marca_modelos', methods: ['GET'])]
+    public function obtenerModelos(
+        string $nombre,
+        MarcaRepository $marcaRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $marca = $marcaRepository->findOneBy(['nombre' => $nombre]);
+
+        if (!$marca) {
+            return new JsonResponse(['detail' => 'Marca no encontrada'], 404);
+        }
+
+        $modelos = $marca->getModelos(); // Suponiendo que tienes una relación Marca->Modelos
+
+        $context = [
+            'groups' => ['modelo:read']
+        ];
+
+        $json = $serializer->serialize($modelos, 'json', $context);
+
+        return new JsonResponse($json, 200, [], true);
+    }
+
+    #[Route('/coche', name: 'coche_add', methods: ['POST'])]
+    public function addCoche(
+        Request $request,
+        EntityManagerInterface $em,
+        MarcaRepository $marcaRepository,
+        ModeloRepository $modeloRepository,
+        UsuarioRepository $usuarioRepository, // si lo necesitas
+        SluggerInterface $slugger
+    ): JsonResponse {
+        $marcaNombre = $request->get('marca');
+        $modeloNombre = $request->get('modelo');
+        $año = $request->get('año');
+        $imagen = $request->files->get('imagen');
+
+        $marca = $marcaRepository->findOneBy(['nombre' => $marcaNombre]);
+        $modelo = $modeloRepository->findOneBy(['nombre' => $modeloNombre]);
+
+        if (!$marca || !$modelo) {
+            return new JsonResponse(['detail' => 'Marca o modelo no encontrado'], 400);
+        }
+
+        $coche = new Coche();
+        $coche->setMarca($marca);
+        $coche->setModelo($modelo);
+        $coche->setUsuario($usuarioRepository->find(1)); // ⚠️ cambia esto por el usuario real
+        $coche->setAño((int) $año);
+
+        if ($imagen) {
+            $originalName = pathinfo($imagen->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeName = $slugger->slug($originalName);
+            $newFilename = $safeName.'-'.uniqid().'.'.$imagen->guessExtension();
+
+            try {
+                $imagen->move($this->getParameter('carpeta_uploads'), $newFilename);
+                $coche->setImagen($newFilename);
+            } catch (FileException $e) {
+                return new JsonResponse(['detail' => 'Error al subir imagen'], 500);
+            }
+        }
+
+        $em->persist($coche);
+        $em->flush();
+
+        return new JsonResponse(['detail' => 'Coche añadido correctamente'], 201);
+    }
+
+
 
 
 }

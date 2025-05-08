@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250430193123 extends AbstractMigration
+final class Version20250508203939 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,7 +21,7 @@ final class Version20250430193123 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE administrador (id INT AUTO_INCREMENT NOT NULL, taller_id INT DEFAULT NULL, INDEX IDX_44F9A5216DC343EA (taller_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE coche (id INT AUTO_INCREMENT NOT NULL, usuario_id INT NOT NULL, marca_id INT DEFAULT NULL, modelo_id INT DEFAULT NULL, INDEX IDX_A1981CD4DB38439E (usuario_id), INDEX IDX_A1981CD481EF0041 (marca_id), INDEX IDX_A1981CD4C3A9576E (modelo_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE coche (id INT AUTO_INCREMENT NOT NULL, usuario_id INT NOT NULL, marca_id INT DEFAULT NULL, modelo_id INT DEFAULT NULL, imagen VARCHAR(255) DEFAULT NULL, INDEX IDX_A1981CD4DB38439E (usuario_id), INDEX IDX_A1981CD481EF0041 (marca_id), INDEX IDX_A1981CD4C3A9576E (modelo_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE marca (id INT AUTO_INCREMENT NOT NULL, nombre VARCHAR(200) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE mecanico (id INT AUTO_INCREMENT NOT NULL, administrador_id INT DEFAULT NULL, taller_id INT DEFAULT NULL, INDEX IDX_D2521E7A48DFEBB7 (administrador_id), INDEX IDX_D2521E7A6DC343EA (taller_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE modelo (id INT AUTO_INCREMENT NOT NULL, marca_id INT DEFAULT NULL, nombre VARCHAR(200) NOT NULL, INDEX IDX_F0D76C4681EF0041 (marca_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');

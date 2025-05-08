@@ -22,11 +22,10 @@ export const Login = () => {
 
       if (response.ok) {
         console.log('Login exitoso:', data);
-        navigate('/home'); // Redirige al Dashboard
+        navigate('/home');
       } else {
         alert(data.detail || 'Error al iniciar sesión.');
       }
-
     } catch (error) {
       console.error('Error al hacer login:', error);
       alert('Ocurrió un error en la conexión.');
@@ -34,30 +33,37 @@ export const Login = () => {
   };
 
   return (
-    <div className="login">
-      <div className="login__container">
-        <h2 className="login__titulo">Iniciar Sesión</h2>
-        <form className="login__formulario" onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Correo Electrónico"
-            className="login__input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            className="login__input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit" className="boton login__boton">
-            Iniciar Sesión
-          </button>
-        </form>
+    <div className="login-background">
+      <div className="login-overlay">
+        <div className="login">
+          <div className="login__container">
+            <h2 className="login__titulo">Iniciar Sesión</h2>
+            <form className="login__formulario" onSubmit={handleSubmit}>
+              <input
+                type="email"
+                placeholder="Correo Electrónico"
+                className="login__input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Contraseña"
+                className="login__input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button type="submit" className="boton login__boton">
+                Iniciar Sesión
+              </button>
+              <p className="login__registro">
+                ¿No tienes cuenta? <a href="/register">Regístrate</a>
+              </p>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

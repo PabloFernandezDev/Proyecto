@@ -11,7 +11,7 @@ export const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  const navigate = useNavigate(); // Hook para redireccionar
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,7 +38,7 @@ export const Register = () => {
       }
 
       setError('');
-      navigate('/login'); // Redirección tras registro exitoso
+      navigate('/login');
     } catch (error) {
       console.error('Error al registrarse:', error);
       setError('Error al conectar con el servidor');
@@ -46,21 +46,78 @@ export const Register = () => {
   };
 
   return (
-    <div className="signup">
-      <div className="signup__container">
-        <h2 className="signup__titulo">Crear Cuenta</h2>
-        {error && <p className="signup__error">{error}</p>}
-        <form className="signup__formulario" onSubmit={handleSubmit}>
-          {/* inputs... */}
-          <input type="text" placeholder="Nombre" className="signup__input" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-          <input type="text" placeholder="Apellidos" className="signup__input" value={apellidos} onChange={(e) => setApellidos(e.target.value)} required />
-          <input type="email" placeholder="Correo Electrónico" className="signup__input" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input type="text" placeholder="Telefono" className="signup__input" value={telefono} onChange={(e) => setTelefono(e.target.value)} required />
-          <input type="text" placeholder="Dni" className="signup__input" value={dni} onChange={(e) => setDni(e.target.value)} required />
-          <input type="password" placeholder="Contraseña" className="signup__input" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <input type="password" placeholder="Confirmar Contraseña" className="signup__input" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-          <button type="submit" className="boton signup__boton">Registrarse</button>
-        </form>
+    <div className="login-background">
+      <div className="login-overlay">
+        <div className="login">
+          <div className="login__container">
+            <h2 className="login__titulo">Crear Cuenta</h2>
+            {error && <p className="signup__error">{error}</p>}
+            <form className="login__formulario" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                placeholder="Nombre"
+                className="login__input"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Apellidos"
+                className="login__input"
+                value={apellidos}
+                onChange={(e) => setApellidos(e.target.value)}
+                required
+              />
+              <input
+                type="email"
+                placeholder="Correo Electrónico"
+                className="login__input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Teléfono"
+                className="login__input"
+                value={telefono}
+                onChange={(e) => setTelefono(e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="DNI"
+                className="login__input"
+                value={dni}
+                onChange={(e) => setDni(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Contraseña"
+                className="login__input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Confirmar Contraseña"
+                className="login__input"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button type="submit" className="boton login__boton">
+                Registrarse
+              </button>
+              <p className="login__registro">
+                ¿Ya tienes cuenta? <a href="/login">Inicia sesión</a>
+              </p>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );
