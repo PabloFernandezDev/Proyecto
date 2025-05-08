@@ -16,7 +16,7 @@ class Administrador
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'administradors')]
-    private ?taller $taller = null;
+    private ?Taller $taller = null;
 
     /**
      * @var Collection<int, Mecanico>
@@ -34,12 +34,12 @@ class Administrador
         return $this->id;
     }
 
-    public function getTaller(): ?taller
+    public function getTaller(): ?Taller
     {
         return $this->taller;
     }
 
-    public function setTaller(?taller $taller): static
+    public function setTaller(?Taller $taller): static
     {
         $this->taller = $taller;
 

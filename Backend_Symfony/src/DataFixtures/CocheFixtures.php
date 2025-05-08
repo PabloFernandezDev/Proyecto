@@ -37,7 +37,7 @@ class CocheFixtures extends Fixture implements DependentFixtureInterface
 
             // Recuperamos el usuario asignado a este coche mediante la referencia
             $usuario = $this->getReference($data['usuario_ref'], Usuario::class);
-            $coche->setUsuarioId($usuario);
+            $coche->setUsuario($usuario);
 
             // Asignamos una marca al coche utilizando las referencias definidas en MarcaFixtures
             // Se asigna de manera cíclica utilizando el índice del coche

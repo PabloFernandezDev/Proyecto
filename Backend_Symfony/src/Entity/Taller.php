@@ -15,11 +15,14 @@ class Taller
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tallers')]
-    private ?provincia $provincia = null;
+    #[ORM\ManyToOne(inversedBy: 'taller')]
+    private ?Provincia $provincia = null;
 
     #[ORM\Column(length: 200)]
     private ?string $direccion = null;
+
+    #[ORM\OneToMany(mappedBy: 'taller', targetEntity: Mecanico::class)]
+    private Collection $mecanicos;
 
     /**
      * @var Collection<int, Administrador>
@@ -30,6 +33,7 @@ class Taller
     public function __construct()
     {
         $this->administradors = new ArrayCollection();
+        $this->mecanicos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -37,12 +41,12 @@ class Taller
         return $this->id;
     }
 
-    public function getProvincia(): ?provincia
+    public function getProvincia(): ?Provincia
     {
         return $this->provincia;
     }
 
-    public function setProvincia(?provincia $provincia): static
+    public function setProvincia(?Provincia $provincia): static
     {
         $this->provincia = $provincia;
 
@@ -85,6 +89,33 @@ class Taller
             // set the owning side to null (unless already changed)
             if ($administrador->getTaller() === $this) {
                 $administrador->setTaller(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getMecanicos(): Collection
+    {
+        return $this->mecanicos;
+    }
+
+    public function addMecanico(Mecanico $mecanico): self
+    {
+        if (!$this->mecanicos->contains($mecanico)) {
+            $this->mecanicos[] = $mecanico;
+            $mecanico->setTaller($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMecanico(Mecanico $mecanico): self
+    {
+        if ($this->mecanicos->removeElement($mecanico)) {
+            // set the owning side to null (unless already changed)
+            if ($mecanico->getTaller() === $this) {
+                $mecanico->setTaller(null);
             }
         }
 

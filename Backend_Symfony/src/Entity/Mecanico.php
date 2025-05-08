@@ -16,12 +16,16 @@ class Mecanico
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'mecanicos')]
-    private ?administrador $administrador = null;
+    private ?Administrador $administrador = null;
+
+    #[ORM\ManyToOne(inversedBy: 'mecanicos')]
+    private ?Taller $taller = null;
+
 
     /**
      * @var Collection<int, Reparaciones>
      */
-    #[ORM\OneToMany(targetEntity: Reparaciones::class, mappedBy: 'mecanico')]
+    #[ORM\OneToMany(targetEntity: Reparaciones::class, mappedBy: 'mecanicos')]
     private Collection $reparaciones;
 
     public function __construct()
@@ -34,14 +38,26 @@ class Mecanico
         return $this->id;
     }
 
-    public function getAdministrador(): ?administrador
+    public function getAdministrador(): ?Administrador
     {
         return $this->administrador;
     }
 
-    public function setAdministrador(?administrador $administrador): static
+    public function setAdministrador(?Administrador $administrador): static
     {
         $this->administrador = $administrador;
+
+        return $this;
+    }
+
+    public function getTaller(): ?Taller
+    {
+        return $this->taller;
+    }
+
+    public function setTaller(?Taller $taller): static
+    {
+        $this->taller = $taller;
 
         return $this;
     }

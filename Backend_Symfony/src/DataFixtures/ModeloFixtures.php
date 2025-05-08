@@ -49,7 +49,7 @@ class ModeloFixtures extends Fixture implements DependentFixtureInterface
                 $modelo = new Modelo();
                 $modelo->setNombre($nombreModelo);
                 // Asigna la marca al modelo
-                $modelo->setMarcaId($marca);
+                $modelo->setMarca($marca);
                 $manager->persist($modelo);
                 
                 // Opcional: establecer una referencia única para el modelo (puedes concatenar la marca para evitar duplicados)

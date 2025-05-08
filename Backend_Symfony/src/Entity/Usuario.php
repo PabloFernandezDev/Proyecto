@@ -6,6 +6,7 @@ use App\Repository\UsuarioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 class Usuario
@@ -13,30 +14,37 @@ class Usuario
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['usuario:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
+    #[Groups(['usuario:read'])]
     private ?string $nombre = null;
 
     #[ORM\Column(length: 200)]
+    #[Groups(['usuario:read'])]
     private ?string $apellidos = null;
 
     #[ORM\Column(length: 200)]
+    #[Groups(['usuario:read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 200)]
+    #[Groups(['usuario:read'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 200)]
+    #[Groups(['usuario:read'])]
     private ?string $telefono = null;
 
     #[ORM\Column(length: 200)]
+    #[Groups(['usuario:read'])]
     private ?string $dni = null;
 
     /**
      * @var Collection<int, Coche>
      */
-    #[ORM\OneToMany(targetEntity: Coche::class, mappedBy: 'usuario_id')]
+    #[ORM\OneToMany(targetEntity: Coche::class, mappedBy: 'usuario')]
     private Collection $coches;
 
     public function __construct()
@@ -133,7 +141,7 @@ class Usuario
     {
         if (!$this->coches->contains($coch)) {
             $this->coches->add($coch);
-            $coch->setUsuarioId($this);
+            $coch->setUsuario($this);
         }
 
         return $this;
@@ -143,8 +151,8 @@ class Usuario
     {
         if ($this->coches->removeElement($coch)) {
             // set the owning side to null (unless already changed)
-            if ($coch->getUsuarioId() === $this) {
-                $coch->setUsuarioId(null);
+            if ($coch->getUsuario() === $this) {
+                $coch->setUsuario(null);
             }
         }
 

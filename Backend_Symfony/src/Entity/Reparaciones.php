@@ -17,10 +17,10 @@ class Reparaciones
     private ?string $estado = null;
 
     #[ORM\ManyToOne(inversedBy: 'reparaciones')]
-    private ?mecanico $mecanico = null;
+    private ?Mecanico $mecanico = null;
 
     #[ORM\ManyToOne(inversedBy: 'reparaciones')]
-    private ?coche $coche = null;
+    private ?Coche $coche = null;
 
     public function getId(): ?int
     {
@@ -39,12 +39,12 @@ class Reparaciones
         return $this;
     }
 
-    public function getMecanico(): ?mecanico
+    public function getMecanico(): ?Mecanico
     {
         return $this->mecanico;
     }
 
-    public function setMecanico(?mecanico $mecanico): static
+    public function setMecanico(?Mecanico $mecanico): static
     {
         $this->mecanico = $mecanico;
 
