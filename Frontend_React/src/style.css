@@ -23,6 +23,7 @@
   border-radius: 0.5rem;
   color: var(--color_blanco);
   margin: 0.1rem;
+  width: 100%;
 }
 
 .navbar a {
@@ -612,6 +613,28 @@
   text-decoration: underline;
 }
 
+.alerta__login {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  border: 1px solid #c3e6cb;
+  text-align: center;
+}
+
+.alerta__login-cerrar {
+  color: var(--color_negro);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+}
+
+/* Registro */
+
 .signup {
   display: flex;
   justify-content: center;
@@ -681,15 +704,15 @@
 
 /* Layout general */
 .dashboard-full {
-  width: 100vw;
-  background-color: var(--color_blanco);
-  padding: 2rem;
-  box-sizing: border-box;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  position: relative;
-  overflow: hidden;
+  justify-content: center; /* vertical */
+  align-items: center;     /* horizontal */
+  padding: 0.2rem;
+  background-color: #f5f5f5;
 }
+
 
 .dashboard-full__titulo {
   font-size: 2.2rem;
@@ -706,7 +729,8 @@
   gap: 2rem;
   width: 100%;
   max-width: 1400px;
-  margin: 0 auto;
+  margin: auto auto;
+
 }
 
 /* Tarjetas */

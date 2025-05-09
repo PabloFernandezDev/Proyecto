@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const Register = () => {
@@ -38,7 +38,7 @@ export const Register = () => {
       }
 
       setError('');
-      navigate('/login');
+      navigate('/login', { state: { registrado: true } });
     } catch (error) {
       console.error('Error al registrarse:', error);
       setError('Error al conectar con el servidor');

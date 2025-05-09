@@ -49,9 +49,8 @@ export const DashBoard = () => {
 
   return (
     <>
-      <Header />
       <div className="dashboard-full">
-        <h2 className="dashboard-full__titulo">Panel de Usuario</h2>
+      <Header />
         <div className="dashboard-full__grid">
 
           <div className="dashboard-full__card">
