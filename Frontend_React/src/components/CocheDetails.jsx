@@ -1,53 +1,87 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Header } from '../components/Header';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaCar } from "react-icons/fa";
+import { FiTrash2, FiArrowLeft } from "react-icons/fi";
+import { Header } from "./Header";
 
 export const CocheDetails = () => {
   const [coche, setCoche] = useState(null);
   const navigate = useNavigate();
-  const userId = localStorage.getItem('user_id');
 
   useEffect(() => {
+    const userId = localStorage.getItem("user_id");
     fetch(`http://127.0.0.1:8000/user/${userId}/coche`)
-      .then(res => res.json())
-      .then(data => setCoche(data))
-      .catch(err => console.error('Error cargando detalles del coche:', err));
-  }, [userId]);
+      .then((res) => res.json())
+      .then((data) => setCoche(data))
+      .catch((err) => console.error("Error cargando coche:", err));
+  }, []);
 
-  const handleEliminarCoche = () => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este coche?')) {
-      fetch(`http://127.0.0.1:8000/user/${userId}/coche`, {
-        method: 'DELETE',
+  const handleDelete = () => {
+    if (window.confirm("¿Seguro que quieres eliminar este coche?")) {
+      fetch(`http://127.0.0.1:8000/coche/${coche.id}`, {
+        method: "DELETE",
       })
         .then(() => {
-          alert('Coche eliminado correctamente.');
-          navigate('/home');
+          alert("Coche eliminado correctamente");
+          navigate("/home");
         })
-        .catch(err => console.error('Error al eliminar coche:', err));
+        .catch((err) => console.error("Error al eliminar coche:", err));
     }
   };
-
   return (
     <>
-      <Header />
-      <div className="coche-details">
-        <h2 className="coche-details__titulo">Detalle del Coche</h2>
+      <Header/>
+      <div className="detalle-coche-container">
+        <h2 className="detalle-coche-titulo">
+          <FaCar /> Detalles del Coche
+        </h2>
         {coche ? (
-          <div className="coche-details__contenido">
-            <div className="coche-details__imagen">
-              <img src={`http://127.0.0.1:8000/uploads/${coche.imagen}`} alt="Imagen del coche" />
+          <div className="detalle-coche-grid">
+            <div className="detalle-coche-imagen">
+              <img
+                src={`http://127.0.0.1:8000/uploads/${coche.imagen}`}
+                alt="Imagen del coche"
+              />
             </div>
-            <div className="coche-details__info">
-              <p><strong>Marca:</strong> {coche.marca.nombre}</p>
-              <p><strong>Modelo:</strong> {coche.modelo.nombre}</p>
-              <p><strong>Año:</strong> {coche.año}</p>
-              <button className="boton boton--eliminar" onClick={handleEliminarCoche}>
-                Eliminar Coche
-              </button>
+            <div className="detalle-coche-info">
+              <p>
+                <strong>Marca:</strong> {coche.marca.nombre}
+              </p>
+              <p>
+                <strong>Modelo:</strong> {coche.modelo.nombre}
+              </p>
+              <p>
+                <strong>Año:</strong> {coche.año}
+              </p>
+              <h3 className="detalle-coche-subtitulo">Propietario</h3>
+              <p>
+                <strong>Nombre:</strong> {coche.usuario.nombre}{" "}
+                {coche.usuario.apellidos}
+              </p>
+              <p>
+                <strong>Email:</strong> {coche.usuario.email}
+              </p>
+              <p>
+                <strong>Teléfono:</strong> {coche.usuario.telefono}
+              </p>
+              <p>
+                <strong>DNI:</strong> {coche.usuario.dni}
+              </p>
+              <div className="detalle-coche-botones">
+                <button className="boton eliminar" onClick={handleDelete}>
+                  <FiTrash2 /> Eliminar Coche
+                </button>
+                <button
+                  className="boton volver"
+                  onClick={() => navigate("/home")}
+                >
+                  <FiArrowLeft /> Volver
+                </button>
+              </div>
             </div>
           </div>
         ) : (
-          <p>Cargando información del coche...</p>
+          <p>Cargando detalles del coche...</p>
         )}
       </div>
     </>

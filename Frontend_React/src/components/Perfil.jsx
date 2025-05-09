@@ -127,7 +127,7 @@ export const Perfil = () => {
                       <button className="perfil__boton" onClick={() => setEditando(true)}><FiEdit2 /> Editar Perfil</button>
                       <button className="perfil__boton" onClick={() => setMostrarCambioPassword(prev => !prev)}><FiKey /> Cambiar Contraseña</button>
                       <button className="perfil__boton perfil__boton--eliminar" onClick={handleDeleteAccount}>Eliminar Cuenta</button>
-                      <button className="perfil__boton" onClick={() => navigate('/home')}><FiArrowLeft /> Volver</button>
+                      <button className="perfil__boton perfil__boton--volver" onClick={() => navigate('/home')}><FiArrowLeft /> Volver</button>
                     </div>
                   </>
                 )}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Header } from "../components/Header";
 import { FiMessageSquare, FiX } from "react-icons/fi";
+import { MapaTalleres } from "./MapaTalleres";
 
 export const DashBoard = () => {
   const location = useLocation();
@@ -15,9 +16,6 @@ export const DashBoard = () => {
   const [mensajes, setMensajes] = useState([]);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [imagenCoche, setImagenCoche] = useState(null);
-
-  console.log(usuarioTieneCoche);
-  console.log(imagenCoche);
 
   const handleVerFacturas = () => navigate("/home/facturas");
   const handleAddCar = () => navigate("/home/addcoche");
@@ -67,7 +65,7 @@ export const DashBoard = () => {
       <div className="dashboard-full">
         <Header />
         <div className="dashboard-full__grid">
-          <div className="dashboard-full__card">
+          <div className="dashboard-full__card dashboard-full__card--alto">
             <h3>Mi Vehículo</h3>
             {usuarioTieneCoche ? (
               <>
@@ -93,18 +91,7 @@ export const DashBoard = () => {
 
           <div className="dashboard-full__card">
             <h3>Ubicación</h3>
-            {ubicacion ? (
-              <iframe
-                title="Mapa"
-                width="100%"
-                height="100%"
-                style={{ border: 0, borderRadius: "12px" }}
-                src={`https://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lng}&z=15&output=embed`}
-                allowFullScreen
-              ></iframe>
-            ) : (
-              <p>Cargando ubicación...</p>
-            )}
+            <MapaTalleres />
           </div>
 
           <div className="dashboard-full__card">

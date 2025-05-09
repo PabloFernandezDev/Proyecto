@@ -3,6 +3,7 @@ import Icon from '../assets/Icon';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import '../style.css';
 import { FiUser } from 'react-icons/fi';
+import { FaCar } from 'react-icons/fa';
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const Header = () => {
 
   return (
     <nav className='navbar'>
-      <NavLink to={inicioPath}><Icon icon="directions_car" size={50} color="black" className="icon" /></NavLink>
+      <NavLink to={inicioPath}><Icon icon="directions_car" size={50} color="white" className="icon" /></NavLink>
       <NavLink to={inicioPath}>Inicio</NavLink>
       <NavLink to='/aboutus'>Sobre Nosotros</NavLink>
       <NavLink to='/where'>Donde Estamos</NavLink>

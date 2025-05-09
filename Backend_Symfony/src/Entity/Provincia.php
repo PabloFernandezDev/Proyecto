@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProvinciaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProvinciaRepository::class)]
@@ -16,6 +17,7 @@ class Provincia
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
+    #[Groups(['taller:read'])]
     private ?string $nombre = null;
 
     /**
