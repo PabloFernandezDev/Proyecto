@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const FormCoche = () => {
-    const navigate = useNavigate();
-  
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    marca: '',
-    modelo: '',
-    año: '',
+    marca: "",
+    modelo: "",
+    año: "",
     imagen: null,
   });
 
@@ -17,19 +17,19 @@ export const FormCoche = () => {
 
   // Cargar marcas al inicio
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/marca')
-      .then(res => res.json())
-      .then(data => setMarcas(data))
-      .catch(err => console.error('Error cargando marcas:', err));
+    fetch("http://127.0.0.1:8000/marca")
+      .then((res) => res.json())
+      .then((data) => setMarcas(data))
+      .catch((err) => console.error("Error cargando marcas:", err));
   }, []);
 
   // Cargar modelos cuando se elige una marca
   useEffect(() => {
     if (formData.marca) {
       fetch(`http://127.0.0.1:8000/marca/${formData.marca}/modelos`)
-        .then(res => res.json())
-        .then(data => setModelos(data))
-        .catch(err => console.error('Error cargando modelos:', err));
+        .then((res) => res.json())
+        .then((data) => setModelos(data))
+        .catch((err) => console.error("Error cargando modelos:", err));
     } else {
       setModelos([]);
     }
@@ -37,51 +37,58 @@ export const FormCoche = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
-      ...(name === 'marca' ? { modelo: '' } : {}), // Resetear modelo si cambia la marca
+      ...(name === "marca" ? { modelo: "" } : {}), // Resetear modelo si cambia la marca
     }));
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormData(prev => ({ ...prev, imagen: file }));
+    setFormData((prev) => ({ ...prev, imagen: file }));
     setPreview(file ? URL.createObjectURL(file) : null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    data.append('marca', formData.marca);
-    data.append('modelo', formData.modelo);
-    data.append('año', formData.año);
-    if (formData.imagen) data.append('imagen', formData.imagen);
-    
+    const userId = localStorage.getItem("user_id");
+
+    data.append("marca", formData.marca);
+    data.append("modelo", formData.modelo);
+    data.append("año", formData.año);
+    data.append("usuario", userId); // <- Añadimos aquí el ID
+    if (formData.imagen) data.append("imagen", formData.imagen);
+
     try {
-      const response = await fetch('http://127.0.0.1:8000/coche', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:8000/coche", {
+        method: "POST",
         body: data,
       });
       const result = await response.json();
       if (response.ok) {
-        setFormData({ marca: '', modelo: '', año: '', imagen: null });
+        setFormData({ marca: "", modelo: "", año: "", imagen: null });
         setPreview(null);
-        navigate('/home', { state: { cocheAñadido: true } });
+        navigate("/home", { state: { cocheAñadido: true } });
       } else {
-        alert(result.detail || 'Error al añadir coche');
+        alert(result.detail || "Error al añadir coche");
       }
     } catch (error) {
-      console.error('Error en el envío:', error);
-      alert('Error al conectar con el servidor');
+      console.error("Error en el envío:", error);
+      alert("Error al conectar con el servidor");
     }
   };
 
   return (
-    <div className='form-background'>
+    <div className="form-background">
       <div className="add-coche">
         <h2 className="add-coche__titulo">Añadir un Coche</h2>
-        <form className="add-coche__formulario" onSubmit={handleSubmit} encType="multipart/form-data">
+        <form
+          className="add-coche__formulario"
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+        >
           <select
             name="marca"
             className="add-coche__input"
@@ -91,7 +98,9 @@ export const FormCoche = () => {
           >
             <option value="">Selecciona una marca</option>
             {marcas.map((marca, i) => (
-              <option key={i} value={marca.nombre}>{marca.nombre}</option>
+              <option key={i} value={marca.nombre}>
+                {marca.nombre}
+              </option>
             ))}
           </select>
 
@@ -105,7 +114,9 @@ export const FormCoche = () => {
           >
             <option value="">Selecciona un modelo</option>
             {modelos.map((modelo, i) => (
-              <option key={i} value={modelo.nombre}>{modelo.nombre}</option>
+              <option key={i} value={modelo.nombre}>
+                {modelo.nombre}
+              </option>
             ))}
           </select>
 
@@ -129,7 +140,9 @@ export const FormCoche = () => {
               <img src={preview} alt="Previsualización" />
             </div>
           )}
-          <button type="submit" className="boton add-coche__boton">Guardar Coche</button>
+          <button type="submit" className="boton add-coche__boton">
+            Guardar Coche
+          </button>
         </form>
       </div>
     </div>

@@ -18,27 +18,29 @@ class Usuario
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read'])]
+    #[Groups(['usuario:read', 'coche:read'])]
     private ?string $nombre = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read'])]
+    #[Groups(['usuario:read', 'coche:read'])]
     private ?string $apellidos = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read'])]
+    #[Groups(['usuario:read', 'coche:read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read'])]
+    #[Groups(['usuario:read',])]
     private ?string $password = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read'])]
+    #[Groups(['usuario:read', 'coche:read'])]
+
     private ?string $telefono = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read'])]
+    #[Groups(['usuario:read', 'coche:read'])]
+    
     private ?string $dni = null;
 
     /**

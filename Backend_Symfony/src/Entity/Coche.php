@@ -6,6 +6,7 @@ use App\Repository\CocheRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,15 +16,21 @@ class Coche
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['coche:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'coches')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['coche:read'])]
     private ?Usuario $usuario = null;
 
     #[ORM\ManyToOne(inversedBy: 'coches')]
+    #[Groups(['coche:read'])]
     private ?Marca $marca = null;
+
+
     #[ORM\ManyToOne(inversedBy: 'coches')]
+    #[Groups(['coche:read'])]
     private ?Modelo $modelo = null;
 
 
@@ -33,10 +40,12 @@ class Coche
         mimeTypes: ["image/jpeg", "image/png", "image/webp"],
         mimeTypesMessage: "Por favor sube una imagen válida (JPG, PNG, WEBP)"
     )]
+    #[Groups(['coche:read'])]
     private ?string $imagen = null;
 
 
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['coche:read'])]
     private ?int $año = null;
 
     /**

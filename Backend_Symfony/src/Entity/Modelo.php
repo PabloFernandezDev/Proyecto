@@ -18,7 +18,8 @@ class Modelo
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['modelo:read'])]
+    #[Groups(['modelo:read', 'coche:read'])]
+    
     private ?string $nombre = null;
 
     #[ORM\ManyToOne(inversedBy: 'modelos')]
