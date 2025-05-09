@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const FormCoche = () => {
+    const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     marca: '',
     modelo: '',
@@ -54,7 +57,7 @@ export const FormCoche = () => {
     data.append('modelo', formData.modelo);
     data.append('año', formData.año);
     if (formData.imagen) data.append('imagen', formData.imagen);
-
+    
     try {
       const response = await fetch('http://127.0.0.1:8000/coche', {
         method: 'POST',
@@ -62,9 +65,9 @@ export const FormCoche = () => {
       });
       const result = await response.json();
       if (response.ok) {
-        alert('Coche añadido correctamente');
         setFormData({ marca: '', modelo: '', año: '', imagen: null });
         setPreview(null);
+        navigate('/home', { state: { cocheAñadido: true } });
       } else {
         alert(result.detail || 'Error al añadir coche');
       }
@@ -75,58 +78,60 @@ export const FormCoche = () => {
   };
 
   return (
-    <div className="add-coche">
-      <h2 className="add-coche__titulo">Añadir un Coche</h2>
-      <form className="add-coche__formulario" onSubmit={handleSubmit} encType="multipart/form-data">
-        <select
-          name="marca"
-          className="add-coche__input"
-          value={formData.marca}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Selecciona una marca</option>
-          {marcas.map((marca, i) => (
-            <option key={i} value={marca.nombre}>{marca.nombre}</option>
-          ))}
-        </select>
+    <div className='form-background'>
+      <div className="add-coche">
+        <h2 className="add-coche__titulo">Añadir un Coche</h2>
+        <form className="add-coche__formulario" onSubmit={handleSubmit} encType="multipart/form-data">
+          <select
+            name="marca"
+            className="add-coche__input"
+            value={formData.marca}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Selecciona una marca</option>
+            {marcas.map((marca, i) => (
+              <option key={i} value={marca.nombre}>{marca.nombre}</option>
+            ))}
+          </select>
 
-        <select
-          name="modelo"
-          className="add-coche__input"
-          value={formData.modelo}
-          onChange={handleChange}
-          required
-          disabled={!formData.marca}
-        >
-          <option value="">Selecciona un modelo</option>
-          {modelos.map((modelo, i) => (
-            <option key={i} value={modelo.nombre}>{modelo.nombre}</option>
-          ))}
-        </select>
+          <select
+            name="modelo"
+            className="add-coche__input"
+            value={formData.modelo}
+            onChange={handleChange}
+            required
+            disabled={!formData.marca}
+          >
+            <option value="">Selecciona un modelo</option>
+            {modelos.map((modelo, i) => (
+              <option key={i} value={modelo.nombre}>{modelo.nombre}</option>
+            ))}
+          </select>
 
-        <input
-          type="number"
-          name="año"
-          placeholder="Año"
-          className="add-coche__input"
-          value={formData.año}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="file"
-          accept="image/*"
-          className="add-coche__file"
-          onChange={handleFileChange}
-        />
-        {preview && (
-          <div className="add-coche__preview">
-            <img src={preview} alt="Previsualización" />
-          </div>
-        )}
-        <button type="submit" className="boton add-coche__boton">Guardar Coche</button>
-      </form>
+          <input
+            type="number"
+            name="año"
+            placeholder="Año"
+            className="add-coche__input"
+            value={formData.año}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="file"
+            accept="image/*"
+            className="add-coche__file"
+            onChange={handleFileChange}
+          />
+          {preview && (
+            <div className="add-coche__preview">
+              <img src={preview} alt="Previsualización" />
+            </div>
+          )}
+          <button type="submit" className="boton add-coche__boton">Guardar Coche</button>
+        </form>
+      </div>
     </div>
   );
 };

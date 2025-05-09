@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\CocheRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
+
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CocheRepository::class)]
@@ -24,10 +26,17 @@ class Coche
     #[ORM\ManyToOne(inversedBy: 'coches')]
     private ?Modelo $modelo = null;
 
+
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Image(
+        maxSize: "5M",
+        mimeTypes: ["image/jpeg", "image/png", "image/webp"],
+        mimeTypesMessage: "Por favor sube una imagen válida (JPG, PNG, WEBP)"
+    )]
     private ?string $imagen = null;
 
-    #[ORM\Column(type: 'integer')]
+
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $año = null;
 
     /**

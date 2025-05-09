@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation  } from 'react-router-dom';
 import { Header } from '../components/Header';
 import { FiMessageSquare, FiX } from 'react-icons/fi';
 
 export const DashBoard = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [usuarioTieneCoche, setUsuarioTieneCoche] = useState(false);
   const [ubicacion, setUbicacion] = useState(null);
@@ -12,7 +13,18 @@ export const DashBoard = () => {
   const [mostrarChat, setMostrarChat] = useState(false);
   const [mensaje, setMensaje] = useState('');
   const [mensajes, setMensajes] = useState([]);
+  const [mostrarAlerta, setMostrarAlerta] = useState(false);
 
+  const handleVerFacturas = () => navigate('/home/facturas');
+  const handleAddCar = () => navigate('/home/addcoche');
+  const cocheAñadido = location.state?.cocheAñadido;
+  const enviarMensaje = () => {
+    if (mensaje.trim() !== '') {
+      setMensajes([...mensajes, { texto: mensaje, propio: true }]);
+      setMensaje('');
+    }
+  };
+  
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -24,17 +36,16 @@ export const DashBoard = () => {
       (error) => console.error('Error obteniendo ubicación:', error),
       { enableHighAccuracy: true }
     );
-  }, []);
 
-  const handleVerFacturas = () => navigate('/home/facturas');
-  const handleAddCar = () => navigate('/home/addcoche');
-
-  const enviarMensaje = () => {
-    if (mensaje.trim() !== '') {
-      setMensajes([...mensajes, { texto: mensaje, propio: true }]);
-      setMensaje('');
+    if (location.state?.cocheAñadido) {
+      setMostrarAlerta(true);
+      window.history.replaceState({}, document.title); // limpiar el estado
     }
-  };
+  }, [location.state]);
+
+  
+  
+  
 
   return (
     <>
@@ -58,6 +69,7 @@ export const DashBoard = () => {
               </div>
             )}
           </div>
+          
 
           <div className="dashboard-full__card">
             <h3>Ubicación</h3>
@@ -138,6 +150,12 @@ export const DashBoard = () => {
             <button onClick={enviarMensaje}>Enviar</button>
           </div>
         </div>
+        {mostrarAlerta && (
+          <div className="dashboard__alerta">
+            <span>¡Coche añadido correctamente!</span>
+            <button className="dashboard__alerta-cerrar" onClick={() => setMostrarAlerta(false)}>X</button>
+          </div>
+        )}
       </div>
     </>
   );

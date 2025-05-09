@@ -11,9 +11,12 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -168,14 +171,17 @@ final class AplicationController extends AbstractController
         EntityManagerInterface $em,
         MarcaRepository $marcaRepository,
         ModeloRepository $modeloRepository,
-        UsuarioRepository $usuarioRepository, // si lo necesitas
+        UsuarioRepository $usuarioRepository, // ⚠️ cámbialo por el usuario real autenticado si procede
         SluggerInterface $slugger
     ): JsonResponse {
         $marcaNombre = $request->get('marca');
         $modeloNombre = $request->get('modelo');
         $año = $request->get('año');
-        $imagen = $request->files->get('imagen');
+        
+        /** @var UploadedFile|null $imagenFile */
+        $imagenFile = $request->files->get('imagen');
 
+        // Buscar marca y modelo
         $marca = $marcaRepository->findOneBy(['nombre' => $marcaNombre]);
         $modelo = $modeloRepository->findOneBy(['nombre' => $modeloNombre]);
 
@@ -183,29 +189,81 @@ final class AplicationController extends AbstractController
             return new JsonResponse(['detail' => 'Marca o modelo no encontrado'], 400);
         }
 
+        if (!$imagenFile) {
+            return new JsonResponse(['detail' => 'No se recibió ninguna imagen'], 400);
+        }
+
+        // Crear entidad Coche
         $coche = new Coche();
         $coche->setMarca($marca);
         $coche->setModelo($modelo);
-        $coche->setUsuario($usuarioRepository->find(1)); // ⚠️ cambia esto por el usuario real
+        
+        $usuario = $usuarioRepository->find(6);
+
+        if (!$usuario) {
+            return new JsonResponse(['detail' => 'Usuario no encontrado'], 404);
+        }
+        
+        $coche->setUsuario($usuario);
         $coche->setAño((int) $año);
 
-        if ($imagen) {
-            $originalName = pathinfo($imagen->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeName = $slugger->slug($originalName);
-            $newFilename = $safeName.'-'.uniqid().'.'.$imagen->guessExtension();
-
+        // Guardar imagen si existe
+        if ($imagenFile) {
+            $safeName = $slugger->slug(pathinfo($imagenFile->getClientOriginalName(), PATHINFO_FILENAME));
+            $newFilename = $safeName.'-'.uniqid().'.'.$imagenFile->guessExtension();
+        
             try {
-                $imagen->move($this->getParameter('carpeta_uploads'), $newFilename);
-                $coche->setImagen($newFilename);
+                $imagenFile->move(
+                    $this->getParameter('upload_directory_images'),
+                    $newFilename
+                );
+                $coche->setImagen($newFilename); // ⬅️ ESTO FALTABA
             } catch (FileException $e) {
                 return new JsonResponse(['detail' => 'Error al subir imagen'], 500);
             }
         }
+        
 
+        // Guardar en base de datos
         $em->persist($coche);
         $em->flush();
 
-        return new JsonResponse(['detail' => 'Coche añadido correctamente'], 201);
+        return new JsonResponse([
+            'detail' => 'Coche añadido correctamente'
+        ], 200);
+    }
+
+
+
+    #[Route('/test-upload', name: 'test_upload', methods: ['POST'])]
+    public function guardarImagen(
+        Request $request,
+        SluggerInterface $slugger
+    ): JsonResponse {
+        
+        /** @var UploadedFile|null $imagenFile */
+        $imagenFile = $request->files->get('imagen');
+
+        if (!$imagenFile) {
+            return new JsonResponse(['detail' => 'No se recibió ninguna imagen'], 400);
+        }
+
+        $safeName = $slugger->slug(pathinfo($imagenFile->getClientOriginalName(), PATHINFO_FILENAME));
+        $newFilename = $safeName.'-'.uniqid().'.'.$imagenFile->guessExtension();
+
+        try {
+            $imagenFile->move(
+                $this->getParameter('upload_directory_images'),
+                $newFilename
+            );
+        } catch (FileException $e) {
+            return new JsonResponse(['detail' => 'Error al subir imagen'], 500);
+        }
+
+        return new JsonResponse([
+            'detail' => 'Imagen subida correctamente',
+            'archivo' => $newFilename
+        ]);
     }
 
 
