@@ -18,15 +18,24 @@ class Mecanico
     #[ORM\ManyToOne(inversedBy: 'mecanicos')]
     private ?Administrador $administrador = null;
 
-    #[ORM\ManyToOne(inversedBy: 'mecanicos')]
-    private ?Taller $taller = null;
-
 
     /**
      * @var Collection<int, Reparaciones>
      */
     #[ORM\OneToMany(targetEntity: Reparaciones::class, mappedBy: 'mecanicos')]
     private Collection $reparaciones;
+
+    #[ORM\Column(length: 255)]
+    private ?string $Nombre = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $Apellidos = null;
+
+    #[ORM\Column]
+    private ?int $NumEmp = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $password = null;
 
     public function __construct()
     {
@@ -46,18 +55,6 @@ class Mecanico
     public function setAdministrador(?Administrador $administrador): static
     {
         $this->administrador = $administrador;
-
-        return $this;
-    }
-
-    public function getTaller(): ?Taller
-    {
-        return $this->taller;
-    }
-
-    public function setTaller(?Taller $taller): static
-    {
-        $this->taller = $taller;
 
         return $this;
     }
@@ -88,6 +85,54 @@ class Mecanico
                 $reparacione->setMecanico(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNombre(): ?string
+    {
+        return $this->Nombre;
+    }
+
+    public function setNombre(string $Nombre): static
+    {
+        $this->Nombre = $Nombre;
+
+        return $this;
+    }
+
+    public function getApellidos(): ?string
+    {
+        return $this->Apellidos;
+    }
+
+    public function setApellidos(string $Apellidos): static
+    {
+        $this->Apellidos = $Apellidos;
+
+        return $this;
+    }
+
+    public function getNumEmp(): ?int
+    {
+        return $this->NumEmp;
+    }
+
+    public function setNumEmp(int $NumEmp): static
+    {
+        $this->NumEmp = $NumEmp;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
 
         return $this;
     }

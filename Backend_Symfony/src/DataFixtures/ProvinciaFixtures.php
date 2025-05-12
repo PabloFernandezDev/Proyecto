@@ -67,6 +67,9 @@ class ProvinciaFixtures extends Fixture
             $provincia = new Provincia();
             $provincia->setNombre($nombre);
             $manager->persist($provincia);
+
+            // 👉 Esto es lo que hace que luego funcione getReference('Madrid'), etc.
+            $this->addReference('Provincia-'.$nombre, $provincia);
         }
 
         $manager->flush();

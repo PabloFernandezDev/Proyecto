@@ -2,17 +2,16 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Provincia;
 use App\Entity\Taller;
+use App\Entity\Provincia;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class TallerFixtures extends Fixture
+class TallerFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $provincias = $manager->getRepository(Provincia::class)->findAll();
-
         $datosTalleres = [
             ['direccion' => 'Calle Alcalá 123', 'latitud' => 40.421, 'longitud' => -3.682, 'provincia' => 'Madrid'],
             ['direccion' => 'Avenida de Andalucía 45', 'latitud' => 37.391, 'longitud' => -5.984, 'provincia' => 'Sevilla'],
@@ -32,20 +31,19 @@ class TallerFixtures extends Fixture
             ['direccion' => 'Calle León y Castillo 23', 'latitud' => 28.123, 'longitud' => -15.431, 'provincia' => 'Las Palmas'],
         ];
 
-
         foreach ($datosTalleres as $datos) {
+            $provincia = $this->getReference('Provincia-'.$datos['provincia'], Provincia::class);
+
             $taller = new Taller();
+            $taller->setProvincia($provincia);
             $taller->setDireccion($datos['direccion']);
             $taller->setLatitud($datos['latitud']);
             $taller->setLongitud($datos['longitud']);
 
-            $provincia = array_filter($provincias, fn($p) => $p->getNombre() === $datos['provincia']);
-            $provincia = reset($provincia);
+            $manager->persist($taller);
 
-            if ($provincia) {
-                $taller->setProvincia($provincia);
-                $manager->persist($taller);
-            }
+            // Añadimos referencia para usar en AdministradorFixtures o MecanicoFixtures
+            $this->addReference('taller-' . $datos['provincia'], $taller);
         }
 
         $manager->flush();

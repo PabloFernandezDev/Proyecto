@@ -15,7 +15,7 @@ class Administrador
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'administradors')]
+    #[ORM\ManyToOne(inversedBy: 'administradors', cascade: ['persist'])]
     private ?Taller $taller = null;
 
     /**
@@ -23,6 +23,18 @@ class Administrador
      */
     #[ORM\OneToMany(targetEntity: Mecanico::class, mappedBy: 'administrador')]
     private Collection $mecanicos;
+
+    #[ORM\Column(length: 255)]
+    private ?string $Nombre = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $Apellidos = null;
+
+    #[ORM\Column(type: 'integer')]
+    private ?int $NumEmp = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $password = null;
 
     public function __construct()
     {
@@ -72,6 +84,54 @@ class Administrador
                 $mecanico->setAdministrador(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNombre(): ?string
+    {
+        return $this->Nombre;
+    }
+
+    public function setNombre(string $Nombre): static
+    {
+        $this->Nombre = $Nombre;
+
+        return $this;
+    }
+
+    public function getApellidos(): ?string
+    {
+        return $this->Apellidos;
+    }
+
+    public function setApellidos(string $Apellidos): static
+    {
+        $this->Apellidos = $Apellidos;
+
+        return $this;
+    }
+
+    public function getNumEmp(): ?int
+    {
+        return $this->NumEmp;
+    }
+
+    public function setNumEmp(int $NumEmp): static
+    {
+        $this->NumEmp = $NumEmp;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
 
         return $this;
     }

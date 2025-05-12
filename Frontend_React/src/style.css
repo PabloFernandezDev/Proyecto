@@ -1341,4 +1341,179 @@
 }
 
 
+/* Login Empleados */
+.login-empleados-background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-image: url('./assets/images/fondoEmpleados.png');
+}
+
+.login-empleados-card {
+  background-color: #ffffff;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.login-empleados-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.botones-rol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.botones-rol button {
+  padding: 0.9rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background-color: var(--color_header);
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.botones-rol button:hover {
+  background-color: var(--color_boton);
+  transform: translateY(-2px);
+}
+
+.botones-rol button:active {
+  transform: scale(0.98);
+}
+
+.login-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.login-form form {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.login-form h2 {
+  text-align: center;
+  color: #333;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.login-form input {
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.login-form input:focus {
+  border-color: var(--color_footer);
+  outline: none;
+}
+
+.login-form button {
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: var(--color_header);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.login-form button:hover {
+  background-color: var(--color_boton);
+  transform: translateY(-2px);
+}
+
+.login-form button:active {
+  transform: scale(0.98);
+}
+
+/* Login Administrador */
+.login-admin-background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-image: url('./assets/images/fondoFormAdminMecanico.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  
+}
+
+/* Panel Administrador */
+.admin-panel {
+  background-color: #fefafa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.4rem;
+}
+
+.admin-header {
+  background-color: #c60000;
+  color: white;
+  padding: 1rem 2rem;
+  width: 100%;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  align-items: center;
+}
+
+.admin-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.admin-buttons button {
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 3rem 1rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+.admin-buttons button:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-3px);
+}
 
