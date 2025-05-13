@@ -16,6 +16,9 @@ import { LoginAdmin } from '../src/components/LoginAdmin'
 import { LoginMecanico } from '../src/components/LoginMecanico'
 import { AdminPanel } from '../src/components/AdminPanel'
 import { PanelMecanico } from '../src/components/PanelMecanico'
+import { LeerUsers } from '../src/components/crudUsers/LeerUsers'
+import { LeerCoches } from '../src/components/crudCoches/LeerCoches'
+import { DetalleCoche } from '../src/components/crudCoches/DetalleCoche'
 
 const RouterPrincipal = () => {
   return (
@@ -37,6 +40,9 @@ const RouterPrincipal = () => {
             <Route path='/employees/admin/panel' element={<AdminPanel/>}></Route>
             <Route path='/employees/mecanic' element={<LoginMecanico/>}></Route>
             <Route path='/employees/mecanic/panel' element={<PanelMecanico/>}></Route>
+            <Route path='/employees/crud/users' element={<LeerUsers/>}></Route>
+            <Route path='/employees/crud/coches' element={<LeerCoches/>}></Route>
+            <Route path='/employees/crud/coches/:id/detalle' element={<DetalleCoche/>}></Route>
             
 
         </Routes>

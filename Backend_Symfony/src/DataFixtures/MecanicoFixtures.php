@@ -26,6 +26,9 @@ class MecanicoFixtures extends Fixture implements DependentFixtureInterface
                 $mecanico->setAdministrador($admin);
 
                 $manager->persist($mecanico);
+
+                $this->addReference("mecanico_{$i}_{$j}", $mecanico);
+
             }
         }
 

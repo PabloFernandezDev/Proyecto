@@ -93,18 +93,54 @@ final class CocheController extends AbstractController
     }
 
     #[Route('/coche/{id}', name: 'coche_delete', methods: ['DELETE'])]
-public function deleteCoche(int $id, CocheRepository $cocheRepository, EntityManagerInterface $em): JsonResponse
-{
-    $coche = $cocheRepository->find($id);
+    public function deleteCoche(int $id, CocheRepository $cocheRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $coche = $cocheRepository->find($id);
 
-    if (!$coche) {
-        return new JsonResponse(['detail' => 'Coche no encontrado'], 404);
+        if (!$coche) {
+            return new JsonResponse(['detail' => 'Coche no encontrado'], 404);
+        }
+
+        $em->remove($coche);
+        $em->flush();
+
+        return new JsonResponse(['detail' => 'Coche eliminado correctamente'], 200);
     }
 
-    $em->remove($coche);
-    $em->flush();
+    #[Route('/users/coches', name: 'usersCoches', methods: ['GET'])]
+    public function usersCoches(CocheRepository $cocheRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $coches = $cocheRepository->findAll();
 
-    return new JsonResponse(['detail' => 'Coche eliminado correctamente'], 200);
-}
+        $context = [
+            'circular_reference_handler' => function ($object, string $format, array $context) {
+                return $object->getId();
+            },
+            'groups' => ['coches:read']
+
+        ];
+
+        $jsonCoches = $serializer->serialize($coches, 'json', $context);
+
+        return new JsonResponse($jsonCoches, 200, [], true);
+    }
+
+    #[Route('/user/coche/{id}/reparaciones', name: 'userCocheReparaciones', methods: ['GET'])]
+    public function userCocheReparaciones(int $id, CocheRepository $cocheRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $coches = $cocheRepository->find($id);
+
+        $context = [
+            'circular_reference_handler' => function ($object, string $format, array $context) {
+                return $object->getId();
+            },
+            'groups' => ['coches:read']
+
+        ];
+
+        $jsonCoches = $serializer->serialize($coches, 'json', $context);
+
+        return new JsonResponse($jsonCoches, 200, [], true);
+    }
 
 }

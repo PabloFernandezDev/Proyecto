@@ -36,6 +36,7 @@ final class UsuarioController extends AbstractController
         return new JsonResponse($jsonUsuarios, 200, [], true);
     }
 
+
     #[Route('/user/{userId}', name: 'user', methods: ['GET'])]
     public function user(
         int $userId,

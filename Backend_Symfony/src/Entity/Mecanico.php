@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MecanicoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MecanicoRepository::class)]
@@ -26,12 +27,15 @@ class Mecanico
     private Collection $reparaciones;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['coches:read'])]
     private ?string $Nombre = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['coches:read'])]
     private ?string $Apellidos = null;
 
     #[ORM\Column]
+    #[Groups(['coches:read'])]
     private ?int $NumEmp = null;
 
     #[ORM\Column(length: 255)]

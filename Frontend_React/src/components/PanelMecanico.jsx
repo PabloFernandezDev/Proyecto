@@ -20,13 +20,13 @@ export const PanelMecanico = () => {
       </header>
 
       <div className="admin-buttons">
-        <button onClick={() => navigate("/admin/usuarios")}>
+        <button onClick={() => navigate("/employees/crud/users")}>
           Gestión de Usuarios
         </button>
-        <button onClick={() => navigate("/admin/coches")}>
+        <button onClick={() => navigate("/employees/crud/coches")}>
           Gestión de Coches
         </button>
-        <button onClick={() => navigate("/admin/citas")}>
+        <button onClick={() => navigate("/employees/crud/citas")}>
           Gestión de Citas
         </button>
       </div>

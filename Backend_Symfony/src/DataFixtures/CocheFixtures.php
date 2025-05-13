@@ -44,7 +44,8 @@ class CocheFixtures extends Fixture implements DependentFixtureInterface
             $marcaNombre = $marcas[$key % count($marcas)];
             $marca = $this->getReference('marca-' . $marcaNombre, Marca::class);
             $coche->setMarca($marca);
-
+            $coche->setMatricula('123abc');
+            $coche->setImagen('fondo-681dc5730d0fc.png');
             $manager->persist($coche);
             $this->addReference('coche_' . $key, $coche);
         }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ReparacionesRepository;
+use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReparacionesRepository::class)]
@@ -14,13 +16,25 @@ class Reparaciones
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
+    #[Groups(['coche:read', 'coches:read'])]
+
     private ?string $estado = null;
 
     #[ORM\ManyToOne(inversedBy: 'reparaciones')]
+    #[Groups(['coches:read'])]
     private ?Mecanico $mecanico = null;
 
     #[ORM\ManyToOne(inversedBy: 'reparaciones')]
     private ?Coche $coche = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+     #[Groups(['coches:read'])]
+    private ?\DateTimeInterface $fechaInicio = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+     #[Groups(['coches:read'])]
+    private ?\DateTimeInterface $fechaFin = null;
+
 
     public function getId(): ?int
     {
@@ -62,4 +76,31 @@ class Reparaciones
 
         return $this;
     }
+
+    public function getFechaInicio(): ?\DateTimeInterface
+    {
+        return $this->fechaInicio;
+    }
+
+    public function setFechaInicio(\DateTimeInterface $fechaInicio): static
+    {
+        $this->fechaInicio = $fechaInicio;
+
+        return $this;
+    }
+
+    public function getFechaFin(): ?\DateTimeInterface
+    {
+        return $this->fechaFin;
+    }
+
+    public function setFechaFin(\DateTimeInterface $fechaFin): static
+    {
+        $this->fechaFin = $fechaFin;
+
+        return $this;
+    }
+
+
+
 }
