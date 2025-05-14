@@ -65,6 +65,10 @@ export const DashBoard = () => {
       <div className="dashboard-full">
         <Header />
         <div className="dashboard-full__grid">
+          <div className="dashboard-full__card">
+            <h3>Ubicación</h3>
+            <MapaTalleres />
+          </div>
           <div className="dashboard-full__card dashboard-full__card--alto">
             <h3>Mi Vehículo</h3>
             {usuarioTieneCoche ? (
@@ -89,10 +93,7 @@ export const DashBoard = () => {
             )}
           </div>
 
-          <div className="dashboard-full__card">
-            <h3>Ubicación</h3>
-            <MapaTalleres />
-          </div>
+          
 
           <div className="dashboard-full__card">
             <h3>Facturas recientes</h3>
@@ -126,10 +127,7 @@ export const DashBoard = () => {
         )}
 
         {/* Panel lateral de chat */}
-        <div
-          className={`chat-panel ${mostrarChat ? "slide-in" : "slide-out"}`}
-          style={{ display: mostrarChat ? "flex" : "none" }}
-        >
+        <div className={`chat-panel ${mostrarChat ? "slide-in" : "slide-out"}`}>
           <div className="chat-panel__header">
             <h4>Chat del Taller</h4>
             <button
@@ -159,6 +157,12 @@ export const DashBoard = () => {
               placeholder="Escribe un mensaje..."
             />
             <button onClick={enviarMensaje}>Enviar</button>
+            <button
+              onClick={() => navigate("/home/addcita")}
+              className="chat-panel__btn-cita"
+            >
+              Pedir Cita
+            </button>
           </div>
         </div>
         {mostrarAlerta && (

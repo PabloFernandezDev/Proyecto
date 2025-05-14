@@ -6,6 +6,8 @@ use App\Repository\ReparacionesRepository;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: ReparacionesRepository::class)]
 class Reparaciones
@@ -16,24 +18,30 @@ class Reparaciones
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['coche:read', 'coches:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
 
     private ?string $estado = null;
 
     #[ORM\ManyToOne(inversedBy: 'reparaciones')]
-    #[Groups(['coches:read'])]
+    #[Groups(['mecanico:read'])] 
     private ?Mecanico $mecanico = null;
 
+
     #[ORM\ManyToOne(inversedBy: 'reparaciones')]
+    #[MaxDepth(1)]
+    #[Groups(['mecanico:read'])]
     private ?Coche $coche = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-     #[Groups(['coches:read'])]
+    #[Groups(['coches:read', 'mecanico:read'])]
     private ?\DateTimeInterface $fechaInicio = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-     #[Groups(['coches:read'])]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['coches:read', 'mecanico:read'])]
     private ?\DateTimeInterface $fechaFin = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $descripcion = null;
 
 
     public function getId(): ?int
@@ -97,6 +105,18 @@ class Reparaciones
     public function setFechaFin(\DateTimeInterface $fechaFin): static
     {
         $this->fechaFin = $fechaFin;
+
+        return $this;
+    }
+
+    public function getDescripcion(): ?string
+    {
+        return $this->descripcion;
+    }
+
+    public function setDescripcion(string $descripcion): static
+    {
+        $this->descripcion = $descripcion;
 
         return $this;
     }

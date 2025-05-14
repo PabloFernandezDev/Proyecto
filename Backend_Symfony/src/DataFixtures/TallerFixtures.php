@@ -43,7 +43,7 @@ class TallerFixtures extends Fixture implements DependentFixtureInterface
             $manager->persist($taller);
 
             // Añadimos referencia para usar en AdministradorFixtures o MecanicoFixtures
-            $this->addReference('taller-' . $datos['provincia'], $taller);
+            $this->addReference('taller-'.$datos['provincia'], $taller);
         }
 
         $manager->flush();

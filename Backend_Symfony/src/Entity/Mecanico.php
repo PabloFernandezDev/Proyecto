@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: MecanicoRepository::class)]
 class Mecanico
@@ -14,28 +15,36 @@ class Mecanico
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['taller:read'])]
+
     private ?int $id = null;
 
+
     #[ORM\ManyToOne(inversedBy: 'mecanicos')]
+    #[MaxDepth(1)]
+    #[Groups(['mecanico:read', 'taller:read'])]
+
     private ?Administrador $administrador = null;
 
 
     /**
      * @var Collection<int, Reparaciones>
      */
-    #[ORM\OneToMany(targetEntity: Reparaciones::class, mappedBy: 'mecanicos')]
+    #[ORM\OneToMany(targetEntity: Reparaciones::class, mappedBy: 'mecanico')]
+    #[MaxDepth(1)]
+    #[Groups(['mecanico:read'])]
     private Collection $reparaciones;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['coches:read'])]
+    #[Groups(['coches:read', 'mecanico:read', 'taller:read'])]
     private ?string $Nombre = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['coches:read'])]
+    #[Groups(['coches:read', 'mecanico:read', 'taller:read'])]
     private ?string $Apellidos = null;
 
     #[ORM\Column]
-    #[Groups(['coches:read'])]
+    #[Groups(['coches:read', 'mecanico:read', 'taller:read'])]
     private ?int $NumEmp = null;
 
     #[ORM\Column(length: 255)]

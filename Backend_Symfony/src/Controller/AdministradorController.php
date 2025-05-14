@@ -20,22 +20,27 @@ final class AdministradorController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $numEmp =  $data['numEmp'] ?? null;
+        $numEmp = $data['numEmp'] ?? null;
         $password = $data['password'] ?? null;
 
-        if (!$numEmp || !$password ) {
+        if (!$numEmp || !$password) {
             return $this->json(['detail' => 'Parámetros inválidos'], 400);
         }
 
-        $usuario = $repository->findOneBy(['NumEmp' => $numEmp]);
+        $admin = $repository->findOneBy(['NumEmp' => $numEmp]);
 
-        if (!$usuario || $usuario->getPassword() !== $password) {
+        if (!$admin || $admin->getPassword() !== $password) {
             return $this->json(['detail' => 'Credenciales incorrectas'], 401);
         }
 
         return $this->json([
-            'id' => $usuario->getId(),
-            'numEmp' => $usuario->getNumEmp()
+            'id' => $admin->getId(),
+            'numEmp' => $admin->getNumEmp(),
+            'provincia' => [
+                'id' => $admin->getTaller()?->getProvincia()?->getId(),
+                'nombre' => $admin->getTaller()?->getProvincia()?->getNombre()
+            ],
+            'taller'=> $admin->getTaller()?->getId()
         ], 200);
     }
 }

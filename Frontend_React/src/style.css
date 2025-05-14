@@ -989,24 +989,6 @@
   background-color: var(--color_header);
 }
 
-/* Panel lateral del chat */
-.chat-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 320px;
-  height: 100%;
-  background-color: var(--color_blanco);
-  border-left: 3px solid var(--color_footer);
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
-  animation: slideIn 0.3s ease-out;
-}
-
 /* Encabezado del chat */
 .chat-button {
   position: fixed;
@@ -1033,7 +1015,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 320px;
+  width: 450px;
   height: 100%;
   background-color: var(--color_blanco);
   border-left: 3px solid var(--color_footer);
@@ -1045,6 +1027,20 @@
   border-bottom-left-radius: 20px;
   overflow: hidden;
 }
+
+.chat-panel__btn-cita {
+  margin-left: 8px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.chat-panel__btn-cita:hover {
+  background-color: #45a049;
+}
+
 
 /* Animaciones */
 @keyframes slideIn {
@@ -1489,7 +1485,7 @@
   margin-bottom: 3rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   align-items: center;
-  margin: 0.3rem;
+  margin: 1rem;
 }
 
 .admin-buttons {
@@ -1522,18 +1518,6 @@
   padding: 2rem 1.5rem;
   background-color: #fefafa;
   min-height: 100vh;
-}
-
-.admin-header {
-  background-color: #c60000;
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
 }
 
 .lista-coches {
@@ -1767,5 +1751,198 @@ button.reparar:disabled {
 
 .btn-comenzar:hover, .btn-finalizar:hover {
   transform: scale(1.05);
+}
+
+
+.barra-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.barra-superior input[type="text"] {
+  flex: 1;
+  min-width: 250px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.barra-superior input[type="date"] {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #333;
+  min-width: 180px;
+}
+
+.barra-superior button {
+  padding: 0.5rem 1.2rem;
+  background-color: #cc1f1f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.barra-superior button:hover {
+  background-color: #a81818;
+}
+
+/* Formulario Recibir Coche */
+.formulario-reparacion {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.formulario-reparacion header.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.formulario-reparacion form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.formulario-reparacion label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  color: #333;
+}
+
+.formulario-reparacion select,
+.formulario-reparacion input[type="date"] {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-top: 0.4rem;
+}
+
+.formulario-reparacion button[type="submit"] {
+  align-self: flex-end;
+  padding: 0.6rem 1.2rem;
+  background-color: #cc1f1f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.formulario-reparacion button[type="submit"]:hover {
+  background-color: #a81818;
+}
+
+.reparaciones-lista {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.reparaciones-label {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  font-size: 1rem;
+}
+
+.reparacion-input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s;
+}
+
+.reparacion-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.operacion__Exitosa {
+  width: 17%;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+}
+
+/* Cita */
+.formulario-cita__container {
+  background: white;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 2rem;
+}
+
+.formulario-cita__container h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.formulario-cita__container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formulario-cita__container label {
+  font-weight: bold;
+  color: #555;
+}
+
+.formulario-cita__container input,
+.formulario-cita__container select,
+.formulario-cita__container textarea {
+  padding: 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.formulario-cita__container textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.formulario-cita__container button {
+  background-color: var(--color_header);
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.formulario-cita__container button:hover {
+  background-color: var(--color_boton);
 }
 

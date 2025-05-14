@@ -22,13 +22,20 @@ export const LoginAdmin = () => {
         return;
       }
 
-      console.log(response);
-
       const data = await response.json();
+      console.log(data);
       if (response.ok) {
         // Aquí puedes guardar el token si lo usas
         navigate("/employees/admin/panel");
-        localStorage.setItem("Admin", data.numEmp);
+        localStorage.setItem(
+          "Admin",
+          JSON.stringify({
+            idAdmin: data.id,
+            numAdmin: data.numEmp,
+            provincia: data.provincia.nombre,
+            taller: data.taller
+          })
+        );
       } else {
         alert("Credenciales incorrectas o no eres administrador.");
       }

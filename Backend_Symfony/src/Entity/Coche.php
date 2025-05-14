@@ -17,22 +17,26 @@ class Coche
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['coche:read','coches:read'])]
+    #[Groups(['coche:read', 'coches:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'coches')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['coche:read','coches:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
     private ?Usuario $usuario = null;
 
     #[ORM\ManyToOne(inversedBy: 'coches')]
-    #[Groups(['coche:read','coches:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
     private ?Marca $marca = null;
 
 
     #[ORM\ManyToOne(inversedBy: 'coches')]
-    #[Groups(['coche:read','coches:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
     private ?Modelo $modelo = null;
+
+    #[ORM\ManyToOne(targetEntity: Taller::class)]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
+    private ?Taller $taller = null;
 
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -41,12 +45,12 @@ class Coche
         mimeTypes: ["image/jpeg", "image/png", "image/webp"],
         mimeTypesMessage: "Por favor sube una imagen válida (JPG, PNG, WEBP)"
     )]
-    #[Groups(['coche:read','coches:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
     private ?string $imagen = null;
 
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[Groups(['coche:read','coches:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
     private ?int $año = null;
 
     /**
@@ -56,8 +60,8 @@ class Coche
     #[Groups(['coches:read'])]
     private Collection $reparaciones;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(['coche:read','coches:read'])]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
     private ?string $Matricula = null;
 
 
@@ -129,6 +133,18 @@ class Coche
         return $this;
     }
 
+    public function getTaller(): ?Taller
+    {
+        return $this->taller;
+    }
+
+    public function setTaller(?Taller $taller): static
+    {
+        $this->taller = $taller;
+        return $this;
+    }
+
+
     /**
      * @return Collection<int, Reparaciones>
      */
@@ -172,5 +188,5 @@ class Coche
     }
 
 
-    
+
 }

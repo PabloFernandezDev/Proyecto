@@ -15,7 +15,7 @@ class UsuarioFixtures extends Fixture
                 'nombre'    => 'Juan',
                 'apellidos' => 'Pérez García',
                 'email'     => 'juan.perez@example.com',
-                'password'  => 'password123',
+                'password'  => '1234',
                 'telefono'  => '600111222',
                 'dni'       => '12345678A'
             ],
@@ -23,7 +23,7 @@ class UsuarioFixtures extends Fixture
                 'nombre'    => 'María',
                 'apellidos' => 'López Sánchez',
                 'email'     => 'maria.lopez@example.com',
-                'password'  => 'password456',
+                'password'  => '1234',
                 'telefono'  => '600333444',
                 'dni'       => '23456789B'
             ],
@@ -31,7 +31,7 @@ class UsuarioFixtures extends Fixture
                 'nombre'    => 'Carlos',
                 'apellidos' => 'Gómez Fernández',
                 'email'     => 'carlos.gomez@example.com',
-                'password'  => 'password789',
+                'password'  => '1234',
                 'telefono'  => '600555666',
                 'dni'       => '34567890C'
             ],
@@ -39,7 +39,7 @@ class UsuarioFixtures extends Fixture
                 'nombre'    => 'Ana',
                 'apellidos' => 'Martínez Ruiz',
                 'email'     => 'ana.martinez@example.com',
-                'password'  => 'passwordabc',
+                'password'  => '1234',
                 'telefono'  => '600777888',
                 'dni'       => '45678901D'
             ],
@@ -47,7 +47,7 @@ class UsuarioFixtures extends Fixture
                 'nombre'    => 'Luis',
                 'apellidos' => 'Hernández López',
                 'email'     => 'luis.hernandez@example.com',
-                'password'  => 'passworddef',
+                'password'  => '1234',
                 'telefono'  => '600999000',
                 'dni'       => '56789012E'
             ]
@@ -58,12 +58,11 @@ class UsuarioFixtures extends Fixture
             $usuario->setNombre($data['nombre'])
                     ->setApellidos($data['apellidos'])
                     ->setEmail($data['email'])
-                    ->setPassword($data['password'])
+                    ->setPassword(password_hash($data['password'], PASSWORD_DEFAULT))
                     ->setTelefono($data['telefono'])
                     ->setDni($data['dni']);
 
             $manager->persist($usuario);
-            // Guardamos una referencia para utilizarla en los coches
             $this->addReference('usuario_' . $key, $usuario);
         }
 

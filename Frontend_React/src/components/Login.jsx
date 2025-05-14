@@ -42,7 +42,6 @@ export const Login = () => {
   useEffect(() => {
     if (location.state?.registrado) {
       setMostrarAlerta(true); // <-- correcto
-      window.history.replaceState({}, document.title);
     }
   }, [location.state]);
   

@@ -6,6 +6,8 @@ use App\Repository\AdministradorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: AdministradorRepository::class)]
 class Administrador
@@ -16,12 +18,16 @@ class Administrador
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'administradors', cascade: ['persist'])]
+    #[Groups(['mecanico:read'])]
+
     private ?Taller $taller = null;
 
     /**
      * @var Collection<int, Mecanico>
      */
     #[ORM\OneToMany(targetEntity: Mecanico::class, mappedBy: 'administrador')]
+    #[MaxDepth(1)]
+    #[Groups(['mecanico:read', 'taller:read'])]
     private Collection $mecanicos;
 
     #[ORM\Column(length: 255)]
@@ -31,6 +37,8 @@ class Administrador
     private ?string $Apellidos = null;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['mecanico:read'])]
+
     private ?int $NumEmp = null;
 
     #[ORM\Column(length: 255)]

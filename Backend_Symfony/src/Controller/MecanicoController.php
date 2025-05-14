@@ -8,10 +8,29 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/')]
 final class MecanicoController extends AbstractController
 {
+
+    #[Route('/mecanicos', name: 'mecanicos', methods: ['GET'])]
+    public function mecanicos(MecanicoRepository $mecanicoRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $usuarios = $mecanicoRepository->findAll();
+
+        $context = [
+            'circular_reference_handler' => function ($object, string $format, array $context) {
+                return $object->getId();
+            },
+            'groups' => ['mecanico:read']
+        ];
+
+        $jsonMecanicos = $serializer->serialize($usuarios, 'json', $context);
+
+        return new JsonResponse($jsonMecanicos, 200, [], true);
+    }
+
     #[Route('/mecanico/login', name: 'login_mecanico', methods: ['POST'])]
     public function login(Request $request, MecanicoRepository $repository): JsonResponse
     {
@@ -35,4 +54,6 @@ final class MecanicoController extends AbstractController
             'numEmp' => $usuario->getNumEmp()
         ], 200);
     }
+
+    
 }

@@ -14,23 +14,23 @@ class Usuario
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['usuario:read','coches:read'])]
+    #[Groups(['usuario:read','coches:read', 'mecanico:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read','coches:read'])]
+    #[Groups(['usuario:read', 'coche:read','coches:read', 'mecanico:read'])]
     private ?string $nombre = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read','coches:read'])]
+    #[Groups(['usuario:read', 'coche:read','coches:read', 'mecanico:read'])]
     private ?string $apellidos = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read','coches:read'])]
+    #[Groups(['usuario:read', 'coche:read','coches:read', 'mecanico:read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read',])]
+    #[Groups(['usuario:read'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 200)]
@@ -39,7 +39,7 @@ class Usuario
     private ?string $telefono = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'mecanico:read'])]
     
     private ?string $dni = null;
 
@@ -48,6 +48,7 @@ class Usuario
      */
     #[ORM\OneToMany(targetEntity: Coche::class, mappedBy: 'usuario')]
     private Collection $coches;
+
 
     public function __construct()
     {

@@ -14,10 +14,12 @@ class Provincia
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['provincia:read'])]
+
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['taller:read'])]
+    #[Groups(['taller:read', 'mecanico:read', 'provincia:read'])]
     private ?string $nombre = null;
 
     /**

@@ -19,20 +19,30 @@ class AdministradorFixtures extends Fixture implements DependentFixtureInterface
             'Santa Cruz de Tenerife', 'Las Palmas'
         ];
 
+        $nombres = [
+            'Carlos', 'Lucía', 'Javier', 'María', 'David',
+            'Sara', 'Álvaro', 'Carmen', 'Raúl', 'Laura',
+            'Rubén', 'Paula', 'Hugo', 'Elena', 'Manuel', 'Ana'
+        ];
+
+        $apellidos = [
+            'Gómez Fernández', 'Martínez Ruiz', 'Sánchez López', 'Pérez García', 'Hernández Torres',
+            'López Díaz', 'García Romero', 'Jiménez Ortega', 'Ruiz Delgado', 'Moreno Castillo',
+            'Torres Sánchez', 'Domínguez Ramos', 'Vázquez Muñoz', 'Navarro Molina', 'Cano Herrera', 'Delgado Cruz'
+        ];
+
         foreach ($provincias as $index => $provincia) {
-            $taller = $this->getReference( 'taller-'.$provincia, Taller::class);
+            $taller = $this->getReference('taller-' . $provincia, Taller::class);
 
             $admin = new Administrador();
-            $admin->setNombre("Admin $provincia" );
-            $admin->setApellidos("Apellido $provincia");
+            $admin->setNombre($nombres[$index]);
+            $admin->setApellidos($apellidos[$index]);
             $admin->setNumEmp(1000 + $index);
             $admin->setTaller($taller);
-            $admin->setPassword('1234'); // contraseña en texto plano
+            $admin->setPassword(password_hash('1234', PASSWORD_DEFAULT)); 
 
             $manager->persist($admin);
-
-            $this->addReference('admin-'.$index , $admin);
-
+            $this->addReference('admin-' . $index, $admin);
         }
 
         $manager->flush();

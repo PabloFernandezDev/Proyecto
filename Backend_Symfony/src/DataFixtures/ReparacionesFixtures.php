@@ -13,16 +13,27 @@ class ReparacionesFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $estados = ['En revisión', 'En reparación', 'Finalizado', 'Urgente'];
+        $estados = ['Sin Empezar', 'Finalizado'];
 
-        // Total mecánicos generados: 16 admins × hasta 3 mecánicos por admin = hasta 48
+        $posiblesTareas = [
+            'Cambiar aceite',
+            'Revisar frenos',
+            'Sustituir neumáticos',
+            'Alineación de dirección',
+            'Cambio de batería',
+            'Revisión de motor',
+            'Sustituir bujías',
+            'Cambio de filtros',
+            'Revisar suspensión',
+            'Ajustar luces',
+        ];
+
         $mecanicoRefs = [];
 
-        // Preparamos todas las referencias de mecánicos que hayan sido generadas
         for ($i = 0; $i < 16; $i++) {
             for ($j = 0; $j < 3; $j++) {
                 $ref = "mecanico_{$i}_{$j}";
-                if ($this->hasReference($ref,Mecanico::class)) {
+                if ($this->hasReference($ref, Mecanico::class)) {
                     $mecanicoRefs[] = $ref;
                 }
             }
@@ -33,15 +44,20 @@ class ReparacionesFixtures extends Fixture implements DependentFixtureInterface
 
             for ($j = 0; $j < $reparacionesPorCoche; $j++) {
                 $reparacion = new Reparaciones();
-                $reparacion->setEstado($estados[array_rand($estados)]);
+
+                $estado = $estados[array_rand($estados)];
+                $reparacion->setEstado($estado);
                 $reparacion->setCoche($this->getReference('coche_' . $i, Coche::class));
 
-                // Asigna un mecánico aleatorio de los disponibles
                 $mecanicoRef = $mecanicoRefs[array_rand($mecanicoRefs)];
                 $reparacion->setMecanico($this->getReference($mecanicoRef, Mecanico::class));
 
                 $reparacion->setFechaInicio(new \DateTime());
-                $reparacion->setFechaFin(new \DateTime());
+
+                // Descripción como string
+                shuffle($posiblesTareas);
+                $descripcion = implode(', ', array_slice($posiblesTareas, 0, rand(1, 4)));
+                $reparacion->setDescripcion($descripcion);
 
                 $manager->persist($reparacion);
             }

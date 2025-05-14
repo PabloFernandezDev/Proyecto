@@ -14,12 +14,12 @@ class Taller
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['taller:read'])]
+    #[Groups(['taller:read', 'mecanico:read'])]
 
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'taller')]
-    #[Groups(['taller:read'])]
+    #[Groups(['taller:read', 'mecanico:read'])]
     private ?Provincia $provincia = null;
 
     #[ORM\Column(length: 200)]

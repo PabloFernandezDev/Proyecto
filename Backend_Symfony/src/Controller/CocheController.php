@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Coche;
 use App\Entity\Usuario;
+use App\Repository\AdministradorRepository;
 use App\Repository\CocheRepository;
 use App\Repository\MarcaRepository;
 use App\Repository\ModeloRepository;
@@ -107,23 +108,34 @@ final class CocheController extends AbstractController
         return new JsonResponse(['detail' => 'Coche eliminado correctamente'], 200);
     }
 
-    #[Route('/users/coches', name: 'usersCoches', methods: ['GET'])]
-    public function usersCoches(CocheRepository $cocheRepository, SerializerInterface $serializer): JsonResponse
-    {
-        $coches = $cocheRepository->findAll();
+    #[Route('/admin/{id}/coches', name: 'admin_mecanicos', methods: ['GET'])]
+    public function mecanicosPorAdmin(
+        int $id,
+        AdministradorRepository $adminRepo,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $admin = $adminRepo->find($id);
+
+        if (!$admin) {
+            return $this->json(['detail' => 'Administrador no encontrado'], 404);
+        }
+
+        $mecanicos = $admin->getMecanicos();
+
 
         $context = [
-            'circular_reference_handler' => function ($object, string $format, array $context) {
-                return $object->getId();
-            },
-            'groups' => ['coches:read']
-
+            'circular_reference_handler' => fn($object, string $format, array $context) => $object->getId(),
+            'groups' => ['mecanico:read'],
+            'enable_max_depth' => true
         ];
 
-        $jsonCoches = $serializer->serialize($coches, 'json', $context);
 
-        return new JsonResponse($jsonCoches, 200, [], true);
+        $json = $serializer->serialize($mecanicos, 'json', $context);
+        return new JsonResponse($json, 200, [], true);
     }
+
+
+
 
     #[Route('/user/coche/{id}/reparaciones', name: 'userCocheReparaciones', methods: ['GET'])]
     public function userCocheReparaciones(int $id, CocheRepository $cocheRepository, SerializerInterface $serializer): JsonResponse

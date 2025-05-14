@@ -50,11 +50,12 @@ export const MapaTalleres = () => {
 
   return (
     <MapContainer center={userLocation}  zoom={3} style={{ height: '100%', width: '100%', borderRadius: '12px' }}>
-      <RecenterMap center={userLocation} />
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; OpenStreetMap contributors'
       />
+      <RecenterMap center={userLocation} />
+      
       <Marker position={userLocation}>
         <Popup>Tu ubicación</Popup>
       </Marker>
@@ -66,6 +67,7 @@ export const MapaTalleres = () => {
           </Popup>
         </Marker>
       ))}
+      
     </MapContainer>
   );
 };

@@ -19,6 +19,8 @@ import { PanelMecanico } from '../src/components/PanelMecanico'
 import { LeerUsers } from '../src/components/crudUsers/LeerUsers'
 import { LeerCoches } from '../src/components/crudCoches/LeerCoches'
 import { DetalleCoche } from '../src/components/crudCoches/DetalleCoche'
+import { AddReparacionCoche } from '../src/components/crudCoches/addReparacionCoche'
+import { FormCita } from '../src/components/FormCita'
 
 const RouterPrincipal = () => {
   return (
@@ -31,6 +33,7 @@ const RouterPrincipal = () => {
             <Route path='/home' element={<DashBoard/>}></Route>
             <Route path='/home/addCoche' element={<FormCoche/>}></Route>
             <Route path='/home/coche/details' element={<CocheDetails/>}></Route>
+            <Route path='/home/addcita' element={<FormCita/>}></Route>
             <Route path='/home/perfil' element={<Perfil/>}></Route>
             <Route path='/prueba' element={<Prueba/>}></Route>
 
@@ -42,6 +45,7 @@ const RouterPrincipal = () => {
             <Route path='/employees/mecanic/panel' element={<PanelMecanico/>}></Route>
             <Route path='/employees/crud/users' element={<LeerUsers/>}></Route>
             <Route path='/employees/crud/coches' element={<LeerCoches/>}></Route>
+            <Route path='/employees/crud/coches/addreparacion' element={<AddReparacionCoche/>}></Route>
             <Route path='/employees/crud/coches/:id/detalle' element={<DetalleCoche/>}></Route>
             
 
