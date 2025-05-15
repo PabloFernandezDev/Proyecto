@@ -67,17 +67,15 @@ final class AplicationController extends AbstractController
             return new JsonResponse(['error' => 'Faltan datos obligatorios'], 400);
         }
 
-        // Verificar si el usuario ya existe
         if ($userRepository->findOneBy(['email' => $email])) {
             return new JsonResponse(['error' => 'Este email ya está registrado'], 409);
         }
 
-        // Crear y guardar el usuario
         $usuario = new Usuario();
         $usuario->setNombre($nombre);
         $usuario->setApellidos($apellidos);
         $usuario->setEmail($email);
-        $usuario->setPassword($password); // ¡OJO! sin hash
+        $usuario->setPassword($password); 
         $usuario->setTelefono($telefono);
         $usuario->setDni($dni);
 
@@ -92,7 +90,7 @@ final class AplicationController extends AbstractController
                 'nombre' => $usuario->getNombre(),
                 'apellidos' => $usuario->getApellidos()
             ]
-        ], 201); // 201 Created
+        ], 201); 
     }
 
 

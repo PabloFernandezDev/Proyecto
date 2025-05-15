@@ -17,7 +17,7 @@ class Marca
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['marca:read', 'coche:read'])]
+    #[Groups(['marca:read', 'coche:read', 'cita:read'])]
     
     private ?string $nombre = null;
 

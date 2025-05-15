@@ -12,10 +12,26 @@ export const FormCita = () => {
   const navigate = useNavigate();
 
   const horasDisponibles = [
-    "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-    "12:00", "12:30", "13:00", "13:30", "14:00",
-    "15:30", "16:00", "16:30", "17:00", "17:30",
-    "18:00", "18:30", "19:00", "19:30"
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00",
+    "19:30",
   ];
 
   useEffect(() => {
@@ -36,7 +52,7 @@ export const FormCita = () => {
 
   const handleFechaChange = (e) => {
     const selectedDate = new Date(e.target.value);
-    const day = selectedDate.getDay(); // 0 = domingo, 6 = sábado
+    const day = selectedDate.getDay();
     if (day === 0 || day === 6) {
       setErrorFecha("No se puede pedir cita en fin de semana.");
       setFecha("");
@@ -46,22 +62,29 @@ export const FormCita = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!provincia || !fecha || !hora || !motivo) {
-      alert("Todos los campos son obligatorios.");
-      return;
+
+    const userId = localStorage.getItem("user_id")
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/citas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provincia, fecha, hora, motivo, userId }),
+      });
+
+      if (response.ok) {
+        navigate("/home", {
+          state: {
+            citaSolicitada: true,
+            citaMensaje: `📅 Cita solicitada para el ${fecha} a las ${hora}`,
+          },
+        });
+      } 
+    } catch (error) {
+      console.error("Error:", error);
     }
-
-    console.log({
-      provincia,
-      fecha,
-      hora,
-      motivo,
-    });
-
-    alert("Cita solicitada correctamente");
-    navigate("/home");
   };
 
   return (

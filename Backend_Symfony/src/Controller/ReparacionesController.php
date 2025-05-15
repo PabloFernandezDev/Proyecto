@@ -49,7 +49,7 @@ final class ReparacionesController extends AbstractController
             $reparacion->setMecanico($mecanico);
             $reparacion->setEstado($estado);
             $reparacion->setFechaInicio($fechaInicio);
-            $reparacion->setDescripcion($descripcion); // 👈 ¡Este es obligatorio!
+            $reparacion->setDescripcion($descripcion); 
 
             $em->persist($reparacion);
         }

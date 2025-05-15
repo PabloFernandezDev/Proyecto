@@ -12,7 +12,6 @@ class ModeloFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        // Array asociativo: Marca => [Modelos]
         $marcasConModelos = [
             'Seat' => ['Ibiza', 'León', 'Ateca', 'Arona', 'Tarraco', 'Toledo', 'Alhambra', 'Mii'],
             'Volkswagen' => ['Golf', 'Polo', 'Passat', 'Tiguan', 'T-Roc', 'Touran', 'Arteon'],
@@ -42,17 +41,14 @@ class ModeloFixtures extends Fixture implements DependentFixtureInterface
         ];
 
         foreach ($marcasConModelos as $nombreMarca => $modelos) {
-            // Recuperamos la marca usando la referencia establecida en MarcaFixtures
             $marca = $this->getReference('marca-' . $nombreMarca, Marca::class);
             
             foreach ($modelos as $nombreModelo) {
                 $modelo = new Modelo();
                 $modelo->setNombre($nombreModelo);
-                // Asigna la marca al modelo
                 $modelo->setMarca($marca);
                 $manager->persist($modelo);
                 
-                // Opcional: establecer una referencia única para el modelo (puedes concatenar la marca para evitar duplicados)
                 $this->addReference('modelo-' . $nombreMarca . '-' . $nombreModelo, $modelo);
             }
         }
@@ -63,7 +59,6 @@ class ModeloFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            // Se necesita que MarcaFixtures se cargue primero
             MarcaFixtures::class,
         ];
     }

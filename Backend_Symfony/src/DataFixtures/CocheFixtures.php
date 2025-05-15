@@ -15,7 +15,6 @@ class CocheFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        // Provincias que existen como referencias en TallerFixtures
         $provincias = ['Madrid', 'Sevilla', 'Barcelona', 'Valencia', 'Málaga'];
 
         $cochesData = [

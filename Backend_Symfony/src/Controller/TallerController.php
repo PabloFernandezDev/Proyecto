@@ -37,7 +37,6 @@ final class TallerController extends AbstractController
         AdministradorRepository $adminRepo,
         SerializerInterface $serializer
     ): JsonResponse {
-        // Buscar el administrador del taller
         $admin = $adminRepo->findOneBy(['taller' => $id]);
 
         if (!$admin) {

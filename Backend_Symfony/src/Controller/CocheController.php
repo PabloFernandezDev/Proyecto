@@ -35,15 +35,14 @@ final class CocheController extends AbstractController
         $marcaNombre = $request->get('marca');
         $modeloNombre = $request->get('modelo');
         $año = $request->get('año');
-        $usuarioId = $request->get('usuario'); // ⬅️ Recibimos el ID enviado desde React
+        $usuarioId = $request->get('usuario');
+        $matricula = $request->get('matricula');
 
-        /** @var UploadedFile|null $imagenFile */
         $imagenFile = $request->files->get('imagen');
 
-        // Buscar marca, modelo y usuario
         $marca = $marcaRepository->findOneBy(['nombre' => $marcaNombre]);
         $modelo = $modeloRepository->findOneBy(['nombre' => $modeloNombre]);
-        $usuario = $usuarioRepository->find($usuarioId); // ⬅️ Buscamos el usuario
+        $usuario = $usuarioRepository->find($usuarioId); 
 
         if (!$marca || !$modelo || !$usuario) {
             return new JsonResponse(['detail' => 'Marca, modelo o usuario no encontrado'], 400);
@@ -53,14 +52,13 @@ final class CocheController extends AbstractController
             return new JsonResponse(['detail' => 'No se recibió ninguna imagen'], 400);
         }
 
-        // Crear entidad Coche
         $coche = new Coche();
         $coche->setMarca($marca);
         $coche->setModelo($modelo);
         $coche->setUsuario($usuario);
+        $coche->setMatricula($matricula);
         $coche->setAño((int) $año);
 
-        // Guardar imagen
         $safeName = $slugger->slug(pathinfo($imagenFile->getClientOriginalName(), PATHINFO_FILENAME));
         $newFilename = $safeName . '-' . uniqid() . '.' . $imagenFile->guessExtension();
 
@@ -84,7 +82,7 @@ final class CocheController extends AbstractController
     #[Route('/user/{id}/coche', name: 'user_car', methods: ['GET'])]
     public function getUserCar(Usuario $usuario, SerializerInterface $serializer): JsonResponse
     {
-        $coche = $usuario->getCoches()->first(); // Suponiendo relación OneToMany
+        $coche = $usuario->getCoches()->first();
         if (!$coche) {
             return new JsonResponse(['detail' => 'Sin coche'], 404);
         }

@@ -1946,3 +1946,145 @@ button.reparar:disabled {
   background-color: var(--color_boton);
 }
 
+/* Citas */
+
+.leer-citas__container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #fefefe;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.leer-citas__container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.leer-citas__lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.leer-citas__item {
+  background-color: #f0f4f8;
+  border-left: 5px solid #007bff;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #444;
+}
+
+.leer-citas__item strong {
+  color: #222;
+  font-weight: 600;
+}
+
+.citas-panel {
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+  background-color: #fefefe;
+  text-align: center;
+}
+
+.citas-header {
+  color: var(--color_negro);
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.lista-citas {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+}
+
+.tarjeta-cita div {
+  margin-bottom: 0.5rem;
+}
+
+.tarjeta-cita {
+  background: #fff;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  font-family: "Segoe UI", sans-serif;
+  box-shadow: 0 0 5px rgba(0,0,0,0.25);
+  width: 20%;
+}
+
+.tarjeta-cita strong {
+  color: #d32f2f;
+}
+
+.cita-botones {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.cita-botones button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cita-botones .btn-borrar {
+  background: #d32f2f;
+  color: white;
+}
+
+.cita-botones .btn-detalles {
+  background: rgb(35, 156, 52);
+  color: white;
+}
+
+.cita-botones button:hover {
+  opacity: 0.85;
+}
+
+.detalle-cita-panel {
+  padding: 2rem;
+}
+
+.detalle-cita-card {
+  max-width: 500px;
+  margin: 0 auto;
+  background: #fff;
+  border: 2px dashed #d32f2f;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.detalle-cita-card h2 {
+  color: #d32f2f;
+  margin-bottom: 1.5rem;
+}
+
+.detalle-cita-card p {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.btn-volver {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

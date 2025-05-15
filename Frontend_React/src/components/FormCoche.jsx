@@ -9,13 +9,13 @@ export const FormCoche = () => {
     modelo: "",
     año: "",
     imagen: null,
+    matricula: "",
   });
 
   const [preview, setPreview] = useState(null);
   const [marcas, setMarcas] = useState([]);
   const [modelos, setModelos] = useState([]);
 
-  // Cargar marcas al inicio
   useEffect(() => {
     fetch("http://127.0.0.1:8000/marca")
       .then((res) => res.json())
@@ -23,7 +23,6 @@ export const FormCoche = () => {
       .catch((err) => console.error("Error cargando marcas:", err));
   }, []);
 
-  // Cargar modelos cuando se elige una marca
   useEffect(() => {
     if (formData.marca) {
       fetch(`http://127.0.0.1:8000/marca/${formData.marca}/modelos`)
@@ -40,7 +39,7 @@ export const FormCoche = () => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-      ...(name === "marca" ? { modelo: "" } : {}), // Resetear modelo si cambia la marca
+      ...(name === "marca" ? { modelo: "" } : {}), 
     }));
   };
 
@@ -58,6 +57,7 @@ export const FormCoche = () => {
     data.append("marca", formData.marca);
     data.append("modelo", formData.modelo);
     data.append("año", formData.año);
+    data.append("matricula", formData.matricula);
     data.append("usuario", userId); // <- Añadimos aquí el ID
     if (formData.imagen) data.append("imagen", formData.imagen);
 
@@ -68,7 +68,7 @@ export const FormCoche = () => {
       });
       const result = await response.json();
       if (response.ok) {
-        setFormData({ marca: "", modelo: "", año: "", imagen: null });
+        setFormData({ marca: "", modelo: "", año: "", imagen: null, matricula: "" });
         setPreview(null);
         navigate("/home", { state: { cocheAñadido: true } });
       } else {
@@ -119,6 +119,16 @@ export const FormCoche = () => {
               </option>
             ))}
           </select>
+
+          <input
+            type="text"
+            name="matricula"
+            placeholder="Matrícula"
+            className="add-coche__input"
+            value={formData.matricula}
+            onChange={handleChange}
+            required
+          />
 
           <input
             type="number"

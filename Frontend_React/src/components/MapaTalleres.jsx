@@ -7,7 +7,6 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 import 'leaflet/dist/leaflet.css';
 
-// Corrección del icono por defecto
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
@@ -26,7 +25,7 @@ const RecenterMap = ({ center }) => {
 };
 
 export const MapaTalleres = () => {
-  const [userLocation, setUserLocation] = useState([40.4168, -3.7038]); // Fallback: Madrid
+  const [userLocation, setUserLocation] = useState([40.4168, -3.7038]); 
   const [talleres, setTalleres] = useState([]);
 
     console.log(userLocation)
@@ -42,7 +41,7 @@ export const MapaTalleres = () => {
       { enableHighAccuracy: true }
     );
 
-    fetch('http://127.0.0.1:8000/talleres') // Asegúrate de que este endpoint esté bien
+    fetch('http://127.0.0.1:8000/talleres') 
       .then(res => res.json())
       .then(data => setTalleres(data))
       .catch(err => console.error('Error al cargar talleres:', err));

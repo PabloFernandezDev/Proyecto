@@ -25,7 +25,7 @@ final class ModeloController extends AbstractController
             return new JsonResponse(['detail' => 'Marca no encontrada'], 404);
         }
 
-        $modelos = $marca->getModelos(); // Suponiendo que tienes una relación Marca->Modelos
+        $modelos = $marca->getModelos(); 
 
         $context = [
             'groups' => ['modelo:read']

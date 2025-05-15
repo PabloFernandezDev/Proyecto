@@ -29,7 +29,7 @@ final class AdministradorController extends AbstractController
 
         $admin = $repository->findOneBy(['NumEmp' => $numEmp]);
 
-        if (!$admin || $admin->getPassword() !== $password) {
+        if (!password_verify($password, $admin->getPassword())) {
             return $this->json(['detail' => 'Credenciales incorrectas'], 401);
         }
 

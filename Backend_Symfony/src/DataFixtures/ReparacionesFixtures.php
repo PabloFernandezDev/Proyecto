@@ -54,7 +54,6 @@ class ReparacionesFixtures extends Fixture implements DependentFixtureInterface
 
                 $reparacion->setFechaInicio(new \DateTime());
 
-                // Descripción como string
                 shuffle($posiblesTareas);
                 $descripcion = implode(', ', array_slice($posiblesTareas, 0, rand(1, 4)));
                 $reparacion->setDescripcion($descripcion);

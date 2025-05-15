@@ -43,7 +43,6 @@ class MarcaFixtures extends Fixture
             $marca->setNombre($nombreMarca);
 
             $manager->persist($marca);
-            // Se añade la referencia para poder utilizarla en la fixture de modelos
             $this->addReference('marca-' . $nombreMarca, $marca);
         }
 

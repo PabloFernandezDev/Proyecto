@@ -14,8 +14,8 @@ class Provincia
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['provincia:read'])]
 
+    #[Groups(['provincia:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
@@ -28,9 +28,16 @@ class Provincia
     #[ORM\OneToMany(targetEntity: Taller::class, mappedBy: 'provincia')]
     private Collection $tallers;
 
+    /**
+     * @var Collection<int, Cita>
+     */
+    #[ORM\OneToMany(targetEntity: Cita::class, mappedBy: 'provincia')]
+    private Collection $citas;
+
     public function __construct()
     {
         $this->tallers = new ArrayCollection();
+        $this->citas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -74,6 +81,36 @@ class Provincia
             // set the owning side to null (unless already changed)
             if ($taller->getProvincia() === $this) {
                 $taller->setProvincia(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cita>
+     */
+    public function getCitas(): Collection
+    {
+        return $this->citas;
+    }
+
+    public function addCita(Cita $cita): static
+    {
+        if (!$this->citas->contains($cita)) {
+            $this->citas->add($cita);
+            $cita->setProvincia($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCita(Cita $cita): static
+    {
+        if ($this->citas->removeElement($cita)) {
+            // set the owning side to null (unless already changed)
+            if ($cita->getProvincia() === $this) {
+                $cita->setProvincia(null);
             }
         }
 

@@ -12,7 +12,7 @@ export const HeaderAdmin = () => {
     <header className="admin-header">
           <span>Panel de Control</span>
           <span>Admin {admin.numAdmin}</span>
-          <span>Taller {admin.provincia}</span>
+          <span>Taller {admin.provincia.nombre}</span>
           <button className="boton auth-buttons__enlace" onClick={handleLogout}>
             Salir
           </button>

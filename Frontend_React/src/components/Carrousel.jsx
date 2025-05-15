@@ -17,12 +17,12 @@ export const Carrousel = () => {
 
   const visibleCount = 3;
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [slideDirection, setSlideDirection] = useState(''); // nuevo estado
+  const [slideDirection, setSlideDirection] = useState(''); 
   const [animationClass, setAnimationClass] = useState('');
 
   const handlePrevious = () => {
     setAnimationClass('slide-left');
-    setTimeout(() => setAnimationClass(''), 300); // limpieza tras la animación
+    setTimeout(() => setAnimationClass(''), 300); 
     setCurrentIndex((prevIndex) =>
       (prevIndex - 1 + servicios.length) % servicios.length
     );

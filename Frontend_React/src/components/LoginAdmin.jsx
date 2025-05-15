@@ -25,14 +25,13 @@ export const LoginAdmin = () => {
       const data = await response.json();
       console.log(data);
       if (response.ok) {
-        // Aquí puedes guardar el token si lo usas
         navigate("/employees/admin/panel");
         localStorage.setItem(
           "Admin",
           JSON.stringify({
             idAdmin: data.id,
             numAdmin: data.numEmp,
-            provincia: data.provincia.nombre,
+            provincia: data.provincia,
             taller: data.taller
           })
         );

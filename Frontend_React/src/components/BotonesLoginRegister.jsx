@@ -7,7 +7,6 @@ export const BotonesLoginRegister = () => {
 
   return (
     <div className="botones-login">
-      {/* Tarjeta 1: Iniciar Sesión */}
       <div className="botones-login__card">
         <div className="botones-login__contenido">
           <Icon icon="login" size={40} color="white" />
@@ -19,7 +18,6 @@ export const BotonesLoginRegister = () => {
         </button>
       </div>
 
-      {/* Tarjeta 2: Registrarse */}
       <div className="botones-login__card">
         <div className="botones-login__contenido">
           <Icon icon="person_add" size={40} color="white" />

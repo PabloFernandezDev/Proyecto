@@ -38,7 +38,7 @@ export const DashBoard = () => {
         })
         .then((data) => {
           setUsuarioTieneCoche(true);
-          setImagenCoche(data.imagen); // <- debe venir la URL/nombre de imagen
+          setImagenCoche(data.imagen);
         })
         .catch(() => setUsuarioTieneCoche(false));
     }
@@ -56,9 +56,22 @@ export const DashBoard = () => {
 
     if (location.state?.cocheAñadido) {
       setMostrarAlerta(true);
-      window.history.replaceState({}, document.title); // limpiar el estado
+      window.history.replaceState({}, document.title);
     }
-  }, [location.state]);
+
+    if (location.state?.citaSolicitada && location.state?.citaMensaje) {
+      setMensajes((prev) => [
+        ...prev,
+        { texto: location.state.citaMensaje, propio: true },
+        {
+          texto: "✅ Tu cita ha sido registrada. Nos pondremos en contacto.",
+          propio: false,
+        },
+      ]);
+      setMostrarChat(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, []);
 
   return (
     <>
@@ -93,8 +106,6 @@ export const DashBoard = () => {
             )}
           </div>
 
-          
-
           <div className="dashboard-full__card">
             <h3>Facturas recientes</h3>
             {facturas.length > 0 ? (
@@ -119,14 +130,12 @@ export const DashBoard = () => {
           </div>
         </div>
 
-        {/* Botón flotante para el chat (solo visible si el chat NO está abierto) */}
         {!mostrarChat && (
           <button className="chat-button" onClick={() => setMostrarChat(true)}>
             <FiMessageSquare size={24} />
           </button>
         )}
 
-        {/* Panel lateral de chat */}
         <div className={`chat-panel ${mostrarChat ? "slide-in" : "slide-out"}`}>
           <div className="chat-panel__header">
             <h4>Chat del Taller</h4>

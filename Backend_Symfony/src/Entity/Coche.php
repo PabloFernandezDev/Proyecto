@@ -17,7 +17,7 @@ class Coche
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['coche:read', 'coches:read'])]
+    #[Groups(['coche:read', 'coches:read', 'cita:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'coches')]
@@ -26,15 +26,16 @@ class Coche
     private ?Usuario $usuario = null;
 
     #[ORM\ManyToOne(inversedBy: 'coches')]
-    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read', 'cita:read'])]
     private ?Marca $marca = null;
 
 
     #[ORM\ManyToOne(inversedBy: 'coches')]
-    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read', 'cita:read'])]
     private ?Modelo $modelo = null;
 
     #[ORM\ManyToOne(targetEntity: Taller::class)]
+    #[ORM\Column(nullable: true)]
     #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
     private ?Taller $taller = null;
 
@@ -61,7 +62,7 @@ class Coche
     private Collection $reparaciones;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read', 'cita:read'])]
     private ?string $Matricula = null;
 
 

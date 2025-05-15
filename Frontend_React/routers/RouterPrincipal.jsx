@@ -21,6 +21,8 @@ import { LeerCoches } from '../src/components/crudCoches/LeerCoches'
 import { DetalleCoche } from '../src/components/crudCoches/DetalleCoche'
 import { AddReparacionCoche } from '../src/components/crudCoches/addReparacionCoche'
 import { FormCita } from '../src/components/FormCita'
+import { LeerCitas } from '../src/components/crudCitas/LeerCitas'
+import { DetalleCita } from '../src/components/crudCitas/DetalleCita'
 
 const RouterPrincipal = () => {
   return (
@@ -47,6 +49,8 @@ const RouterPrincipal = () => {
             <Route path='/employees/crud/coches' element={<LeerCoches/>}></Route>
             <Route path='/employees/crud/coches/addreparacion' element={<AddReparacionCoche/>}></Route>
             <Route path='/employees/crud/coches/:id/detalle' element={<DetalleCoche/>}></Route>
+            <Route path='/employees/crud/citas' element={<LeerCitas/>}></Route>
+            <Route path='/employees/crud/citas/:id/detalle' element={<DetalleCita/>}></Route>
             
 
         </Routes>

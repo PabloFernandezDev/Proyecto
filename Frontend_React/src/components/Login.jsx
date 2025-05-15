@@ -25,7 +25,6 @@ export const Login = () => {
       if (response.ok) {
         console.log('Login exitoso:', data);
         
-        // Guarda email e id en localStorage
         localStorage.setItem('user_email', data.usuario.email);
         localStorage.setItem('user_id', data.usuario.id);
   
@@ -41,7 +40,7 @@ export const Login = () => {
   
   useEffect(() => {
     if (location.state?.registrado) {
-      setMostrarAlerta(true); // <-- correcto
+      setMostrarAlerta(true);
     }
   }, [location.state]);
   

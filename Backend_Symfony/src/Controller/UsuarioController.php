@@ -17,20 +17,15 @@ final class UsuarioController extends AbstractController
     #[Route('/users', name: 'users', methods: ['GET'])]
     public function users(UsuarioRepository $userRepository, SerializerInterface $serializer): JsonResponse
     {
-        // Obtiene todos los usuarios de la base de datos
         $usuarios = $userRepository->findAll();
 
         $context = [
             'circular_reference_handler' => function ($object, string $format, array $context) {
-                // Devuelve, por ejemplo, el id del objeto en vez de seguir serializando la relación.
                 return $object->getId();
             },
             'groups' => ['usuario:read']
-            // Si usas grupos, también los puedes incluir:
-            // 'groups' => 'usuario:read',
         ];
 
-        // Serializa los usuarios con el contexto configurado
         $jsonUsuarios = $serializer->serialize($usuarios, 'json', $context);
 
         return new JsonResponse($jsonUsuarios, 200, [], true);
@@ -81,7 +76,6 @@ final class UsuarioController extends AbstractController
             return new JsonResponse(['detail' => 'Datos inválidos'], 400);
         }
 
-        // Actualizamos los campos (ajusta según tus necesidades)
         $usuario->setNombre($data['nombre'] ?? $usuario->getNombre());
         $usuario->setApellidos($data['apellidos'] ?? $usuario->getApellidos());
         $usuario->setEmail($data['email'] ?? $usuario->getEmail());
@@ -117,7 +111,6 @@ final class UsuarioController extends AbstractController
             return new JsonResponse(['detail' => 'La contraseña debe tener al menos 6 caracteres'], 400);
         }
 
-        // ⚠️ Codificación manual de la contraseña (sólo para desarrollo):
         $hashedPassword = password_hash($nuevaPassword, PASSWORD_DEFAULT);
 
         $usuario->setPassword($hashedPassword);
