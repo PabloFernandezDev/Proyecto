@@ -14,19 +14,19 @@ class Usuario
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['usuario:read','coches:read', 'mecanico:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coches:read', 'mecanico:read', 'cita:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read','coches:read', 'mecanico:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read'])]
     private ?string $nombre = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read','coches:read', 'mecanico:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read'])]
     private ?string $apellidos = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read','coches:read', 'mecanico:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 200)]
@@ -34,15 +34,20 @@ class Usuario
     private ?string $password = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read','coches:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'cita:read'])]
 
     private ?string $telefono = null;
 
     #[ORM\Column(length: 200)]
     #[Groups(['usuario:read', 'coche:read', 'mecanico:read', 'cita:read'])]
-    
+
     private ?string $dni = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $confirmado = false;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $tokenConfirmacion = null;
     /**
      * @var Collection<int, Coche>
      */
@@ -56,11 +61,18 @@ class Usuario
     #[ORM\OneToMany(targetEntity: Cita::class, mappedBy: 'usuario')]
     private Collection $citas;
 
+    /**
+     * @var Collection<int, Factura>
+     */
+    #[ORM\OneToMany(targetEntity: Factura::class, mappedBy: 'usuario')]
+    private Collection $facturas;
+
 
     public function __construct()
     {
         $this->coches = new ArrayCollection();
         $this->citas = new ArrayCollection();
+        $this->facturas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -140,6 +152,28 @@ class Usuario
         return $this;
     }
 
+    public function isConfirmado(): bool
+    {
+        return $this->confirmado;
+    }
+
+    public function setConfirmado(bool $confirmado): self
+    {
+        $this->confirmado = $confirmado;
+        return $this;
+    }
+
+    public function getTokenConfirmacion(): ?string
+    {
+        return $this->tokenConfirmacion;
+    }
+
+    public function setTokenConfirmacion(?string $token): self
+    {
+        $this->tokenConfirmacion = $token;
+        return $this;
+    }
+
     /**
      * @return Collection<int, Coche>
      */
@@ -194,6 +228,36 @@ class Usuario
             // set the owning side to null (unless already changed)
             if ($cita->getUsuario() === $this) {
                 $cita->setUsuario(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Factura>
+     */
+    public function getFacturas(): Collection
+    {
+        return $this->facturas;
+    }
+
+    public function addFactura(Factura $factura): static
+    {
+        if (!$this->facturas->contains($factura)) {
+            $this->facturas->add($factura);
+            $factura->setUsuario($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFactura(Factura $factura): static
+    {
+        if ($this->facturas->removeElement($factura)) {
+            // set the owning side to null (unless already changed)
+            if ($factura->getUsuario() === $this) {
+                $factura->setUsuario(null);
             }
         }
 

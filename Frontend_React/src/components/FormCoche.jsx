@@ -15,6 +15,9 @@ export const FormCoche = () => {
   const [preview, setPreview] = useState(null);
   const [marcas, setMarcas] = useState([]);
   const [modelos, setModelos] = useState([]);
+  const [errorMatricula, setErrorMatricula] = useState("");
+  const añoActual = new Date().getFullYear();
+  const [errorAño, setErrorAño] = useState("");
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/marca")
@@ -36,10 +39,13 @@ export const FormCoche = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    const newValue = name === "matricula" ? value.toUpperCase() : value;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
-      ...(name === "marca" ? { modelo: "" } : {}), 
+      [name]: newValue,
+      ...(name === "marca" ? { modelo: "" } : {}),
     }));
   };
 
@@ -51,6 +57,23 @@ export const FormCoche = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const añoNum = parseInt(formData.año, 10);
+    if (isNaN(añoNum) || añoNum < 1900 || añoNum > añoActual) {
+      setErrorAño(`El año debe estar entre 1900 y ${añoActual}.`);
+      return;
+    }
+    setErrorAño("");
+
+    const matriculaRegex = /^\d{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$/i;
+    if (!matriculaRegex.test(formData.matricula)) {
+      setErrorMatricula(
+        "La matrícula debe tener 4 números seguidos de 3 consonantes (sin vocales, Ñ o Q)."
+      );
+      return;
+    }
+
+    setErrorMatricula(""); // Limpia el error si pasa la validación
     const data = new FormData();
     const userId = localStorage.getItem("user_id");
 
@@ -58,7 +81,7 @@ export const FormCoche = () => {
     data.append("modelo", formData.modelo);
     data.append("año", formData.año);
     data.append("matricula", formData.matricula);
-    data.append("usuario", userId); // <- Añadimos aquí el ID
+    data.append("usuario", userId);
     if (formData.imagen) data.append("imagen", formData.imagen);
 
     try {
@@ -68,7 +91,13 @@ export const FormCoche = () => {
       });
       const result = await response.json();
       if (response.ok) {
-        setFormData({ marca: "", modelo: "", año: "", imagen: null, matricula: "" });
+        setFormData({
+          marca: "",
+          modelo: "",
+          año: "",
+          imagen: null,
+          matricula: "",
+        });
         setPreview(null);
         navigate("/home", { state: { cocheAñadido: true } });
       } else {
@@ -129,16 +158,22 @@ export const FormCoche = () => {
             onChange={handleChange}
             required
           />
+          {errorMatricula && <p className="form-error">{errorMatricula}</p>}
 
+          <label className="add-coche__label">
+            Año: {formData.año || añoActual}
+          </label>
           <input
-            type="number"
+            type="range"
             name="año"
-            placeholder="Año"
-            className="add-coche__input"
-            value={formData.año}
+            min="1900"
+            max={añoActual}
+            className="add-coche__range"
+            value={formData.año || añoActual}
             onChange={handleChange}
-            required
           />
+          {errorAño && <p className="form-error">{errorAño}</p>}
+
           <input
             type="file"
             accept="image/*"

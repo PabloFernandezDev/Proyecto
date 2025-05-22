@@ -12,9 +12,6 @@ export const Empleados = () => {
           <button onClick={() => navigate("/employees/admin")}>
             Soy Administrador
           </button>
-          <button onClick={() => navigate("/employees/mecanic")}>
-            Soy Mecánico
-          </button>
         </div>
       </div>
     </div>

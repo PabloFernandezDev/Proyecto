@@ -32,7 +32,7 @@ final class FacturaController extends AbstractController
         $factura->setUsuario($usuario);
         $factura->setNumero('FAC-' . strtoupper(uniqid()));
         $factura->setMetodoPago('Tarjeta');
-        $factura->setFecha(new \DateTime());
+        $factura->setFechaEmision(new \DateTime());
 
         $subtotal = 0;
 
@@ -52,7 +52,7 @@ final class FacturaController extends AbstractController
 
                 $subtotal += $reparacion->getPrecio();
                 $em->persist($linea);
-                $factura->getLineasFacturas()->add($linea);
+                $factura->getLineaFactura()->add($linea);
             }
         }
 

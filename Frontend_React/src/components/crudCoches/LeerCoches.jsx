@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation, data } from "react-router-dom";
 import { HeaderAdmin } from "../HeaderAdmin";
 
 export const LeerCoches = () => {
@@ -12,6 +11,7 @@ export const LeerCoches = () => {
   const [fechaFiltro, setFechaFiltro] = useState("");
   const navigate = useNavigate();
 
+  console.log(coches);
   const admin = JSON.parse(localStorage.getItem("Admin"));
 
   const obtenerCoches = async () => {
@@ -32,6 +32,27 @@ export const LeerCoches = () => {
     }
   };
 
+  const marcarComoDevuelto = async (cocheId) => {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/coche/${cocheId}/devolver`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      if (!res.ok) throw new Error("Error al marcar como devuelto");
+
+      localStorage.removeItem("CocheReparado");
+
+      await obtenerCoches();
+      setMensaje(true); 
+    } catch (error) {
+      console.error("Error al devolver coche:", error);
+      alert("No se pudo devolver el coche.");
+    }
+  };
+
   useEffect(() => {
     if (admin?.idAdmin) {
       obtenerCoches();
@@ -39,44 +60,40 @@ export const LeerCoches = () => {
 
     if (location.state?.operacion) {
       setMensaje(true);
+      window.history.replaceState({}, document.title);
     }
   }, []);
 
-  const normalizarFecha = (fechaStr) => {
-    if (!fechaStr) return "";
-    return new Date(fechaStr).toISOString().split("T")[0];
-  };
+  const normalizarFecha = (fechaStr) =>
+    fechaStr ? new Date(fechaStr).toISOString().split("T")[0] : "";
 
-  const formatearFecha = (fechaStr) => {
-    if (!fechaStr) return "Sin fecha";
-    return new Date(fechaStr).toISOString().split("T")[0];
-  };
+  const formatearFecha = (fechaStr) =>
+    fechaStr ? new Date(fechaStr).toISOString().split("T")[0] : "Sin fecha";
 
-  const cochesDesdeReparaciones = coches.flatMap((mecanico) =>
-    (mecanico.reparaciones || []).map((r) => ({
-      ...r.coche,
-      reparacion: r,
-      mecanico: {
-        Nombre: mecanico.Nombre,
-        Apellidos: mecanico.Apellidos,
-      },
-    }))
-  );
+  const cocheMap = new Map();
+  coches.forEach((mecanico) => {
+    (mecanico.reparaciones || []).forEach((reparacion) => {
+      const coche = reparacion.coche;
+      const cocheId = coche.id;
 
-  const cochesFiltrados = cochesDesdeReparaciones.filter((coche) => {
-    const termino = busqueda.toLowerCase();
-    const coincideBusqueda =
-      coche.Matricula?.toLowerCase().includes(termino) ||
-      coche.usuario?.nombre?.toLowerCase().includes(termino) ||
-      coche.usuario?.apellidos?.toLowerCase().includes(termino) ||
-      coche.mecanico?.Nombre?.toLowerCase().includes(termino);
+      if (!cocheMap.has(cocheId)) {
+        cocheMap.set(cocheId, {
+          coche,
+          reparaciones: [],
+        });
+      }
 
-    const coincideFecha =
-      fechaFiltro === "" ||
-      normalizarFecha(coche.reparacion.fechaInicio) === fechaFiltro;
-
-    return coincideBusqueda && coincideFecha;
+      cocheMap.get(cocheId).reparaciones.push({
+        ...reparacion,
+        mecanico: {
+          Nombre: mecanico.Nombre,
+          Apellidos: mecanico.Apellidos,
+        },
+      });
+    });
   });
+
+  const cochesUnicos = Array.from(cocheMap.values());
 
   return (
     <div className="coches-panel">
@@ -95,9 +112,10 @@ export const LeerCoches = () => {
           onChange={(e) => setFechaFiltro(e.target.value)}
         />
         <button
-          onClick={() => navigate("/employees/crud/coches/addreparacion")}
+          className="perfil__boton perfil__boton--volver"
+          onClick={() => navigate(-1)}
         >
-          Recibir coche
+          Volver
         </button>
       </div>
 
@@ -117,65 +135,100 @@ export const LeerCoches = () => {
         <p>Cargando coches...</p>
       ) : (
         <div className="lista-coches">
-          {cochesFiltrados.map((coche, index) => {
-            const mecanico = coche.mecanico
-              ? `${coche.mecanico.Nombre} ${coche.mecanico.Apellidos}`
-              : "No asignado";
-            const fechaInicio = formatearFecha(coche.reparacion.fechaInicio);
-            const fechaFin = formatearFecha(coche.reparacion.fechaFin);
-            const reparacionesPendientes = cochesDesdeReparaciones.filter(
-              (c) => c.id === coche.id && c.reparacion.estado !== "Finalizado"
-            );
+          {cochesUnicos
+            .filter(({ coche, reparaciones }) => {
+              const termino = busqueda.toLowerCase();
+              const coincideBusqueda =
+                coche.Matricula?.toLowerCase().includes(termino) ||
+                coche.usuario?.nombre?.toLowerCase().includes(termino) ||
+                coche.usuario?.apellidos?.toLowerCase().includes(termino) ||
+                reparaciones.some((r) =>
+                  r.mecanico?.Nombre?.toLowerCase().includes(termino)
+                );
 
-            return (
-              <div className="coche-card" key={index}>
-                <img
-                  src={
-                    coche.imagen
-                      ? `http://127.0.0.1:8000/uploads/${coche.imagen}`
-                      : "/placeholder.jpg"
-                  }
-                  alt="Coche"
-                  className="coche-imagen"
-                />
-                <div className="coche-info">
-                  <div>
-                    <strong>Cliente:</strong>{" "}
-                    {coche.usuario
-                      ? `${coche.usuario.nombre} ${coche.usuario.apellidos}`
-                      : "Desconocido"}
-                  </div>
-                  <div>
-                    <strong>Matrícula:</strong>{" "}
-                    {coche.Matricula || "No registrada"}
-                  </div>
-                  <div>
-                    <strong>Reparaciones pendientes:</strong>{" "}
-                    {reparacionesPendientes.length}
-                  </div>
-                  <div>
-                    <strong>Mecánico:</strong> {mecanico}
-                  </div>
-                  <div>
-                    <strong>Entrada:</strong> {fechaInicio}
-                  </div>
-                  <div>
-                    <strong>Salida:</strong> {fechaFin}
-                  </div>
-                  <div className="coche-botones">
-                    <button
-                      className="reparar"
-                      onClick={() =>
-                        navigate(`/employees/crud/coches/${coche.id}/detalle`)
-                      }
-                    >
-                      Reparar
-                    </button>
+              const coincideFecha =
+                fechaFiltro === "" ||
+                reparaciones.some(
+                  (r) => normalizarFecha(r.fechaInicio) === fechaFiltro
+                );
+
+              return coincideBusqueda && coincideFecha;
+            })
+            .map(({ coche, reparaciones }, index) => {
+              const reparacionesPendientes = reparaciones.filter(
+                (r) => r.estado !== "Finalizado"
+              );
+              const ultimaReparacion =
+                reparaciones[reparaciones.length - 1] || {};
+              const fechaInicio = formatearFecha(ultimaReparacion.fechaInicio);
+              const fechaFin = formatearFecha(ultimaReparacion.fechaFin);
+              const mecanico = ultimaReparacion.mecanico
+                ? `${ultimaReparacion.mecanico.Nombre} ${ultimaReparacion.mecanico.Apellidos}`
+                : "No asignado";
+
+              return (
+                <div className="coche-card" key={index}>
+                  <img
+                    src={
+                      coche.imagen
+                        ? `http://127.0.0.1:8000/uploads/${coche.imagen}`
+                        : "/placeholder.jpg"
+                    }
+                    alt="Coche"
+                    className="coche-imagen"
+                  />
+                  <div className="coche-info">
+                    <div>
+                      <strong>Cliente:</strong>{" "}
+                      {coche.usuario
+                        ? `${coche.usuario.nombre} ${coche.usuario.apellidos}`
+                        : "Desconocido"}
+                    </div>
+                    <div>
+                      <strong>Matrícula:</strong>{" "}
+                      {coche.Matricula || "No registrada"}
+                    </div>
+                    <div>
+                      <strong>Total reparaciones:</strong> {reparaciones.length}
+                    </div>
+                    <div>
+                      <strong>Pendientes:</strong>{" "}
+                      {reparacionesPendientes.length}
+                    </div>
+                    <div>
+                      <strong>Fecha entrada:</strong> {fechaInicio}
+                    </div>
+                    <div>
+                      <strong>Fecha entrega:</strong> {fechaFin}
+                    </div>
+                    <div>
+                      <strong>Mecánico:</strong> {mecanico}
+                    </div>
+                    <div className="coche-botones">
+                      {reparacionesPendientes.length === 0 ? (
+                        <button
+                          className="devuelto"
+                          onClick={() => marcarComoDevuelto(coche.id)}
+                        >
+                          Devuelto
+                        </button>
+                      ) : (
+                        <button
+                          className="reparar"
+                          onClick={() =>
+                            navigate(
+                              `/employees/crud/coches/${coche.id}/detalle`
+                            )
+                          }
+                        >
+                          Reparar
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       )}
     </div>

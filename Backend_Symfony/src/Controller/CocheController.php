@@ -42,7 +42,7 @@ final class CocheController extends AbstractController
 
         $marca = $marcaRepository->findOneBy(['nombre' => $marcaNombre]);
         $modelo = $modeloRepository->findOneBy(['nombre' => $modeloNombre]);
-        $usuario = $usuarioRepository->find($usuarioId); 
+        $usuario = $usuarioRepository->find($usuarioId);
 
         if (!$marca || !$modelo || !$usuario) {
             return new JsonResponse(['detail' => 'Marca, modelo o usuario no encontrado'], 400);
@@ -151,6 +151,42 @@ final class CocheController extends AbstractController
         $jsonCoches = $serializer->serialize($coches, 'json', $context);
 
         return new JsonResponse($jsonCoches, 200, [], true);
+    }
+
+    #[Route('/coche/{id}/devolver', name: 'user_coche_devolver', methods: ['PATCH'])]
+    public function devolverCoche(
+        int $id,
+        EntityManagerInterface $em,
+        CocheRepository $cocheRepository
+    ): JsonResponse {
+        $coche = $cocheRepository->find($id);
+
+        if (!$coche) {
+            return new JsonResponse(['error' => 'Coche no encontrado'], 404);
+        }
+
+        $usuario = $coche->getUsuario();
+
+        // Borrar reparaciones del coche
+        foreach ($coche->getReparaciones() as $reparacion) {
+            $em->remove($reparacion);
+        }
+
+        // Borrar citas asociadas a este coche (si la cita tiene coche)
+        if ($usuario) {
+            foreach ($usuario->getCitas() as $cita) {
+                if ($cita->getCoche() && $cita->getCoche()->getId() === $id) {
+                    $em->remove($cita);
+                }
+            }
+        }
+
+        // Desasociar el taller
+        $coche->setTaller(null);
+
+        $em->flush();
+
+        return new JsonResponse(['mensaje' => 'Coche marcado como devuelto y citas eliminadas']);
     }
 
 }

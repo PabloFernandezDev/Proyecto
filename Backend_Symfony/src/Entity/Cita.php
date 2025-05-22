@@ -36,6 +36,10 @@ class Cita
     #[Groups(['cita:read'])]
     private ?string $motivo = null;
 
+    #[ORM\Column(length: 255)]
+    #[Groups(['cita:read'])]
+    private ?string $estado = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -97,6 +101,18 @@ class Cita
     public function setMotivo(string $motivo): static
     {
         $this->motivo = $motivo;
+
+        return $this;
+    }
+
+    public function getEstado(): ?string
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(string $estado): static
+    {
+        $this->estado = $estado;
 
         return $this;
     }

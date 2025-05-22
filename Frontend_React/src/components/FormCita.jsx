@@ -10,7 +10,7 @@ export const FormCita = () => {
   const [motivo, setMotivo] = useState("");
   const [errorFecha, setErrorFecha] = useState("");
   const navigate = useNavigate();
-
+  console.log(provincias);
   const horasDisponibles = [
     "09:00",
     "09:30",
@@ -64,8 +64,7 @@ export const FormCita = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const userId = localStorage.getItem("user_id")
+    const userId = localStorage.getItem("user_id");
 
     try {
       const response = await fetch("http://127.0.0.1:8000/citas", {
@@ -75,13 +74,30 @@ export const FormCita = () => {
       });
 
       if (response.ok) {
+        const provinciaSeleccionada = provincias.find(
+          (p) => p.nombre === provincia
+        );
+        let direccion = "Dirección no disponible";
+
+        if (provinciaSeleccionada && provinciaSeleccionada.tallers.length > 0) {
+          direccion = provinciaSeleccionada.tallers[0].direccion;
+        }
+
+        await fetch("http://127.0.0.1:8000/mail/cita", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ provincia, fecha, hora, userId, direccion }),
+        });
+
         navigate("/home", {
           state: {
             citaSolicitada: true,
             citaMensaje: `📅 Cita solicitada para el ${fecha} a las ${hora}`,
           },
         });
-      } 
+      } else {
+        console.error("No se pudo crear la cita");
+      }
     } catch (error) {
       console.error("Error:", error);
     }

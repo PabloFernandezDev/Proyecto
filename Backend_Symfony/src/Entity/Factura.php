@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FacturaRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -35,14 +37,24 @@ class Factura
     #[Groups(['factura:read'])]
     private ?float $total = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['factura:read'])]
-    private ?Reparaciones $reparacion = null;
-
     #[ORM\Column(type: 'text', nullable: true)]
     #[Groups(['factura:read'])]
     private ?string $observaciones = null;
+
+    #[ORM\ManyToOne(inversedBy: 'facturas')]
+    private ?Usuario $usuario = null;
+
+    #[ORM\OneToMany(mappedBy: 'factura', targetEntity: LineaFactura::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[Groups(['factura:read'])]
+    private Collection $lineaFactura;
+
+    #[ORM\Column(length: 255)]
+    private ?string $metodoPago = null;
+
+    public function __construct()
+    {
+        $this->lineaFactura = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -109,17 +121,6 @@ class Factura
         return $this;
     }
 
-    public function getReparacion(): ?Reparaciones
-    {
-        return $this->reparacion;
-    }
-
-    public function setReparacion(?Reparaciones $reparacion): static
-    {
-        $this->reparacion = $reparacion;
-
-        return $this;
-    }
 
     public function getObservaciones(): ?string
     {
@@ -129,6 +130,59 @@ class Factura
     public function setObservaciones(?string $observaciones): static
     {
         $this->observaciones = $observaciones;
+
+        return $this;
+    }
+
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?Usuario $usuario): static
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LineaFactura>
+     */
+    public function getLineaFactura(): Collection
+    {
+        return $this->lineaFactura;
+    }
+
+    public function addLineaFactura(LineaFactura $lineaFactura): static
+    {
+        if (!$this->lineaFactura->contains($lineaFactura)) {
+            $this->lineaFactura->add($lineaFactura);
+            $lineaFactura->setFactura($this); // 👈 Relación inversa
+        }
+
+        return $this;
+    }
+
+    public function removeLineaFactura(LineaFactura $lineaFactura): static
+    {
+        if ($this->lineaFactura->removeElement($lineaFactura)) {
+            if ($lineaFactura->getFactura() === $this) {
+                $lineaFactura->setFactura(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getMetodoPago(): ?string
+    {
+        return $this->metodoPago;
+    }
+
+    public function setMetodoPago(string $metodoPago): static
+    {
+        $this->metodoPago = $metodoPago;
 
         return $this;
     }

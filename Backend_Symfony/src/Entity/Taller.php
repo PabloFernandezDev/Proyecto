@@ -14,7 +14,7 @@ class Taller
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['taller:read', 'mecanico:read'])]
+    #[Groups(['taller:read', 'mecanico:read', 'provincia:read'])]
 
     private ?int $id = null;
 
@@ -23,7 +23,7 @@ class Taller
     private ?Provincia $provincia = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['taller:read'])]
+    #[Groups(['taller:read', 'provincia:read'])]
     private ?string $direccion = null;
 
     #[ORM\Column(type: 'float')]

@@ -13,6 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -54,6 +56,7 @@ final class CitaController extends AbstractController
             $cita->setFecha($fecha);
             $cita->setHora($hora);
             $cita->setMotivo($datos['motivo']);
+            $cita->setEstado('Recibir');
 
             $em->persist($cita);
             $em->flush();
@@ -111,7 +114,7 @@ final class CitaController extends AbstractController
         return new JsonResponse(['detail' => 'Cita eliminada correctamente'], 200);
     }
 
-    #[Route('/cita/{id}', name: 'cita_delete', methods: ['GET'])]
+    #[Route('/cita/{id}', name: 'cita_get', methods: ['GET'])]
     public function getCita(int $id, CitaRepository $citaRepository, SerializerInterface $serializer): JsonResponse
     {
         $cita = $citaRepository->find($id);
@@ -130,5 +133,71 @@ final class CitaController extends AbstractController
         return new JsonResponse($json, 200, [], true);
     }
 
+    #[Route('/cita/{id}', name: 'cita_patch', methods: ['PATCH'])]
+    public function updateCita(
+        int $id,
+        Request $request,
+        CitaRepository $citaRepository,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $cita = $citaRepository->find($id);
+
+        if (!$cita) {
+            return new JsonResponse(['detail' => 'Cita no encontrada'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (isset($data['fechaEntrega'])) {
+            try {
+                $cita->setFecha(new \DateTime($data['fechaEntrega']));
+            } catch (\Exception $e) {
+                return new JsonResponse(['detail' => 'Fecha de entrega inválida'], 400);
+            }
+        }
+
+        if (isset($data['horaEntrega'])) { 
+            try {
+                $cita->setHora(new \DateTime($data['horaEntrega']));
+            } catch (\Exception $e) {
+                return new JsonResponse(['detail' => 'Fecha inválida'], 400);
+            }
+        }
+
+
+        $cita->setEstado("Entregar");
+
+        $em->flush();
+
+        return new JsonResponse(['message' => 'Cita actualizada correctamente']);
+    }
+
+
+    #[Route('/update/cita/mail', name: 'notificar_recogida', methods: ['POST'])]
+    public function actualizarCita(Request $request, MailerInterface $mailer): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $email = $data['email'] ?? null;
+        $nombre = $data['nombre'] ?? 'cliente';
+
+        if (!$email) {
+            return new JsonResponse(['error' => 'Falta el email'], 400);
+        }
+
+        $correo = (new Email())
+            ->from('carecarenow@gmail.com')
+            ->to($email)
+            ->subject('Tu coche está listo para recoger')
+            ->html("
+            <h2>Hola $nombre,</h2>
+            <p>Te informamos que la reparación de tu coche ha sido completada.</p>
+            <p>Puedes pasar a recogerlo en cualquier momento dentro del horario del taller.</p>
+            <p><strong>¡Gracias por confiar en CareCare Now!</strong></p>
+        ");
+
+        $mailer->send($correo);
+
+        return new JsonResponse(['message' => 'Correo enviado correctamente']);
+    }
 
 }

@@ -36,7 +36,9 @@ export const DetalleCita = () => {
   if (!cita) return <p>No se encontró la cita.</p>;
 
   const matricula = cita.usuario?.coches?.[0]?.Matricula || "N/A";
-  const nombre = `${cita.usuario?.nombre || ""} ${cita.usuario?.apellidos || ""}`;
+  const nombre = `${cita.usuario?.nombre || ""} ${
+    cita.usuario?.apellidos || ""
+  }`;
   const fecha = formatearFecha(cita.fecha);
   const hora = formatearHora(cita.hora);
 
@@ -45,13 +47,39 @@ export const DetalleCita = () => {
       <HeaderAdmin />
       <div className="detalle-cita-card">
         <h2>🗓️ Detalles de la Cita</h2>
-        <p><strong>Cliente:</strong> {nombre}</p>
-        <p><strong>Matrícula:</strong> {matricula}</p>
-        <p><strong>Fecha:</strong> {fecha}</p>
-        <p><strong>Hora:</strong> {hora}</p>
-        <p><strong>Motivo:</strong> {cita.motivo}</p>
+        <p>
+          <strong>Cliente:</strong> {nombre}
+        </p>
+        <p>
+          <strong>Matrícula:</strong> {matricula}
+        </p>
+        <p>
+          <strong>Fecha:</strong> {fecha}
+        </p>
+        <p>
+          <strong>Hora:</strong> {hora}
+        </p>
+        <p>
+          <strong>Motivo:</strong> {cita.motivo}
+        </p>
         <button onClick={() => navigate(-1)} className="btn-volver">
           Volver
+        </button>
+        <button
+          onClick={() =>
+            navigate("/employees/crud/coches/addreparacion", {
+              state: {
+                coche: cita.usuario?.coches?.[0],
+                usuario: cita.usuario,
+                motivo: cita.motivo,
+                citaId: cita.id,
+                fechaInicio: cita.fecha,
+              },
+            })
+          }
+          className="btn-actualizar"
+        >
+          Actualizar cita y registrar reparación
         </button>
       </div>
     </div>

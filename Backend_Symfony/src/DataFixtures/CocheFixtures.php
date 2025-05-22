@@ -39,14 +39,13 @@ class CocheFixtures extends Fixture implements DependentFixtureInterface
             $usuario = $this->getReference($data['usuario_ref'], Usuario::class);
             $marca = $this->getReference('marca-' . $data['marca'], Marca::class);
             $modelo = $this->getReference('modelo-' . $data['marca'] . '-' . $data['modelo'], Modelo::class);
-            $taller = $this->getReference('taller-' . $data['provincia'], Taller::class);
 
             $coche->setUsuario($usuario);
             $coche->setMarca($marca);
             $coche->setModelo($modelo);
             $coche->setMatricula($matriculas[$key]);
             $coche->setImagen('fondo-681dc5730d0fc.png');
-            $coche->setTaller($taller);
+            $coche->setTaller(null);
 
             $manager->persist($coche);
             $this->addReference('coche_' . $key, $coche);

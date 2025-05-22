@@ -47,7 +47,6 @@ final class EmailController extends AbstractController
         }
 
         $usuario->setConfirmado(true);
-        $usuario->setTokenConfirmacion(null);
         $em->flush();
 
         return new RedirectResponse('http://localhost:5173/confirmado');
@@ -102,6 +101,46 @@ final class EmailController extends AbstractController
         return new JsonResponse(['message' => 'Correo de cita enviado correctamente']);
     }
 
+    #[Route('/enviar-confirmacion/{id}', name: 'api_enviar_confirmacion', methods: ['GET'])]
+    public function enviarConfirmacion(
+        int $id,
+        UsuarioRepository $usuarioRepository,
+        MailerInterface $mailer
+    ): JsonResponse {
+        $usuario = $usuarioRepository->find($id);
+
+        if (!$usuario) {
+            return new JsonResponse(['error' => 'Usuario no encontrado'], 404);
+        }
+
+        if ($usuario->isConfirmado()) {
+            return new JsonResponse(['message' => 'El usuario ya ha confirmado su cuenta.'], 200);
+        }
+
+        $token = $usuario->getTokenConfirmacion();
+        if (!$token) {
+            return new JsonResponse(['error' => 'Token de confirmación no disponible.'], 400);
+        }
+
+        $enlaceConfirmacion = 'http://localhost:8000/confirmar/' . $token;
+
+        $emailMensaje = (new Email())
+            ->from('carecarenow360@gmail.com')
+            ->to($usuario->getEmail())
+            ->subject('Confirma cuenta')
+            ->text("Hola {$usuario->getNombre()}, haz clic en el siguiente enlace para confirmar tu cuenta: $enlaceConfirmacion")
+            ->html("
+            <p>Hola <strong>{$usuario->getNombre()}</strong>,</p>
+            <p>Gracias por registrarte. Para activar tu cuenta, por favor haz clic en el siguiente enlace:</p>
+            <p><a href='$enlaceConfirmacion'>Confirmar cuenta</a></p>
+            <p>Si no te registraste, puedes ignorar este mensaje.</p>
+        ");
+
+        $mailer->send($emailMensaje);
+
+        return new JsonResponse(['message' => 'Correo de confirmación enviado con éxito.']);
+    }
+
     #[Route('/mail/cita/recoger', name: 'enviar_correo_recogida', methods: ['POST'])]
     public function enviarCorreoRecogida(Request $request, UsuarioRepository $usuarioRepository, MailerInterface $mailer): JsonResponse
     {
@@ -135,14 +174,13 @@ final class EmailController extends AbstractController
         $correo = (new Email())
             ->from('carecarenow@gmail.com')
             ->to($email)
-            ->subject("Tu coche está listo para recoger")
+            ->subject("Cita para recoger coche")
             ->html($contenido);
 
         $mailer->send($correo);
 
         return new JsonResponse(['message' => 'Correo enviado correctamente']);
     }
-
 
 
     #[Route('/notificar/recogida', name: 'notificar_recogida', methods: ['POST'])]
@@ -159,7 +197,7 @@ final class EmailController extends AbstractController
         $correo = (new Email())
             ->from('carecarenow@gmail.com')
             ->to($email)
-            ->subject('Tu coche está listo para recoger\n')
+            ->subject('Tu coche está listo para recoger')
             ->text("Hola $nombre, tu coche ya está reparado y listo para ser recogido. Puedes venir cuando desees.");
 
         $mailer->send($correo);

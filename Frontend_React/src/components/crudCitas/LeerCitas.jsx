@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { HeaderAdmin } from "../HeaderAdmin";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const LeerCitas = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [citas, setCitas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [fechaFiltro, setFechaFiltro] = useState("");
-
+  const [operacionExitosa, setOperacionExitosa] = useState(false);
+  const [vista, setVista] = useState("pendientes");
   const admin = JSON.parse(localStorage.getItem("Admin"));
-
-  const formatearFecha = (fechaStr) =>
-    fechaStr ? new Date(fechaStr).toISOString().split("T")[0] : "Sin fecha";
+  console.log(citas)
+  const formatearFecha = (fechaStr) => {
+    if (!fechaStr) return "Sin fecha";
+    const fecha = new Date(fechaStr);
+    const dia = String(fecha.getDate()).padStart(2, "0");
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+    const año = fecha.getFullYear();
+    return `${dia}-${mes}-${año}`;
+  };
 
   useEffect(() => {
     const obtenerCitas = async () => {
@@ -36,6 +44,11 @@ export const LeerCitas = () => {
     if (admin?.idAdmin && admin?.provincia?.id) {
       obtenerCitas();
     }
+
+    if (location.state?.operacionExitosa) {
+      setOperacionExitosa(true);
+      window.history.replaceState({}, document.title);
+    }
   }, []);
 
   const citasFiltradas = citas.filter((cita) => {
@@ -43,17 +56,21 @@ export const LeerCitas = () => {
     const coincideBusqueda =
       cita.usuario?.nombre?.toLowerCase().includes(termino) ||
       cita.usuario?.apellidos?.toLowerCase().includes(termino) ||
-      (cita.usuario?.coches?.[0]?.Matricula || "")
-        .toLowerCase()
-        .includes(termino);
+      (cita.usuario?.coches?.[0]?.Matricula || "").toLowerCase().includes(termino);
     const coincideFecha =
       fechaFiltro === "" || formatearFecha(cita.fecha) === fechaFiltro;
-    return coincideBusqueda && coincideFecha;
+
+    const esPendiente = cita.estado !== "Entregar";
+    const esRecogida = cita.estado === "Entregar";
+
+    return coincideBusqueda && coincideFecha && (
+      (vista === "pendientes" && esPendiente) ||
+      (vista === "recoger" && esRecogida)
+    );
   });
 
   const handleBorrar = async (id) => {
-    if (!window.confirm("¿Estás seguro de que deseas borrar esta cita?"))
-      return;
+    if (!window.confirm("¿Estás seguro de que deseas borrar esta cita?")) return;
 
     try {
       const res = await fetch(`http://127.0.0.1:8000/cita/${id}/delete`, {
@@ -87,7 +104,16 @@ export const LeerCitas = () => {
             value={fechaFiltro}
             onChange={(e) => setFechaFiltro(e.target.value)}
           />
+          <div className="botones-vista">
+            <button onClick={() => setVista("pendientes")}>Citas Recibir Coche</button>
+            <button onClick={() => setVista("recoger")}>Citas Entregar Coche</button>
+            <button onClick={() => navigate("/employees/admin/panel")} className="btn-volver">
+          Volver
+        </button>
+          </div>
+          
         </div>
+        
 
         {loading ? (
           <p>Cargando citas...</p>
@@ -96,8 +122,19 @@ export const LeerCitas = () => {
         ) : (
           <div>
             <div className="citas-header">
-              <h2>Citas</h2>
+              <h2>{vista === "pendientes" ? "Citas Recibir Coche" : "Citas Entregar Coche"}</h2>
             </div>
+            {operacionExitosa && (
+              <div className="alerta__login alerta__citas">
+                <span>¡Operación con éxito!</span>
+                <button
+                  className="alerta__login-cerrar"
+                  onClick={() => setOperacionExitosa(false)}
+                >
+                  X
+                </button>
+              </div>
+            )}
             <div className="lista-citas">
               {citasFiltradas.map((cita, index) => {
                 const fecha = formatearFecha(cita.fecha);
@@ -107,8 +144,7 @@ export const LeerCitas = () => {
                 return (
                   <div className="tarjeta-cita" key={index}>
                     <div>
-                      <strong>Usuario:</strong> {cita.usuario?.nombre}{" "}
-                      {cita.usuario?.apellidos}
+                      <strong>Usuario:</strong> {cita.usuario?.nombre} {cita.usuario?.apellidos}
                     </div>
                     <div>
                       <strong>Fecha:</strong> {fecha}
@@ -122,11 +158,12 @@ export const LeerCitas = () => {
                     <div>
                       <strong>Motivo:</strong> {cita.motivo}
                     </div>
+                    <div>
+                      <strong>Estado:</strong> {cita.estado}
+                    </div>
                     <div className="cita-botones">
                       <button
-                        onClick={() =>
-                          navigate(`/employees/crud/citas/${cita.id}/detalle`)
-                        }
+                        onClick={() => navigate(`/employees/crud/citas/${cita.id}/detalle`)}
                         className="btn-detalles"
                       >
                         Detalles

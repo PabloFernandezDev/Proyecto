@@ -15,6 +15,8 @@ class Reparaciones
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['coches:read'])]
+
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
@@ -23,7 +25,7 @@ class Reparaciones
     private ?string $estado = null;
 
     #[ORM\ManyToOne(inversedBy: 'reparaciones')]
-    #[Groups(['mecanico:read'])] 
+    #[Groups(['mecanico:read'])]
     private ?Mecanico $mecanico = null;
 
 
@@ -43,6 +45,8 @@ class Reparaciones
     #[ORM\Column(length: 255)]
     private ?string $descripcion = null;
 
+    #[ORM\Column(type: 'float', nullable: true)]
+    private $precio;
 
     public function getId(): ?int
     {
@@ -122,5 +126,15 @@ class Reparaciones
     }
 
 
+    public function getPrecio(): ?float
+    {
+        return $this->precio;
+    }
+
+    public function setPrecio(float $precio): self
+    {
+        $this->precio = $precio;
+        return $this;
+    }
 
 }

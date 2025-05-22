@@ -1,51 +1,51 @@
-import React, { useEffect,useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const Login = () => {
   const navigate = useNavigate();
-  const location = useLocation(); 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const location = useLocation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
-  
+  const [mensajeError, setMensajeError] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
-      const response = await fetch('http://127.0.0.1:8000/login', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:8000/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
-        console.log('Login exitoso:', data);
-        
-        localStorage.setItem('user_email', data.usuario.email);
-        localStorage.setItem('user_id', data.usuario.id);
-  
-        navigate('/home');
+        console.log("Login exitoso:", data);
+
+        localStorage.setItem("user_email", data.usuario.email);
+        localStorage.setItem("user_id", data.usuario.id);
+
+        navigate("/home");
       } else {
-        alert(data.detail || 'Error al iniciar sesión.');
+        console.log(data.error);
+        setMensajeError(data.error || "Error al iniciar sesión.");
+        return;
       }
     } catch (error) {
-      console.error('Error al hacer login:', error);
-      alert('Ocurrió un error en la conexión.');
+      console.error("Error al hacer login:", error);
+      alert("Ocurrió un error en la conexión.");
     }
   };
-  
+
   useEffect(() => {
     if (location.state?.registrado) {
       setMostrarAlerta(true);
     }
   }, [location.state]);
-  
-
-  
 
   return (
     <div className="login-background">
@@ -76,13 +76,23 @@ export const Login = () => {
               <p className="login__registro">
                 ¿No tienes cuenta? <a href="/register">Regístrate</a>
               </p>
+              {mensajeError && <p className="login__error">{mensajeError}</p>}
+
               {mostrarAlerta && (
                 <div className="alerta__login">
-                    <span>¡Registro exitoso! Ya puedes iniciar sesión.</span>
-                    <button className="alerta__login-cerrar" onClick={() => setMostrarAlerta(false)}>X</button>
+                  <span>¡Registro exitoso!</span>
+                  <span>
+                    Primero tienes que confirmar tu cuenta. Revisa tu bandeja de
+                    entrada para confirmar tu cuenta
+                  </span>
+                  <button
+                    className="alerta__login-cerrar"
+                    onClick={() => setMostrarAlerta(false)}
+                  >
+                    X
+                  </button>
                 </div>
               )}
-
             </form>
           </div>
         </div>

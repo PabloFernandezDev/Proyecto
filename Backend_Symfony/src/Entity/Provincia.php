@@ -26,6 +26,7 @@ class Provincia
      * @var Collection<int, Taller>
      */
     #[ORM\OneToMany(targetEntity: Taller::class, mappedBy: 'provincia')]
+    #[Groups(['provincia:read'])]
     private Collection $tallers;
 
     /**

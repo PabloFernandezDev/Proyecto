@@ -9,33 +9,35 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: LineaFacturaRepository::class)]
 class LineaFactura
 {
-    #[ORM\Id]
+   #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-     #[Groups(['factura:read'])]
+    #[Groups(['factura:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-     #[Groups(['factura:read'])]
+    #[Groups(['factura:read'])]
     private ?string $concepto = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-     #[Groups(['factura:read'])]
+    #[Groups(['factura:read'])]
     private ?string $descripcion = null;
 
     #[ORM\Column]
-     #[Groups(['factura:read'])]
+    #[Groups(['factura:read'])]
     private ?float $precio = null;
 
     #[ORM\Column]
-     #[Groups(['factura:read'])]
+    #[Groups(['factura:read'])]
     private ?int $cantidad = null;
 
     #[ORM\Column]
-     #[Groups(['factura:read'])]
+    #[Groups(['factura:read'])]
     private ?float $total = null;
 
-    #[ORM\ManyToOne(inversedBy: 'lineasFacturas')]
+    #[ORM\ManyToOne(inversedBy: 'lineaFactura')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['factura:read'])]
     private ?Factura $factura = null;
 
     public function getId(): ?int
@@ -103,6 +105,7 @@ class LineaFactura
         return $this;
     }
 
+
     public function getFactura(): ?Factura
     {
         return $this->factura;
@@ -114,4 +117,5 @@ class LineaFactura
 
         return $this;
     }
+
 }

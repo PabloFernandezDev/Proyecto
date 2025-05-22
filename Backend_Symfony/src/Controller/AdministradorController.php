@@ -40,7 +40,10 @@ final class AdministradorController extends AbstractController
                 'id' => $admin->getTaller()?->getProvincia()?->getId(),
                 'nombre' => $admin->getTaller()?->getProvincia()?->getNombre()
             ],
-            'taller'=> $admin->getTaller()?->getId()
+            'taller'=> [
+                'id' => $admin->getTaller()?->getId(),
+                'nombre' => $admin->getTaller()?->getDireccion()
+            ]
         ], 200);
     }
 }

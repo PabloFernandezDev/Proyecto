@@ -17,7 +17,7 @@ class Coche
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['coche:read', 'coches:read', 'cita:read'])]
+    #[Groups(['coche:read', 'coches:read', 'cita:read', 'mecanico:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'coches')]
@@ -35,7 +35,7 @@ class Coche
     private ?Modelo $modelo = null;
 
     #[ORM\ManyToOne(targetEntity: Taller::class)]
-    #[ORM\Column(nullable: true)]
+    #[ORM\JoinColumn(nullable: true)] 
     #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
     private ?Taller $taller = null;
 
