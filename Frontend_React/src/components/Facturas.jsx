@@ -6,8 +6,8 @@ export const Facturas = () => {
   const [facturas, setFacturas] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  console.log(facturas)
   const userId = localStorage.getItem("user_id");
-
   useEffect(() => {
     const obtenerFacturas = async () => {
       try {
@@ -47,7 +47,7 @@ export const Facturas = () => {
             {facturas.map((factura) => (
               <div key={factura.id} className="factura-card">
                 <p><strong>Nº:</strong> {factura.numero}</p>
-                <p><strong>Fecha:</strong> {formatearFecha(factura.fecha)}</p>
+                <p><strong>Fecha:</strong> {formatearFecha(factura.fechaEmision)}</p>
                 <p><strong>Total:</strong> {factura.total.toFixed(2)} €</p>
                 <button onClick={() => navigate(`/home/factura/${factura.id}/detalle`)}>
                   Ver Detalles

@@ -14,34 +14,36 @@ class Factura
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read','coche:read', 'facturas:read'])]  
+
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read', 'facturas:read'])]
     private ?string $numero = null;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read', 'facturas:read'])]
     private ?\DateTimeInterface $fechaEmision = null;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read', 'facturas:read'])]
     private ?float $subtotal = null;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read', 'facturas:read'])]
     private ?float $iva = null;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read', 'facturas:read'])]
     private ?float $total = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read', 'facturas:read'])]
     private ?string $observaciones = null;
 
     #[ORM\ManyToOne(inversedBy: 'facturas')]
+    #[Groups(['factura:read'])]
     private ?Usuario $usuario = null;
 
     #[ORM\OneToMany(mappedBy: 'factura', targetEntity: LineaFactura::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
@@ -49,6 +51,7 @@ class Factura
     private Collection $lineaFactura;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['factura:read'])]
     private ?string $metodoPago = null;
 
     public function __construct()

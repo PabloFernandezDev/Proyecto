@@ -43,12 +43,14 @@ export const DashBoard = () => {
           return res.json();
         })
         .then((data) => {
+          console.log(data);
           setData(data);
           setUsuarioTieneCoche(true);
           setImagenCoche(data.imagen);
           if (data.taller && data.taller.id) {
             setTallerId(data.taller.id);
           }
+          setFacturas(data.usuario.facturas);
         })
         .catch(() => setUsuarioTieneCoche(false));
     }
@@ -90,9 +92,12 @@ export const DashBoard = () => {
       if (reparado) setCocheReparado(reparado);
 
       if (reparado && !mensajeReparadoMostradoRef.current) {
-        setMensajes((prev) => [...prev, { texto: reparado, propio: false }]);
-        setMostrarChat(true);
         mensajeReparadoMostradoRef.current = true;
+
+        setTimeout(() => {
+          localStorage.removeItem("CocheReparado"); // ← elimina la clave
+          window.location.reload(); // ← recarga una vez
+        }, 3000);
       }
     };
 

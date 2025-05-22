@@ -37,7 +37,6 @@ class LineaFactura
 
     #[ORM\ManyToOne(inversedBy: 'lineaFactura')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['factura:read'])]
     private ?Factura $factura = null;
 
     public function getId(): ?int

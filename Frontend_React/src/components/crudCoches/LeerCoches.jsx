@@ -210,7 +210,7 @@ export const LeerCoches = () => {
                           className="devuelto"
                           onClick={() => marcarComoDevuelto(coche.id)}
                         >
-                          Devuelto
+                          Devolver
                         </button>
                       ) : (
                         <button

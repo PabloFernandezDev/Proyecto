@@ -167,21 +167,16 @@ final class CocheController extends AbstractController
 
         $usuario = $coche->getUsuario();
 
-        // Borrar reparaciones del coche
         foreach ($coche->getReparaciones() as $reparacion) {
             $em->remove($reparacion);
         }
 
-        // Borrar citas asociadas a este coche (si la cita tiene coche)
         if ($usuario) {
             foreach ($usuario->getCitas() as $cita) {
-                if ($cita->getCoche() && $cita->getCoche()->getId() === $id) {
                     $em->remove($cita);
-                }
             }
         }
 
-        // Desasociar el taller
         $coche->setTaller(null);
 
         $em->flush();

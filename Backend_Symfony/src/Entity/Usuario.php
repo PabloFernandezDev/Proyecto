@@ -14,19 +14,19 @@ class Usuario
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['usuario:read', 'coches:read', 'mecanico:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read'])]
     private ?string $nombre = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read'])]
     private ?string $apellidos = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 200)]
@@ -34,12 +34,12 @@ class Usuario
     private ?string $password = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'cita:read', 'factura:read'])]
 
     private ?string $telefono = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read', 'mecanico:read', 'cita:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'mecanico:read', 'cita:read', 'factura:read'])]
 
     private ?string $dni = null;
 
@@ -65,6 +65,7 @@ class Usuario
      * @var Collection<int, Factura>
      */
     #[ORM\OneToMany(targetEntity: Factura::class, mappedBy: 'usuario')]
+    #[Groups(['coche:read', 'facturas:read'])]
     private Collection $facturas;
 
 

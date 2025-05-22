@@ -42,7 +42,8 @@ export const FacturaDetalle = () => {
     });
   };
 
-  const formatearFecha = (fecha) => new Date(fecha).toLocaleDateString("es-ES");
+  const formatearFecha = (fecha) =>
+    new Date(fecha).toLocaleDateString("es-ES");
 
   if (loading) return <p>Cargando factura...</p>;
   if (!factura) return <p>Factura no encontrada</p>;
@@ -56,17 +57,15 @@ export const FacturaDetalle = () => {
             <h1>Factura</h1>
             <p className="factura-numero">Nº {factura.numero}</p>
             <p className="factura-fecha">
-              Fecha: {formatearFecha(factura.fecha)}
+              Fecha: {formatearFecha(factura.fechaEmision)}
             </p>
           </div>
 
           <div className="factura-datos">
             <div>
               <h4>De:</h4>
-              <p>CareCare Now</p>
+              <p>CareCareNow</p>
               <p>NIF: B12345678</p>
-              <p>Calle Falsa 123</p>
-              <p>Madrid, España</p>
             </div>
             <div>
               <h4>Para:</h4>
@@ -90,7 +89,7 @@ export const FacturaDetalle = () => {
               </tr>
             </thead>
             <tbody>
-              {factura.lineasFacturas.map((linea) => (
+              {factura.lineaFactura.map((linea) => (
                 <tr key={linea.id}>
                   <td>{linea.concepto || "—"}</td>
                   <td>{linea.descripcion || "—"}</td>
@@ -106,6 +105,7 @@ export const FacturaDetalle = () => {
             <p>Subtotal: {factura.subtotal.toFixed(2)} €</p>
             <p>IVA (21%): {factura.iva.toFixed(2)} €</p>
             <h3>Total: {factura.total.toFixed(2)} €</h3>
+            <p>Método de pago: {factura.metodoPago}</p>
           </div>
         </div>
 

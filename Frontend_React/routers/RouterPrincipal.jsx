@@ -13,6 +13,8 @@ import { Perfil } from "../src/components/Perfil";
 import { Confirmado } from "../src/components/Confirmado";
 import { CocheDetails } from "../src/components/CocheDetails";
 import { LoginAdmin } from "../src/components/LoginAdmin";
+import { Facturas } from "../src/components/Facturas";
+import { FacturaDetalle } from "../src/components/FacturaDetalle";
 import { LoginMecanico } from "../src/components/LoginMecanico";
 import { AdminPanel } from "../src/components/AdminPanel";
 import { PanelMecanico } from "../src/components/PanelMecanico";
@@ -38,6 +40,8 @@ const RouterPrincipal = () => {
       <Route path="/home/coche/details" element={<CocheDetails />}></Route>
       <Route path="/home/addcita" element={<FormCita />}></Route>
       <Route path="/home/perfil" element={<Perfil />}></Route>
+      <Route path="/home/facturas" element={<Facturas/>}></Route>
+      <Route path="/home/factura/:id/detalle" element={<FacturaDetalle/>}></Route>
 
       <Route path="/employees" element={<Empleados />}></Route>
       <Route path="/employees/admin" element={<LoginAdmin />}></Route>
