@@ -1,61 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation, data } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { HeaderAdmin } from "../HeaderAdmin";
 
 export const LeerCoches = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const [mensaje, setMensaje] = useState(false);
-  const [coches, setCoches] = useState([]);
+  const [reparaciones, setReparaciones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [fechaFiltro, setFechaFiltro] = useState("");
-  const navigate = useNavigate();
 
-  console.log(coches);
   const admin = JSON.parse(localStorage.getItem("Admin"));
 
-  const obtenerCoches = async () => {
+  const obtenerReparaciones = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `http://127.0.0.1:8000/admin/${admin.idAdmin}/coches`
-      );
-      if (!response.ok) throw new Error("Error al obtener los coches");
-
+      const response = await fetch(`http://127.0.0.1:8000/admin/${admin.idAdmin}/coches`);
+      if (!response.ok) throw new Error("Error al obtener las reparaciones");
       const data = await response.json();
-      setCoches(data);
+      setReparaciones(data);
     } catch (error) {
       console.error("Error:", error);
-      alert("No se pudieron cargar los coches.");
+      alert("No se pudieron cargar las reparaciones.");
     } finally {
       setLoading(false);
     }
   };
 
-  const marcarComoDevuelto = async (cocheId) => {
-    try {
-      const res = await fetch(
-        `http://127.0.0.1:8000/coche/${cocheId}/devolver`,
-        {
-          method: "PATCH",
-        }
-      );
-
-      if (!res.ok) throw new Error("Error al marcar como devuelto");
-
-      localStorage.removeItem("CocheReparado");
-
-      await obtenerCoches();
-      setMensaje(true); 
-    } catch (error) {
-      console.error("Error al devolver coche:", error);
-      alert("No se pudo devolver el coche.");
-    }
-  };
-
   useEffect(() => {
     if (admin?.idAdmin) {
-      obtenerCoches();
+      obtenerReparaciones();
     }
 
     if (location.state?.operacion) {
@@ -71,26 +47,18 @@ export const LeerCoches = () => {
     fechaStr ? new Date(fechaStr).toISOString().split("T")[0] : "Sin fecha";
 
   const cocheMap = new Map();
-  coches.forEach((mecanico) => {
-    (mecanico.reparaciones || []).forEach((reparacion) => {
-      const coche = reparacion.coche;
-      const cocheId = coche.id;
+  reparaciones.forEach((reparacion) => {
+    const coche = reparacion.coche;
+    const cocheId = coche.id;
 
-      if (!cocheMap.has(cocheId)) {
-        cocheMap.set(cocheId, {
-          coche,
-          reparaciones: [],
-        });
-      }
-
-      cocheMap.get(cocheId).reparaciones.push({
-        ...reparacion,
-        mecanico: {
-          Nombre: mecanico.Nombre,
-          Apellidos: mecanico.Apellidos,
-        },
+    if (!cocheMap.has(cocheId)) {
+      cocheMap.set(cocheId, {
+        coche,
+        reparaciones: [],
       });
-    });
+    }
+
+    cocheMap.get(cocheId).reparaciones.push(reparacion);
   });
 
   const cochesUnicos = Array.from(cocheMap.values());
@@ -122,12 +90,7 @@ export const LeerCoches = () => {
       {mensaje && (
         <div className="alerta__login operacion__Exitosa">
           <span>¡Operación exitosa!</span>
-          <button
-            className="alerta__login-cerrar"
-            onClick={() => setMensaje(false)}
-          >
-            X
-          </button>
+          <button className="alerta__login-cerrar" onClick={() => setMensaje(false)}>X</button>
         </div>
       )}
 
@@ -158,8 +121,7 @@ export const LeerCoches = () => {
               const reparacionesPendientes = reparaciones.filter(
                 (r) => r.estado !== "Finalizado"
               );
-              const ultimaReparacion =
-                reparaciones[reparaciones.length - 1] || {};
+              const ultimaReparacion = reparaciones[reparaciones.length - 1] || {};
               const fechaInicio = formatearFecha(ultimaReparacion.fechaInicio);
               const fechaFin = formatearFecha(ultimaReparacion.fechaFin);
               const mecanico = ultimaReparacion.mecanico
@@ -178,51 +140,18 @@ export const LeerCoches = () => {
                     className="coche-imagen"
                   />
                   <div className="coche-info">
-                    <div>
-                      <strong>Cliente:</strong>{" "}
-                      {coche.usuario
-                        ? `${coche.usuario.nombre} ${coche.usuario.apellidos}`
-                        : "Desconocido"}
-                    </div>
-                    <div>
-                      <strong>Matrícula:</strong>{" "}
-                      {coche.Matricula || "No registrada"}
-                    </div>
-                    <div>
-                      <strong>Total reparaciones:</strong> {reparaciones.length}
-                    </div>
-                    <div>
-                      <strong>Pendientes:</strong>{" "}
-                      {reparacionesPendientes.length}
-                    </div>
-                    <div>
-                      <strong>Fecha entrada:</strong> {fechaInicio}
-                    </div>
-                    <div>
-                      <strong>Fecha entrega:</strong> {fechaFin}
-                    </div>
-                    <div>
-                      <strong>Mecánico:</strong> {mecanico}
-                    </div>
+                    <div><strong>Cliente:</strong> {`${coche.usuario.nombre} ${coche.usuario.apellidos}`}</div>
+                    <div><strong>Matrícula:</strong> {coche.Matricula}</div>
+                    <div><strong>Total reparaciones:</strong> {reparaciones.length}</div>
+                    <div><strong>Pendientes:</strong> {reparacionesPendientes.length}</div>
+                    <div><strong>Fecha entrada:</strong> {fechaInicio}</div>
+                    <div><strong>Fecha entrega:</strong> {fechaFin}</div>
+                    <div><strong>Mecánico:</strong> {mecanico}</div>
                     <div className="coche-botones">
                       {reparacionesPendientes.length === 0 ? (
-                        <button
-                          className="devuelto"
-                          onClick={() => marcarComoDevuelto(coche.id)}
-                        >
-                          Devolver
-                        </button>
+                        <button className="devuelto" onClick={() => marcarComoDevuelto(coche.id)}>Devolver</button>
                       ) : (
-                        <button
-                          className="reparar"
-                          onClick={() =>
-                            navigate(
-                              `/employees/crud/coches/${coche.id}/detalle`
-                            )
-                          }
-                        >
-                          Reparar
-                        </button>
+                        <button className="reparar" onClick={() => navigate(`/employees/crud/coches/${coche.id}/detalle`)}>Reparar</button>
                       )}
                     </div>
                   </div>

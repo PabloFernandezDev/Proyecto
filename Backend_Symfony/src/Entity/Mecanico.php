@@ -15,14 +15,14 @@ class Mecanico
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['taller:read'])]
+    #[Groups(['taller:read', 'mecanico:read'])]
 
     private ?int $id = null;
 
 
     #[ORM\ManyToOne(inversedBy: 'mecanicos')]
     #[MaxDepth(1)]
-    #[Groups(['mecanico:read', 'taller:read'])]
+    #[Groups(['taller:read', 'mecanico:read'])]
 
     private ?Administrador $administrador = null;
 

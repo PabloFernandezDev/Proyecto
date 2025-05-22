@@ -15,7 +15,7 @@ class Reparaciones
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['coches:read'])]
+    #[Groups(['coches:read', 'mecanico:read'])]
 
     private ?int $id = null;
 

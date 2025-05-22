@@ -15,6 +15,7 @@ class Administrador
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['mecanico:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'administradors', cascade: ['persist'])]

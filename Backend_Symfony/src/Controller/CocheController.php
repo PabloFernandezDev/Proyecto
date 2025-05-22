@@ -106,8 +106,8 @@ final class CocheController extends AbstractController
         return new JsonResponse(['detail' => 'Coche eliminado correctamente'], 200);
     }
 
-    #[Route('/admin/{id}/coches', name: 'admin_mecanicos', methods: ['GET'])]
-    public function mecanicosPorAdmin(
+    #[Route('/admin/{id}/coches', name: 'admin_reparaciones', methods: ['GET'])]
+    public function reparacionesPorAdmin(
         int $id,
         AdministradorRepository $adminRepo,
         SerializerInterface $serializer
@@ -120,17 +120,26 @@ final class CocheController extends AbstractController
 
         $mecanicos = $admin->getMecanicos();
 
+        $todasReparaciones = [];
+
+        foreach ($mecanicos as $mecanico) {
+            foreach ($mecanico->getReparaciones() as $reparacion) {
+                $reparacion->getMecanico(); 
+                $todasReparaciones[] = $reparacion;
+            }
+        }
+
 
         $context = [
             'circular_reference_handler' => fn($object, string $format, array $context) => $object->getId(),
             'groups' => ['mecanico:read'],
-            'enable_max_depth' => true
+            'enable_max_depth' => true,
         ];
 
-
-        $json = $serializer->serialize($mecanicos, 'json', $context);
+        $json = $serializer->serialize($todasReparaciones, 'json', $context);
         return new JsonResponse($json, 200, [], true);
     }
+
 
 
 
@@ -173,7 +182,7 @@ final class CocheController extends AbstractController
 
         if ($usuario) {
             foreach ($usuario->getCitas() as $cita) {
-                    $em->remove($cita);
+                $em->remove($cita);
             }
         }
 
