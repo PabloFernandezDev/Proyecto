@@ -37,7 +37,7 @@ export const FormCita = () => {
   useEffect(() => {
     const obtenerProvincias = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/provincias");
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/provincias`);
         if (!response.ok) throw new Error("Error al obtener las provincias");
         const data = await response.json();
         setProvincias(data);
@@ -67,7 +67,7 @@ export const FormCita = () => {
     const userId = localStorage.getItem("user_id");
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/citas", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/citas`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ provincia, fecha, hora, motivo, userId }),
@@ -83,7 +83,7 @@ export const FormCita = () => {
           direccion = provinciaSeleccionada.tallers[0].direccion;
         }
 
-        await fetch("http://127.0.0.1:8000/mail/cita", {
+        await fetch(`${import.meta.env.VITE_API_URL}/mail/cita`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ provincia, fecha, hora, userId, direccion }),

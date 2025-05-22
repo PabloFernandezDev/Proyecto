@@ -38,7 +38,7 @@ export const MapaTalleres = () => {
       { enableHighAccuracy: true }
     );
 
-    fetch('http://127.0.0.1:8000/talleres')
+    fetch(`${import.meta.env.VITE_API_URL}/talleres`)
       .then(res => res.json())
       .then(data => setTalleres(data))
       .catch(err => console.error('Error al cargar talleres:', err));

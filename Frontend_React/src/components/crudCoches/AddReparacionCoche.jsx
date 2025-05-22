@@ -67,7 +67,7 @@ export const AddReparacionCoche = () => {
         setLoading(true);
 
         const resMecanicos = await fetch(
-          `http://127.0.0.1:8000/taller/${idTaller}/mecanicos`
+          `${import.meta.env.VITE_API_URL}/taller/${idTaller}/mecanicos`
         );
 
         if (!resMecanicos.ok) {
@@ -98,7 +98,7 @@ export const AddReparacionCoche = () => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/reparaciones", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/reparaciones`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -113,7 +113,7 @@ export const AddReparacionCoche = () => {
 
       if (response.ok && citaId) {
         const actualizarCita = await fetch(
-          `http://127.0.0.1:8000/cita/${citaId}`,
+          `${import.meta.env.VITE_API_URL}/cita/${citaId}`,
           {
             method: "PATCH",
             headers: {
@@ -157,7 +157,7 @@ export const AddReparacionCoche = () => {
     const admin = JSON.parse(localStorage.getItem("Admin"));
     const direccion =
       admin?.taller?.nombre;
-    await fetch("http://127.0.0.1:8000/mail/cita/recoger", {
+    await fetch(`${import.meta.env.VITE_API_URL}/mail/cita/recoger`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

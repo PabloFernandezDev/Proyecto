@@ -13,7 +13,7 @@ export const FacturaDetalle = () => {
   useEffect(() => {
     const fetchFactura = async () => {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/factura/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/factura/${id}`);
         if (!res.ok) throw new Error("Error al cargar la factura");
         const data = await res.json();
         setFactura(data);

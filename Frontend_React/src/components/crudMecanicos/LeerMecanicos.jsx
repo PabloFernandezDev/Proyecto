@@ -14,7 +14,7 @@ export const LeerMecanicos = () => {
 
     if (!adminId) return;
 
-    fetch(`http://127.0.0.1:8000/admin/${adminId}/mecanicos`)
+    fetch(`${import.meta.env.VITE_API_URL}/admin/${adminId}/mecanicos`)
       .then((res) => {
         if (!res.ok) throw new Error("Error al obtener mecánicos");
         return res.json();

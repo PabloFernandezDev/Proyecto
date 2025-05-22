@@ -11,7 +11,7 @@ export const Facturas = () => {
   useEffect(() => {
     const obtenerFacturas = async () => {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/facturas/${userId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/facturas/${userId}`);
         if (!res.ok) throw new Error("Error al obtener facturas");
         const data = await res.json();
         setFacturas(data);

@@ -10,7 +10,7 @@ export const CocheDetails = () => {
 
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
-    fetch(`http://127.0.0.1:8000/user/${userId}/coche`)
+    fetch(`${import.meta.env.VITE_API_URL}/user/${userId}/coche`)
       .then((res) => res.json())
       .then((data) => setCoche(data))
       .catch((err) => console.error("Error cargando coche:", err));
@@ -18,7 +18,7 @@ export const CocheDetails = () => {
 
   const handleDelete = () => {
     if (window.confirm("¿Seguro que quieres eliminar este coche?")) {
-      fetch(`http://127.0.0.1:8000/coche/${coche.id}`, {
+      fetch(`${import.meta.env.VITE_API_URL}/coche/${coche.id}`, {
         method: "DELETE",
       })
         .then(() => {

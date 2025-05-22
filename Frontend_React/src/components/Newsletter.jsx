@@ -11,7 +11,7 @@ export const Newsletter = () => {
     setMensajeError("");
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/enviar/gmail/newsletter", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/enviar/gmail/newsletter`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

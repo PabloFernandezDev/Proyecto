@@ -37,7 +37,7 @@ export const DashBoard = () => {
     let eventSource = null;
 
     if (userId) {
-      fetch(`http://127.0.0.1:8000/user/${userId}/coche`)
+      fetch(`${import.meta.env.VITE_API_URL}/user/${userId}/coche`)
         .then((res) => {
           if (!res.ok) throw new Error("Sin coche");
           return res.json();

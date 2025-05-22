@@ -14,7 +14,7 @@ export const DetalleCoche = () => {
     const obtenerCoche = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/user/coche/${id}/reparaciones`
+          `${import.meta.env.VITE_API_URL}/user/coche/${id}/reparaciones`
         );
         if (!response.ok) throw new Error("Error al obtener datos del coche");
         const data = await response.json();
@@ -33,7 +33,7 @@ export const DetalleCoche = () => {
 
   const actualizarEstado = async (id, nuevoEstado) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/reparacion/${id}/estado`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/reparacion/${id}/estado`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export const DetalleCoche = () => {
 
     try {
       const facturaRes = await fetch(
-        `http://127.0.0.1:8000/factura/generar/${coche.usuario.id}`,
+        `${import.meta.env.VITE_API_URL}/factura/generar/${coche.usuario.id}`,
         {
           method: "POST",
         }
@@ -82,7 +82,7 @@ export const DetalleCoche = () => {
         console.error("Error al generar la factura:", data.error);
       }
 
-      const res = await fetch("http://127.0.0.1:8000/notificar/recogida", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/notificar/recogida`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

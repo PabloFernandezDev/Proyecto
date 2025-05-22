@@ -17,7 +17,7 @@ export const Perfil = () => {
   useEffect(() => {
     const userId = localStorage.getItem('user_id');
     if (userId) {
-      fetch(`http://127.0.0.1:8000/user/${userId}`)
+      fetch(`${import.meta.env.VITE_API_URL}/user/${userId}`)
         .then(res => res.json())
         .then(data => {
           setUsuario(data);
@@ -35,7 +35,7 @@ export const Perfil = () => {
   const handleDeleteAccount = () => {
     if (window.confirm("¿Estás seguro de que quieres eliminar tu cuenta? Esta acción es irreversible.")) {
       const userId = localStorage.getItem('user_id');
-      fetch(`http://127.0.0.1:8000/user/${userId}`, {
+      fetch(`${import.meta.env.VITE_API_URL}/user/${userId}`, {
         method: 'DELETE',
       })
         .then(() => {
@@ -49,7 +49,7 @@ export const Perfil = () => {
 
   const guardarCambios = () => {
     const userId = localStorage.getItem('user_id');
-    fetch(`http://127.0.0.1:8000/user/${userId}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/user/${userId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -72,7 +72,7 @@ export const Perfil = () => {
 
     console.log(confirmarPassword)
     const userId = localStorage.getItem('user_id');
-    fetch(`http://127.0.0.1:8000/user/${userId}/password`, {
+    fetch(`${import.meta.env.VITE_API_URL}/user/${userId}/password`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: nuevaPassword })

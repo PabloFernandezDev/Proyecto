@@ -17,7 +17,7 @@ export const LeerCoches = () => {
   const obtenerReparaciones = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://127.0.0.1:8000/admin/${admin.idAdmin}/coches`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/${admin.idAdmin}/coches`);
       if (!response.ok) throw new Error("Error al obtener las reparaciones");
       const data = await response.json();
       setReparaciones(data);

@@ -20,7 +20,7 @@ export const FormCoche = () => {
   const [errorAño, setErrorAño] = useState("");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/marca")
+    fetch(`${import.meta.env.VITE_API_URL}/marca`)
       .then((res) => res.json())
       .then((data) => setMarcas(data))
       .catch((err) => console.error("Error cargando marcas:", err));
@@ -28,7 +28,7 @@ export const FormCoche = () => {
 
   useEffect(() => {
     if (formData.marca) {
-      fetch(`http://127.0.0.1:8000/marca/${formData.marca}/modelos`)
+      fetch(`${import.meta.env.VITE_API_URL}/marca/${formData.marca}/modelos`)
         .then((res) => res.json())
         .then((data) => setModelos(data))
         .catch((err) => console.error("Error cargando modelos:", err));

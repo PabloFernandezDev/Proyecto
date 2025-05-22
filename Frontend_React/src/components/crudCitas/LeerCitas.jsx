@@ -28,7 +28,7 @@ export const LeerCitas = () => {
       try {
         setLoading(true);
         const res = await fetch(
-          `http://127.0.0.1:8000/admin/${admin.idAdmin}/taller/${admin.provincia.id}/citas`
+          `${import.meta.env.VITE_API_URL}/admin/${admin.idAdmin}/taller/${admin.provincia.id}/citas`
         );
         if (!res.ok) throw new Error("Error al obtener las citas");
         const data = await res.json();
@@ -73,7 +73,7 @@ export const LeerCitas = () => {
     if (!window.confirm("¿Estás seguro de que deseas borrar esta cita?")) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/cita/${id}/delete`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/cita/${id}/delete`, {
         method: "DELETE",
       });
 
