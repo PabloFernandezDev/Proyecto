@@ -25,6 +25,7 @@ import { AddReparacionCoche } from "../src/components/crudCoches/AddReparacionCo
 import { FormCita } from "../src/components/FormCita";
 import { LeerCitas } from "../src/components/crudCitas/LeerCitas";
 import { DetalleCita } from "../src/components/crudCitas/DetalleCita";
+import { LeerMecanicos } from "../src/components/crudMecanicos/LeerMecanicos";
 
 const RouterPrincipal = () => {
   return (
@@ -40,32 +41,22 @@ const RouterPrincipal = () => {
       <Route path="/home/coche/details" element={<CocheDetails />}></Route>
       <Route path="/home/addcita" element={<FormCita />}></Route>
       <Route path="/home/perfil" element={<Perfil />}></Route>
-      <Route path="/home/facturas" element={<Facturas/>}></Route>
-      <Route path="/home/factura/:id/detalle" element={<FacturaDetalle/>}></Route>
+      <Route path="/home/facturas" element={<Facturas />}></Route>
+      <Route path="/home/factura/:id/detalle" element={<FacturaDetalle />}></Route>
 
       <Route path="/employees" element={<Empleados />}></Route>
       <Route path="/employees/admin" element={<LoginAdmin />}></Route>
       <Route path="/employees/admin/panel" element={<AdminPanel />}></Route>
       <Route path="/employees/mecanic" element={<LoginMecanico />}></Route>
       <Route
-        path="/employees/mecanic/panel"
-        element={<PanelMecanico />}
-      ></Route>
+        path="/employees/mecanic/panel" element={<PanelMecanico />} ></Route>
       <Route path="/employees/crud/users" element={<LeerUsers />}></Route>
+      <Route path="/employees/crud/mecanicos" element={<LeerMecanicos />}></Route>
       <Route path="/employees/crud/coches" element={<LeerCoches />}></Route>
-      <Route
-        path="/employees/crud/coches/addreparacion"
-        element={<AddReparacionCoche />}
-      ></Route>
-      <Route
-        path="/employees/crud/coches/:id/detalle"
-        element={<DetalleCoche />}
-      ></Route>
+      <Route path="/employees/crud/coches/addreparacion" element={<AddReparacionCoche />} ></Route>
+      <Route path="/employees/crud/coches/:id/detalle" element={<DetalleCoche />} ></Route>
       <Route path="/employees/crud/citas" element={<LeerCitas />}></Route>
-      <Route
-        path="/employees/crud/citas/:id/detalle"
-        element={<DetalleCita />}
-      ></Route>
+      <Route path="/employees/crud/citas/:id/detalle" element={<DetalleCita />} ></Route>
     </Routes>
   );
 };

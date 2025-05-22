@@ -95,8 +95,8 @@ export const DashBoard = () => {
         mensajeReparadoMostradoRef.current = true;
 
         setTimeout(() => {
-          localStorage.removeItem("CocheReparado"); // ← elimina la clave
-          window.location.reload(); // ← recarga una vez
+          localStorage.removeItem("CocheReparado");
+          window.location.reload(); 
         }, 3000);
       }
     };

@@ -82,7 +82,6 @@ export const DetalleCoche = () => {
         console.error("Error al generar la factura:", data.error);
       }
 
-      // 2. Enviar email de recogida
       const res = await fetch("http://127.0.0.1:8000/notificar/recogida", {
         method: "POST",
         headers: {

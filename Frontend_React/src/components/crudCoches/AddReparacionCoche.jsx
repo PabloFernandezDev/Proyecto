@@ -176,7 +176,6 @@ export const AddReparacionCoche = () => {
           <p>Cargando datos del taller...</p>
         ) : (
           <form onSubmit={handleSubmit}>
-            {/* Usuario */}
             {usuarioInicial?.id && (
               <>
                 <label className="reparaciones-label">
@@ -200,7 +199,6 @@ export const AddReparacionCoche = () => {
               </>
             )}
 
-            {/* Coche */}
             <label className="reparaciones-label">
               Matrícula del coche:
               {cocheInicial ? (
@@ -226,7 +224,6 @@ export const AddReparacionCoche = () => {
               )}
             </label>
 
-            {/* Mecánico */}
             <label>
               Mecánico:
               <select
@@ -243,7 +240,6 @@ export const AddReparacionCoche = () => {
               </select>
             </label>
 
-            {/* Fecha de entrega */}
             <label>
               Fecha estimada de entrega:
               <input
@@ -255,7 +251,6 @@ export const AddReparacionCoche = () => {
               />
             </label>
 
-            {/* Hora estimada de entrega */}
             <label>
               Hora estimada de entrega:
               <select
@@ -272,7 +267,6 @@ export const AddReparacionCoche = () => {
               </select>
             </label>
 
-            {/* Reparaciones */}
             <div className="reparaciones-lista">
               <label className="reparaciones-label">
                 Reparaciones a realizar:
@@ -305,7 +299,6 @@ export const AddReparacionCoche = () => {
               ))}
             </div>
 
-            {/* Botones */}
             <div className="botones-formulario">
               <button
                 type="button"

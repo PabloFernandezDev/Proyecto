@@ -2438,3 +2438,88 @@ button.reparar:disabled {
   margin-bottom: 15px;
   text-align: center;
 }
+
+.listado-mecanicos__container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.buscador {
+  padding: 10px 14px;
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.buscador:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.lista-mecanicos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mecanico-item {
+  background-color: #ffffff;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mecanico-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.mecanico-item p {
+  margin: 4px 0;
+  font-size: 15px;
+  color: #333;
+}
+
+.mecanico-item p strong {
+  font-size: 16px;
+  color: #111;
+}
+
+.acciones-superiores {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  align-content: center;
+  text-align: center;
+}
+
+.boton--añadir {
+  background-color: #007bff;
+  color: white;
+}
+
+.boton--añadir:hover {
+  background-color: #0056b3;
+}
+
+.boton--eliminar {
+  background-color: #dc3545;
+  color: white;
+  margin-top: 10px;
+}
+
+.boton--eliminar:hover {
+  background-color: #a71d2a;
+}

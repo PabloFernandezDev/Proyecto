@@ -65,7 +65,6 @@ export const Register = () => {
       console.log(data)
       setErrores({});
 
-      // Enviar email de confirmación
       try {
         await fetch(
           `http://127.0.0.1:8000/enviar-confirmacion/${data.usuario.id}`,
@@ -75,7 +74,6 @@ export const Register = () => {
         );
       } catch (error) {
         console.error("Error al enviar el email de confirmación:", error);
-        // Puedes mostrar un aviso si lo deseas
       }
 
       navigate("/login", {

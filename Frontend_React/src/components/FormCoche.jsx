@@ -73,7 +73,7 @@ export const FormCoche = () => {
       return;
     }
 
-    setErrorMatricula(""); // Limpia el error si pasa la validación
+    setErrorMatricula(""); 
     const data = new FormData();
     const userId = localStorage.getItem("user_id");
 

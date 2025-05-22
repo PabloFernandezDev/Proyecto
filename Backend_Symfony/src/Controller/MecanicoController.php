@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\AdministradorRepository;
 use App\Repository\MecanicoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -55,5 +56,29 @@ final class MecanicoController extends AbstractController
         ], 200);
     }
 
-    
+    #[Route('/admin/{id}/mecanicos', name: 'admin_mecanicos', methods: ['GET'])]
+    public function getMecanicosPorAdmin(
+        int $id,
+        AdministradorRepository $administradorRepository,
+        MecanicoRepository $mecanicoRepository
+    ): JsonResponse {
+        $admin = $administradorRepository->find($id);
+
+        if (!$admin) {
+            return new JsonResponse(['error' => 'Administrador no encontrado'], 404);
+        }
+
+        $mecanicos = $mecanicoRepository->findBy(['administrador' => $admin]);
+
+        $datos = array_map(function ($mec) {
+            return [
+                'id' => $mec->getId(),
+                'Nombre' => $mec->getNombre(),
+                'Apellidos' => $mec->getApellidos(),
+                'numEmp' => $mec->getNumEmp(),
+            ];
+        }, $mecanicos);
+
+        return new JsonResponse($datos, 200);
+    }
 }
