@@ -32,7 +32,9 @@ when@test:
         dbal:
             # "TEST_TOKEN" is typically set by ParaTest
             dbname_suffix: '_test%env(default::TEST_TOKEN)%'
-
+            schema_filter: ~^(?!_ignored_table)~  # si quieres ignorar alguna
+            mapping_types:
+              enum: string  # por si tienes tipos personalizados
 when@prod:
     doctrine:
         orm:
