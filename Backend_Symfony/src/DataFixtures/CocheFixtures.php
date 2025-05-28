@@ -45,6 +45,7 @@ class CocheFixtures extends Fixture implements DependentFixtureInterface
             $coche->setModelo($modelo);
             $coche->setMatricula($matriculas[$key]);
             $coche->setImagen('fondo-681dc5730d0fc.png');
+            $coche->setAño(2020 + $key);
             $coche->setTaller(null);
 
             $manager->persist($coche);

@@ -21,7 +21,7 @@ class Coche
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'coches')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
     private ?Usuario $usuario = null;
 
@@ -35,7 +35,7 @@ class Coche
     private ?Modelo $modelo = null;
 
     #[ORM\ManyToOne(targetEntity: Taller::class)]
-    #[ORM\JoinColumn(nullable: true)] 
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
     private ?Taller $taller = null;
 
@@ -57,8 +57,9 @@ class Coche
     /**
      * @var Collection<int, Reparaciones>
      */
-    #[ORM\OneToMany(targetEntity: Reparaciones::class, mappedBy: 'coche')]
+    #[ORM\OneToMany(mappedBy: 'coche', targetEntity: Reparaciones::class, cascade: ['remove'], orphanRemoval: true)]
     #[Groups(['coches:read'])]
+
     private Collection $reparaciones;
 
     #[ORM\Column(length: 255, unique: true)]

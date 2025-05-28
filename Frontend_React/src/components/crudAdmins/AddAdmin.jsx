@@ -2,31 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HeaderAdmin } from "../HeaderAdmin";
 
-export const AddMecanico = () => {
+export const AddAdmin = () => {
   const [nombre, setNombre] = useState("");
   const [apellidos, setApellidos] = useState("");
   const [numEmp, setNumEmp] = useState("");
   const [password, setPassword] = useState("");
-  const [adminId, setAdminId] = useState("");
+  const [provinciaSeleccionada, setProvinciaSeleccionada] = useState("");
+  const [tallerSeleccionado, setTallerSeleccionado] = useState("");
   const [admins, setAdmins] = useState([]);
   const [provincias, setProvincias] = useState([]);
-  const [provinciaSeleccionada, setProvinciaSeleccionada] = useState("");
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
-  // Cargar provincias
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/provincias`)
-      .then((res) => res.json())
-      .then((data) => setProvincias(data))
-      .catch((err) => {
-        console.error("Error al cargar provincias:", err);
-        alert("No se pudieron cargar las provincias.");
-      });
-  }, []);
-
-  // Cargar administradores
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/admins`)
       .then((res) => res.json())
@@ -37,24 +25,58 @@ export const AddMecanico = () => {
       });
   }, []);
 
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/provincias`)
+      .then((res) => res.json())
+      .then((data) => setProvincias(data))
+      .catch((err) => {
+        console.error("Error al cargar provincias:", err);
+        alert("No se pudieron cargar las provincias.");
+      });
+  }, []);
+
+  const provinciasUnicas = [
+    ...new Set(
+      admins.map((admin) => admin.taller?.provincia?.nombre).filter(Boolean)
+    ),
+  ];
+
+  const talleresFiltrados = [
+    ...new Map(
+      admins
+        .filter(
+          (admin) =>
+            admin.rol === "ADMIN" &&
+            admin.taller?.provincia?.nombre === provinciaSeleccionada
+        )
+        .map((admin) => [
+          admin.taller?.id,
+          {
+            id: admin.taller?.id,
+            direccion: admin.taller?.direccion,
+          },
+        ])
+    ).values(),
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!nombre || !apellidos || !numEmp || !password || !adminId) {
+    if (!nombre || !apellidos || !numEmp || !password || !tallerSeleccionado) {
       setError("Todos los campos son obligatorios.");
       return;
     }
 
     const body = {
-      nombre,
-      apellidos,
-      numEmp: parseInt(numEmp),
+      Nombre: nombre,
+      Apellidos: apellidos,
+      NumEmp: parseInt(numEmp),
       password,
-      adminId: parseInt(adminId),
+      tallerId: parseInt(tallerSeleccionado),
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/mecanicos`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/admin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -65,24 +87,18 @@ export const AddMecanico = () => {
         throw new Error(data.detail || "Error desconocido");
       }
 
-      navigate("/employees/crud/mecanicos");
+      navigate("/employees/crud/admins");
     } catch (err) {
-      console.error("Error al crear mecánico:", err);
+      console.error("Error al crear administrador:", err);
       setError(err.message);
     }
   };
-
-  const adminsFiltrados = admins.filter(
-    (admin) =>
-      admin.rol === "ADMIN" &&
-      admin.taller?.provincia?.nombre === provinciaSeleccionada
-  );
 
   return (
     <div>
       <HeaderAdmin />
       <div className="form-container">
-        <h2>Añadir Mecánico</h2>
+        <h2>Añadir Administrador</h2>
         <form onSubmit={handleSubmit} className="formulario">
           {error && <p className="mensaje-error">{error}</p>}
 
@@ -115,39 +131,39 @@ export const AddMecanico = () => {
             value={provinciaSeleccionada}
             onChange={(e) => {
               setProvinciaSeleccionada(e.target.value);
-              setAdminId("");
+              setTallerSeleccionado("");
             }}
           >
             <option value="">-- Selecciona una provincia --</option>
-            {provincias.map((prov) => (
-              <option key={prov.id} value={prov.nombre}>
-                {prov.nombre}
+            {provinciasUnicas.map((prov) => (
+              <option key={prov} value={prov}>
+                {prov}
               </option>
             ))}
           </select>
 
-          {provinciaSeleccionada && adminsFiltrados.length > 0 && (
+          {provinciaSeleccionada && talleresFiltrados.length > 0 && (
             <select
-              value={adminId}
-              onChange={(e) => setAdminId(e.target.value)}
+              value={tallerSeleccionado}
+              onChange={(e) => setTallerSeleccionado(e.target.value)}
             >
-              <option value="">-- Selecciona un administrador --</option>
-              {adminsFiltrados.map((admin) => (
-                <option key={admin.id} value={admin.id}>
-                  {admin.Nombre} {admin.Apellidos}
+              <option value="">-- Selecciona dirección del taller --</option>
+              {talleresFiltrados.map((taller, index) => (
+                <option key={index} value={taller.id}>
+                  {taller.direccion}
                 </option>
               ))}
             </select>
           )}
 
-          {provinciaSeleccionada && adminsFiltrados.length === 0 && (
+          {provinciaSeleccionada && talleresFiltrados.length === 0 && (
             <p className="mensaje-error">
-              No hay administradores disponibles en esta provincia.
+              No hay talleres disponibles en esta provincia.
             </p>
           )}
 
           <button type="submit" className="boton boton--añadir">
-            Guardar Mecánico
+            Guardar Administrador
           </button>
         </form>
       </div>

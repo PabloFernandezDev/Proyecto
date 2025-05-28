@@ -91,13 +91,26 @@ final class CocheController extends AbstractController
         return new JsonResponse($json, 200, [], true);
     }
 
-    #[Route('/coche/{id}', name: 'coche_delete', methods: ['DELETE'])]
+    #[Route('/coches', name: 'coches', methods: ['GET'])]
+    public function getCars(CocheRepository $cocheRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $coche = $cocheRepository->findAll();
+
+        $json = $serializer->serialize($coche, 'json', ['groups' => ['coche:read']]);
+        return new JsonResponse($json, 200, [], true);
+    }
+
+    #[Route('/coche/{id}/delete', name: 'coche_delete', methods: ['DELETE'])]
     public function deleteCoche(int $id, CocheRepository $cocheRepository, EntityManagerInterface $em): JsonResponse
     {
         $coche = $cocheRepository->find($id);
 
         if (!$coche) {
             return new JsonResponse(['detail' => 'Coche no encontrado'], 404);
+        }
+
+        if (!$coche->getReparaciones()->isEmpty()) {
+            return new JsonResponse(['detail' => 'No se puede eliminar el coche porque tiene reparaciones asociadas'], 400);
         }
 
         $em->remove($coche);
@@ -124,7 +137,7 @@ final class CocheController extends AbstractController
 
         foreach ($mecanicos as $mecanico) {
             foreach ($mecanico->getReparaciones() as $reparacion) {
-                $reparacion->getMecanico(); 
+                $reparacion->getMecanico();
                 $todasReparaciones[] = $reparacion;
             }
         }

@@ -18,7 +18,7 @@ class Modelo
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['modelo:read', 'coche:read', 'cita:read'])]
+    #[Groups(['modelo:read', 'coche:read', 'cita:read', 'marca:read'])]
     
     private ?string $nombre = null;
 

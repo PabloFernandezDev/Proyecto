@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Mecanico;
 use App\Repository\AdministradorRepository;
 use App\Repository\MecanicoRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,15 +34,57 @@ final class MecanicoController extends AbstractController
         return new JsonResponse($jsonMecanicos, 200, [], true);
     }
 
+    #[Route('/mecanicos', name: 'crear_mecanico', methods: ['POST'])]
+    public function crearMecanico(
+        Request $request,
+        EntityManagerInterface $em,
+        AdministradorRepository $adminRepo,
+        MecanicoRepository $mecanicoRepository
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        if (
+            !isset($data['nombre'], $data['apellidos'], $data['numEmp'], $data['password'], $data['adminId'])
+        ) {
+            return new JsonResponse(['detail' => 'Faltan campos obligatorios.'], 400);
+        }
+
+        $existe = $mecanicoRepository->findOneBy(['NumEmp' => $data['numEmp']]);
+        if ($existe) {
+            return new JsonResponse(['detail' => 'Ya existe un mecánico con ese número de empleado.'], 409);
+        }
+
+        $admin = $adminRepo->find($data['adminId']);
+        if (!$admin) {
+            return new JsonResponse(['detail' => 'Administrador no encontrado.'], 404);
+        }
+
+        $mecanico = new Mecanico();
+        $mecanico->setNombre($data['nombre']);
+        $mecanico->setApellidos($data['apellidos']);
+        $mecanico->setNumEmp($data['numEmp']);
+        $mecanico->setAdministrador($admin);
+
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+        $mecanico->setPassword($hashedPassword);
+
+        $em->persist($mecanico);
+        $em->flush();
+
+        return new JsonResponse(['detail' => 'Mecánico creado correctamente'], 201);
+    }
+
+
+
     #[Route('/mecanico/login', name: 'login_mecanico', methods: ['POST'])]
     public function login(Request $request, MecanicoRepository $repository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
-        $numEmp =  $data['numEmp'] ?? null;
+        $numEmp = $data['numEmp'] ?? null;
         $password = $data['password'] ?? null;
 
-        if (!$numEmp || !$password ) {
+        if (!$numEmp || !$password) {
             return $this->json(['detail' => 'Parámetros inválidos'], 400);
         }
 
@@ -80,5 +124,29 @@ final class MecanicoController extends AbstractController
         }, $mecanicos);
 
         return new JsonResponse($datos, 200);
+    }
+
+    #[Route('/mecanico/{id}/delete', name: 'mecanico_delete', methods: ['DELETE'])]
+    public function deleteUser(
+        int $id,
+        MecanicoRepository $mecanicoRepository,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $mecanico = $mecanicoRepository->find($id);
+
+        if (!$mecanico) {
+            return new JsonResponse(['detail' => 'mecanico no encontrado'], 404);
+        }
+
+        foreach ($mecanico->getReparaciones() as $coche) {
+            if (!$mecanico->getReparaciones()->isEmpty()) {
+                return new JsonResponse(['detail' => 'No se puede eliminar el mecanico porque tiene reparaciones asociadas'], 400);
+            }
+        }
+
+        $em->remove($mecanico);
+        $em->flush();
+
+        return new JsonResponse(['detail' => 'Mecanico eliminado correctamente'], 200);
     }
 }

@@ -30,6 +30,7 @@ class Reparaciones
 
 
     #[ORM\ManyToOne(inversedBy: 'reparaciones')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[MaxDepth(1)]
     #[Groups(['mecanico:read'])]
     private ?Coche $coche = null;

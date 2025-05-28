@@ -43,6 +43,7 @@ class Factura
     private ?string $observaciones = null;
 
     #[ORM\ManyToOne(inversedBy: 'facturas')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[Groups(['factura:read'])]
     private ?Usuario $usuario = null;
 

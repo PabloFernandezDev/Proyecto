@@ -19,11 +19,6 @@ use Symfony\Component\Mime\Email;
 #[Route('/')]
 final class AplicationController extends AbstractController
 {
- #[Route('/', name: 'api_home')]
-    public function index(): Response
-    {
-        return new Response('API CarCareNow está funcionando');
-    }
 
     #[Route('/login', name: 'api_login', methods: ['POST'])]
     public function login(Request $request, UsuarioRepository $userRepository): JsonResponse

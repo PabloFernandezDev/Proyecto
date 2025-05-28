@@ -26,6 +26,7 @@ class Marca
      * @var Collection<int, Modelo>
      */
     #[ORM\OneToMany(targetEntity: Modelo::class, mappedBy: 'marca')]
+    #[Groups(['marca:read'])]
     private Collection $modelos;
 
     /**

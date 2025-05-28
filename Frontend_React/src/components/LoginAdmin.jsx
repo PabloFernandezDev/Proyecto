@@ -32,7 +32,8 @@ export const LoginAdmin = () => {
             idAdmin: data.id,
             numAdmin: data.numEmp,
             provincia: data.provincia,
-            taller: data.taller
+            taller: data.taller,
+            rol: data.rol
           })
         );
       } else {

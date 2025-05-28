@@ -112,4 +112,39 @@ final class FacturaController extends AbstractController
         return new JsonResponse(json_decode($json), 200);
     }
 
+    #[Route('/factura/{id}/delete', name: 'factura_delete', methods: ['DELETE'])]
+    public function factura_delete(
+        int $id,
+        FacturaRepository $facturaRepository,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $factura = $facturaRepository->find($id);
+
+        if (!$factura) {
+            return new JsonResponse(['error' => 'Factura no encontrada'], 404);
+        }
+
+        $em->remove($factura);
+        $em->flush();
+
+        return new JsonResponse(['mensaje' => 'Factura eliminada correctamente'], 200);
+    }
+
+
+    #[Route('/facturas', name: 'facturas', methods: ['GET'])]
+    public function facturas(
+        FacturaRepository $facturaRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $factura = $facturaRepository->findAll();
+
+        if (!$factura) {
+            return new JsonResponse(['error' => 'Factura no encontrada'], 404);
+        }
+
+        $json = $serializer->serialize($factura, 'json', ['groups' => 'factura:read']);
+
+        return new JsonResponse(json_decode($json), 200);
+    }
+
 }

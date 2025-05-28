@@ -15,11 +15,12 @@ class Administrador
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['mecanico:read'])]
+    #[Groups(['mecanico:read', 'admins:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'administradors', cascade: ['persist'])]
-    #[Groups(['mecanico:read'])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['mecanico:read', 'admins:read'])]
 
     private ?Taller $taller = null;
 
@@ -32,18 +33,24 @@ class Administrador
     private Collection $mecanicos;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['mecanico:read', 'admins:read'])]
     private ?string $Nombre = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['mecanico:read', 'admins:read'])]
     private ?string $Apellidos = null;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(['mecanico:read'])]
+    #[Groups(['mecanico:read', 'admins:read'])]
 
     private ?int $NumEmp = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['admins:read'])]
+    private ?string $rol = null;
 
     public function __construct()
     {
@@ -141,6 +148,18 @@ class Administrador
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getRol(): ?string
+    {
+        return $this->rol;
+    }
+
+    public function setRol(string $rol): static
+    {
+        $this->rol = $rol;
 
         return $this;
     }

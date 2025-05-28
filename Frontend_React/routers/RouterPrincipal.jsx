@@ -20,12 +20,18 @@ import { AdminPanel } from "../src/components/AdminPanel";
 import { PanelMecanico } from "../src/components/PanelMecanico";
 import { LeerUsers } from "../src/components/crudUsers/LeerUsers";
 import { LeerCoches } from "../src/components/crudCoches/LeerCoches";
+import { LeerCochesSuperAdmin } from "../src/components/crudCoches/LeerCochesSuperAdmin";
 import { DetalleCoche } from "../src/components/crudCoches/DetalleCoche";
 import { AddReparacionCoche } from "../src/components/crudCoches/AddReparacionCoche";
 import { FormCita } from "../src/components/FormCita";
 import { LeerCitas } from "../src/components/crudCitas/LeerCitas";
 import { DetalleCita } from "../src/components/crudCitas/DetalleCita";
 import { LeerMecanicos } from "../src/components/crudMecanicos/LeerMecanicos";
+import { AddMecanico } from "../src/components/crudMecanicos/AddMecanico";
+import { LeerCitasSuperAdmin } from "../src/components/crudCitas/LeerCitasSuperAdmin";
+import { LeerFacturas } from "../src/components/crudFacturas/LeerFacturas";
+import { LeerAdmins } from "../src/components/crudAdmins/LeerAdmins";
+import { AddAdmin } from "../src/components/crudAdmins/AddAdmin";
 
 const RouterPrincipal = () => {
   return (
@@ -47,16 +53,27 @@ const RouterPrincipal = () => {
       <Route path="/employees" element={<Empleados />}></Route>
       <Route path="/employees/admin" element={<LoginAdmin />}></Route>
       <Route path="/employees/admin/panel" element={<AdminPanel />}></Route>
-      <Route path="/employees/mecanic" element={<LoginMecanico />}></Route>
-      <Route
-        path="/employees/mecanic/panel" element={<PanelMecanico />} ></Route>
+
       <Route path="/employees/crud/users" element={<LeerUsers />}></Route>
+      
       <Route path="/employees/crud/mecanicos" element={<LeerMecanicos />}></Route>
-      <Route path="/employees/crud/coches" element={<LeerCoches />}></Route>
+      <Route path="/employees/crud/mecanicos/addMecanico" element={<AddMecanico />}></Route>
+
+      <Route path="/employees/crud/admins" element={<LeerAdmins />}></Route>
+      <Route path="/employees/crud/admins/addAdmin" element={<AddAdmin />}></Route>
+
+
+      <Route path="/employees/crud/reparaciones" element={<LeerCoches />}></Route>
+      <Route path="/employees/crud/coches" element={<LeerCochesSuperAdmin />}></Route>
       <Route path="/employees/crud/coches/addreparacion" element={<AddReparacionCoche />} ></Route>
       <Route path="/employees/crud/coches/:id/detalle" element={<DetalleCoche />} ></Route>
+
       <Route path="/employees/crud/citas" element={<LeerCitas />}></Route>
+      <Route path="/employees/crud/citas/all" element={<LeerCitasSuperAdmin />}></Route>
       <Route path="/employees/crud/citas/:id/detalle" element={<DetalleCita />} ></Route>
+
+      <Route path="/employees/crud/facturas" element={<LeerFacturas />}></Route>
+      <Route path="/employees/crud/facturas/:id/detalle" element={<FacturaDetalle />}></Route>
     </Routes>
   );
 };

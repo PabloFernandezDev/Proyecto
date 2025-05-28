@@ -18,6 +18,7 @@ class Cita
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'citas')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[Groups(['cita:read'])]
     private ?Usuario $usuario = null;
 

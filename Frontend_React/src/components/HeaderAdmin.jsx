@@ -5,7 +5,7 @@ export const HeaderAdmin = () => {
   const [admin, setAdmin] = useState(null);
   const [cargando, setCargando] = useState(true);
   const navigate = useNavigate();
-  console.log(admin)
+
   const handleLogout = () => {
     localStorage.removeItem("Admin");
     navigate("/employees");
@@ -52,7 +52,9 @@ export const HeaderAdmin = () => {
     <header className="admin-header">
       <span>Panel de Control</span>
       <span>Admin {admin.numAdmin}</span>
-      <span>Taller {admin.provincia.nombre}</span>
+      {admin.rol === "ADMIN" && (
+        <span>Taller {admin.provincia.nombre}</span>
+      )}
       <button className="boton auth-buttons__enlace" onClick={handleLogout}>
         Salir
       </button>

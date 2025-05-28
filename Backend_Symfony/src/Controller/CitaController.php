@@ -21,6 +21,21 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/')]
 final class CitaController extends AbstractController
 {
+    #[Route('/citas', name: 'citas_get', methods: ['GET'])]
+    public function getCitas(CitaRepository $citaRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $cita = $citaRepository->findAll();
+
+        $context = [
+            'groups' => ['cita:read'],
+            'circular_reference_handler' => fn($object) => $object->getId(),
+        ];
+
+        $json = $serializer->serialize($cita, 'json', $context);
+
+        return new JsonResponse($json, 200, [], true);
+    }
+
     #[Route('/citas', name: 'crear_cita', methods: ['POST'])]
     public function crearCita(
         Request $request,

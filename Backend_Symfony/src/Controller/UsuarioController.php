@@ -107,7 +107,7 @@ final class UsuarioController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $nuevaPassword = $data['password'] ?? null;
 
-        if (!$nuevaPassword ) {
+        if (!$nuevaPassword) {
             return new JsonResponse(['detail' => 'La contraseña debe tener al menos 6 caracteres'], 400);
         }
 
@@ -120,7 +120,7 @@ final class UsuarioController extends AbstractController
     }
 
 
-    #[Route('/user/{id}', name: 'user_delete', methods: ['DELETE'])]
+    #[Route('/user/{id}/delete', name: 'user_delete', methods: ['DELETE'])]
     public function deleteUser(
         int $id,
         UsuarioRepository $usuarioRepository,
@@ -132,10 +132,16 @@ final class UsuarioController extends AbstractController
             return new JsonResponse(['detail' => 'Usuario no encontrado'], 404);
         }
 
+        foreach ($usuario->getCoches() as $coche) {
+            if (!$coche->getReparaciones()->isEmpty()) {
+                return new JsonResponse(['detail' => 'No se puede eliminar el usuario porque tiene reparaciones asociadas'], 400);
+            }
+        }
+
         $em->remove($usuario);
         $em->flush();
 
         return new JsonResponse(['detail' => 'Usuario eliminado correctamente'], 200);
     }
-    
+
 }

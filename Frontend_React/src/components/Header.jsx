@@ -1,13 +1,10 @@
 import React from "react";
 import Icon from "../assets/Icon";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import "../style.css";
+import { NavLink, useNavigate} from "react-router-dom";
 import { FiUser } from "react-icons/fi";
-import { FaCar } from "react-icons/fa";
 
 export const Header = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const isLoggedIn = localStorage.getItem("user_id");
 
   const handleLogout = () => {
@@ -15,7 +12,6 @@ export const Header = () => {
     navigate("/");
   };
 
-  const inicioPath = location.pathname === "/home" ? "/home" : "/";
 
   return (
     <nav className="navbar">

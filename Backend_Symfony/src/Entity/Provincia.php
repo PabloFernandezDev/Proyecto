@@ -19,7 +19,7 @@ class Provincia
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['taller:read', 'mecanico:read', 'provincia:read'])]
+    #[Groups(['taller:read', 'mecanico:read', 'provincia:read', 'admins:read'])]
     private ?string $nombre = null;
 
     /**

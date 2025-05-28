@@ -7,10 +7,13 @@ export const Empleados = () => {
   return (
     <div className="login-empleados-background">
       <div className="login-empleados-card">
-        <h2>Iniciar sesión como empleado</h2>
+        <h2>Iniciar sesión Administrador</h2>
         <div className="botones-rol">
           <button onClick={() => navigate("/employees/admin")}>
-            Soy Administrador
+            Administrador
+          </button>
+          <button onClick={() => navigate("/employees/admin")}>
+            Super Administrador
           </button>
         </div>
       </div>

@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/')]
 final class MarcaController extends AbstractController
 {
-    #[Route('/marca', name: 'marca', methods: ['GET'])]
+    #[Route('/marcas', name: 'marcas', methods: ['GET'])]
     public function marca(MarcaRepository $marcaRepository, SerializerInterface $serializer): JsonResponse
     {
         $marcas = $marcaRepository->findAll();
