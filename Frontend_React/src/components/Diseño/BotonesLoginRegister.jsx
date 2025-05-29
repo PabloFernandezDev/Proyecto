@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Icon from '../assets/Icon';
+import Icon from '../../assets/Icon';
 
 export const BotonesLoginRegister = () => {
   const navigate = useNavigate();

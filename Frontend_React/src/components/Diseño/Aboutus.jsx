@@ -1,7 +1,7 @@
 import React from 'react';
-import { Header } from './Header';
+import { Header } from '../Diseño/Header';
 import { Footer } from './Footer';
-import yo from '../assets/images/yo.jpeg'
+import yo from '../../assets/images/yo.jpeg'
 
 export const Aboutus = () => {
   return (

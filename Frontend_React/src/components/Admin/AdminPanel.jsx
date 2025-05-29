@@ -25,30 +25,42 @@ export const AdminPanel = () => {
       <div className="admin-panel">
         <div className="admin-buttons">
           {!isAdmin && (
-            <button onClick={() => navigate("/employees/crud/users")}>
-              Gestión de Usuarios
-            </button>
+            <>
+              <button onClick={() => navigate("/employees/crud/users")}>
+                Gestión de Usuarios
+              </button>
+              <button onClick={() => navigate("/employees/crud/coches")}>
+                Gestión de Coches
+              </button>
+            </>
           )}
-          <button onClick={() => navigate("/employees/crud/coches")}>
-            Gestión de Coches
-          </button>
+          {isAdmin && (
+            <>
+              <button onClick={() => navigate("/employees/crud/reparaciones")}>
+                Gestión de Coches
+              </button>
+              <button onClick={() => navigate("/employees/crud/citas")}>
+                Gestión de Citas
+              </button>
+            </>
+          )}
+
           {!isAdmin && (
             <>
-            <button onClick={() => navigate("/employees/crud/admins")}>
+              <button onClick={() => navigate("/employees/crud/admins")}>
                 Gestión de Administradores
               </button>
               <button onClick={() => navigate("/employees/crud/mecanicos")}>
                 Gestión de Mecanicos
               </button>
               <button onClick={() => navigate("/employees/crud/facturas")}>
-              Gestión de Facturas
-            </button>
+                Gestión de Facturas
+              </button>
+              <button onClick={() => navigate("/employees/crud/citas/all")}>
+                Gestión de Citas
+              </button>
             </>
           )}
-          <button onClick={() => navigate("/employees/crud/citas/all")}>
-            Gestión de Citas
-          </button>
-          
         </div>
       </div>
     </div>

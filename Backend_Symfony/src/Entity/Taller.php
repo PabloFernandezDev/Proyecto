@@ -14,7 +14,7 @@ class Taller
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['taller:read', 'mecanico:read', 'provincia:read', 'admins:read'])]
+    #[Groups(['taller:read', 'mecanico:read', 'provincia:read', 'admins:read', 'coche:read'])]
 
     private ?int $id = null;
 

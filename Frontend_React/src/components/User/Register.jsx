@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
@@ -13,6 +13,19 @@ export const Register = () => {
 
   const navigate = useNavigate();
 
+  const validarDNIConLetra = (dni) => {
+    const letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+    if (!/^\d{8}[A-Z]$/.test(dni)) return false;
+    const numero = parseInt(dni.slice(0, 8), 10);
+    const letra = dni[8].toUpperCase();
+    return letra === letras[numero % 23];
+  };
+
+  const validarEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const nuevosErrores = {};
@@ -21,9 +34,12 @@ export const Register = () => {
       nuevosErrores.telefono = "El teléfono debe tener exactamente 9 dígitos.";
     }
 
-    if (!/^[0-9]{8}[A-Z]$/.test(dni)) {
-      nuevosErrores.dni =
-        "El DNI debe tener 8 números y una letra mayúscula al final.";
+    if (!validarDNIConLetra(dni)) {
+      nuevosErrores.dni = "El DNI no es válido.";
+    }
+
+    if (!validarEmail(email)) {
+      nuevosErrores.email = "El correo electrónico no es válido.";
     }
 
     if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) {
@@ -62,15 +78,13 @@ export const Register = () => {
         setErrores({ general: data.error || "Error al registrarse" });
         return;
       }
-      console.log(data)
+
       setErrores({});
 
       try {
         await fetch(
           `${import.meta.env.VITE_API_URL}/enviar-confirmacion/${data.usuario.id}`,
-          {
-            method: "GET",
-          }
+          { method: "GET" }
         );
       } catch (error) {
         console.error("Error al enviar el email de confirmación:", error);
@@ -119,6 +133,9 @@ export const Register = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
+              {errores.email && (
+                <p className="signup__error">{errores.email}</p>
+              )}
               <input
                 type="text"
                 placeholder="Teléfono"
@@ -162,6 +179,10 @@ export const Register = () => {
               />
               {errores.confirmPassword && (
                 <p className="signup__error">{errores.confirmPassword}</p>
+              )}
+
+              {errores.general && (
+                <p className="signup__error">{errores.general}</p>
               )}
 
               <button type="submit" className="boton login__boton">

@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Factura;
 use App\Entity\LineaFactura;
+use App\Repository\CitaRepository;
 use App\Repository\FacturaRepository;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -145,6 +147,69 @@ final class FacturaController extends AbstractController
         $json = $serializer->serialize($factura, 'json', ['groups' => 'factura:read']);
 
         return new JsonResponse(json_decode($json), 200);
+    }
+
+    #[Route('/presupuesto/{usuarioId}/factura', name: 'crear_factura_presupuesto', methods: ['POST'])]
+    public function crearFacturaPresupuesto(
+        int $usuarioId,
+        Request $request,
+        UsuarioRepository $usuarioRepository,
+        CitaRepository $citaRepository,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $usuario = $usuarioRepository->find($usuarioId);
+        if (!$usuario) {
+            return new JsonResponse(['error' => 'Usuario no encontrado'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $lineas = $data['lineas'] ?? [];
+        $citaId = $data['citaId'] ?? null;
+
+        if (!$citaId) {
+            return new JsonResponse(['error' => 'ID de cita obligatorio'], 400);
+        }
+
+        $cita = $citaRepository->find($citaId);
+        if (!$cita) {
+            return new JsonResponse(['error' => 'Cita no encontrada'], 404);
+        }
+
+        if (empty($lineas)) {
+            return new JsonResponse(['error' => 'No se han proporcionado líneas de factura'], 400);
+        }
+
+        $factura = new Factura();
+        $factura->setUsuario($usuario);
+        $factura->setCita($cita); 
+        $factura->setMetodoPago('Tarjeta');
+        $factura->setFechaEmision(new \DateTime());
+        $factura->setNumero('F-' . time());
+
+        $subtotal = 0;
+        foreach ($lineas as $lineaData) {
+            $linea = new LineaFactura();
+            $linea->setConcepto($lineaData['concepto']);
+            $linea->setDescripcion($lineaData['descripcion'] ?? '');
+            $linea->setPrecio($lineaData['precio']);
+            $linea->setCantidad($lineaData['cantidad']);
+            $linea->setTotal($lineaData['precio'] * $lineaData['cantidad']);
+            $linea->setFactura($factura);
+            $factura->addLineaFactura($linea);
+            $subtotal += $linea->getTotal();
+        }
+
+        $iva = $subtotal * 0.21;
+        $total = $subtotal + $iva;
+
+        $factura->setSubtotal($subtotal);
+        $factura->setIva($iva);
+        $factura->setTotal($total);
+
+        $em->persist($factura);
+        $em->flush();
+
+        return new JsonResponse(['mensaje' => 'Factura creada con éxito', 'facturaId' => $factura->getId()]);
     }
 
 }

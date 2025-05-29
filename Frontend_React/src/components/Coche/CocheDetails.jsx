@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCar } from "react-icons/fa";
 import { FiTrash2, FiArrowLeft } from "react-icons/fi";
-import { Header } from "./Header";
+import { Header } from "../Diseño/Header";
 
 export const CocheDetails = () => {
   const [coche, setCoche] = useState(null);

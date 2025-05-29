@@ -12,15 +12,15 @@ class LineaFactura
    #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read', 'cita:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read', 'cita:read'])]
     private ?string $concepto = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read', 'cita:read'])]
     private ?string $descripcion = null;
 
     #[ORM\Column]

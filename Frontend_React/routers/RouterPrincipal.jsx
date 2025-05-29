@@ -1,37 +1,35 @@
-import React from "react";
-import { CompInicio } from "../src/components/CompInicio";
-import { Login } from "../src/components/Login";
-import { Register } from "../src/components/Register";
-import { DashBoard } from "../src/components/DashBoard";
-import { FormCoche } from "../src/components/FormCoche";
-import { Empleados } from "../src/components/Empleados";
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Aboutus } from "../src/components/Aboutus";
-import { WhereAreWe } from "../src/components/WhereAreWe";
-import { Perfil } from "../src/components/Perfil";
-import { Confirmado } from "../src/components/Confirmado";
-import { CocheDetails } from "../src/components/CocheDetails";
-import { LoginAdmin } from "../src/components/LoginAdmin";
-import { Facturas } from "../src/components/Facturas";
-import { FacturaDetalle } from "../src/components/FacturaDetalle";
-import { LoginMecanico } from "../src/components/LoginMecanico";
-import { AdminPanel } from "../src/components/AdminPanel";
-import { PanelMecanico } from "../src/components/PanelMecanico";
+import { CompInicio } from "../src/components/Diseño/CompInicio";
+import { Aboutus } from "../src/components/Diseño/Aboutus";
+import { WhereAreWe } from "../src/components/Diseño/WhereAreWe";
+import { Confirmado } from "../src/components/Diseño/Confirmado";
+import { Login } from "../src/components/User/Login";
+import { Register } from "../src/components/User/Register";
+import { DashBoard } from "../src/components/User/DashBoard";
+import { Perfil } from "../src/components/User/Perfil";
+import { FormCoche } from "../src/components/Coche/FormCoche";
+import { CocheDetails } from "../src/components/Coche/CocheDetails";
+import { FormCita } from "../src/components/crudCitas/FormCita";
+import { Facturas } from "../src/components/crudFacturas/Facturas";
+import { FacturaDetalle } from "../src/components/crudFacturas/FacturaDetalle";
+import { Empleados } from "../src/components/Empleados";
+import { LoginAdmin } from "../src/components/Admin/LoginAdmin";
+import { AdminPanel } from "../src/components/Admin/AdminPanel";
 import { LeerUsers } from "../src/components/crudUsers/LeerUsers";
-import { LeerCoches } from "../src/components/crudCoches/LeerCoches";
-import { LeerCochesSuperAdmin } from "../src/components/crudCoches/LeerCochesSuperAdmin";
-import { DetalleCoche } from "../src/components/crudCoches/DetalleCoche";
-import { AddReparacionCoche } from "../src/components/crudCoches/AddReparacionCoche";
-import { FormCita } from "../src/components/FormCita";
-import { LeerCitas } from "../src/components/crudCitas/LeerCitas";
-import { DetalleCita } from "../src/components/crudCitas/DetalleCita";
 import { LeerMecanicos } from "../src/components/crudMecanicos/LeerMecanicos";
 import { AddMecanico } from "../src/components/crudMecanicos/AddMecanico";
-import { LeerCitasSuperAdmin } from "../src/components/crudCitas/LeerCitasSuperAdmin";
-import { LeerFacturas } from "../src/components/crudFacturas/LeerFacturas";
 import { LeerAdmins } from "../src/components/crudAdmins/LeerAdmins";
 import { AddAdmin } from "../src/components/crudAdmins/AddAdmin";
+import { LeerCoches } from "../src/components/crudCoches/LeerCoches";
+import { LeerCochesSuperAdmin } from "../src/components/crudCoches/LeerCochesSuperAdmin";
+import { AddReparacionCoche } from "../src/components/crudCoches/AddReparacionCoche";
+import { DetalleCoche } from "../src/components/crudCoches/DetalleCoche";
+import { LeerCitas } from "../src/components/crudCitas/LeerCitas";
+import { LeerCitasSuperAdmin } from "../src/components/crudCitas/LeerCitasSuperAdmin";
+import { DetalleCita } from "../src/components/crudCitas/DetalleCita";
+import { LeerFacturas } from "../src/components/crudFacturas/LeerFacturas";
+import { AddPresupuesto } from "../src/components/crudCitas/AddPresupuesto";
+
 
 const RouterPrincipal = () => {
   return (
@@ -43,14 +41,14 @@ const RouterPrincipal = () => {
       <Route path="/register" element={<Register />}></Route>
       <Route path="/confirmado" element={<Confirmado />} />
       <Route path="/home" element={<DashBoard />}></Route>
-      <Route path="/home/addCoche" element={<FormCoche />}></Route>
+      <Route path="/home/addCoche" element={<FormCoche/>}></Route>
       <Route path="/home/coche/details" element={<CocheDetails />}></Route>
       <Route path="/home/addcita" element={<FormCita />}></Route>
       <Route path="/home/perfil" element={<Perfil />}></Route>
       <Route path="/home/facturas" element={<Facturas />}></Route>
       <Route path="/home/factura/:id/detalle" element={<FacturaDetalle />}></Route>
 
-      <Route path="/employees" element={<Empleados />}></Route>
+      <Route path="/employees" element={<Empleados/>}></Route>
       <Route path="/employees/admin" element={<LoginAdmin />}></Route>
       <Route path="/employees/admin/panel" element={<AdminPanel />}></Route>
 
@@ -65,12 +63,13 @@ const RouterPrincipal = () => {
 
       <Route path="/employees/crud/reparaciones" element={<LeerCoches />}></Route>
       <Route path="/employees/crud/coches" element={<LeerCochesSuperAdmin />}></Route>
-      <Route path="/employees/crud/coches/addreparacion" element={<AddReparacionCoche />} ></Route>
+      <Route path="/employees/crud/coches/addreparacion/:citaId" element={<AddReparacionCoche />} ></Route>
       <Route path="/employees/crud/coches/:id/detalle" element={<DetalleCoche />} ></Route>
 
       <Route path="/employees/crud/citas" element={<LeerCitas />}></Route>
       <Route path="/employees/crud/citas/all" element={<LeerCitasSuperAdmin />}></Route>
       <Route path="/employees/crud/citas/:id/detalle" element={<DetalleCita />} ></Route>
+      <Route path="/employees/presupuesto/add/:usuarioId" element={<AddPresupuesto />} ></Route>
 
       <Route path="/employees/crud/facturas" element={<LeerFacturas />}></Route>
       <Route path="/employees/crud/facturas/:id/detalle" element={<FacturaDetalle />}></Route>

@@ -60,7 +60,7 @@ final class ReparacionesController extends AbstractController
         }
 
         foreach ($tareas as $tarea) {
-            if (empty($tarea['descripcion']) || !isset($tarea['precio'])) {
+            if (empty($tarea['descripcion'])) {
                 continue;
             }
 
@@ -71,7 +71,6 @@ final class ReparacionesController extends AbstractController
             $reparacion->setFechaInicio($fechaInicio);
             $reparacion->setFechaFin($fechaEntrega);
             $reparacion->setDescripcion($tarea['descripcion']);
-            $reparacion->setPrecio((float) $tarea['precio']);
 
             $em->persist($reparacion);
         }

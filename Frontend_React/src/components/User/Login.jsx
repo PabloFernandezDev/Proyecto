@@ -81,10 +81,8 @@ export const Login = () => {
               {mostrarAlerta && (
                 <div className="alerta__login">
                   <span>¡Registro exitoso!</span>
-                  <span>
-                    Primero tienes que confirmar tu cuenta. Revisa tu bandeja de
-                    entrada para confirmar tu cuenta
-                  </span>
+                  <p>Primero tienes que confirmar tu cuenta.</p>
+                  <p>Revisa tu bandeja de entrada para confirmar tu cuenta</p>
                   <button
                     className="alerta__login-cerrar"
                     onClick={() => setMostrarAlerta(false)}

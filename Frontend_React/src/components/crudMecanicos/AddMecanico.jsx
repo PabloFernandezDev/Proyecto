@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { HeaderAdmin } from "../HeaderAdmin";
+import { HeaderAdmin } from "../Admin/HeaderAdmin";
 
 export const AddMecanico = () => {
   const [nombre, setNombre] = useState("");
@@ -15,7 +15,7 @@ export const AddMecanico = () => {
 
   const navigate = useNavigate();
 
-  // Cargar provincias
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/provincias`)
       .then((res) => res.json())
@@ -26,7 +26,7 @@ export const AddMecanico = () => {
       });
   }, []);
 
-  // Cargar administradores
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/admins`)
       .then((res) => res.json())

@@ -48,12 +48,17 @@ class Factura
     private ?Usuario $usuario = null;
 
     #[ORM\OneToMany(mappedBy: 'factura', targetEntity: LineaFactura::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
-    #[Groups(['factura:read'])]
+    #[Groups(['factura:read', 'cita:read'])]
     private Collection $lineaFactura;
 
     #[ORM\Column(length: 255)]
     #[Groups(['factura:read'])]
     private ?string $metodoPago = null;
+
+    #[ORM\ManyToOne(inversedBy: 'facturas')]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['factura:read'])]
+    private ?Cita $cita = null;
 
     public function __construct()
     {
@@ -187,6 +192,18 @@ class Factura
     public function setMetodoPago(string $metodoPago): static
     {
         $this->metodoPago = $metodoPago;
+
+        return $this;
+    }
+
+    public function getCita(): ?Cita
+    {
+        return $this->cita;
+    }
+
+    public function setCita(?Cita $cita): static
+    {
+        $this->cita = $cita;
 
         return $this;
     }

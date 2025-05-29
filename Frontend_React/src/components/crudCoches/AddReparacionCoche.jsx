@@ -1,36 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { HeaderAdmin } from "../HeaderAdmin";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { HeaderAdmin } from "../Admin/HeaderAdmin";
 
 export const AddReparacionCoche = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const cocheInicial = location.state?.coche || null;
-  const motivoCita = location.state?.motivo || "";
-  const usuarioInicial = location.state?.usuario || null;
-  const citaId = location.state?.citaId || null;
-  const fechaInicio = location.state?.fechaInicio || null;
-  const [coches, setCoches] = useState([]);
-  const [cocheSeleccionado, setCocheSeleccionado] = useState(
-    cocheInicial?.id || ""
-  );
+  const citaId = useParams();
+  const [usuario, setUsuario] = useState(null);
+  const [coche, setCoche] = useState(null);
+  const [fechaInicio, setFechaInicio] = useState("");
   const [horaEntrega, setHoraEntrega] = useState("");
   const [fechaEntrega, setFechaEntrega] = useState("");
   const [mecanico, setMecanico] = useState("");
   const [mecanicos, setMecanicos] = useState([]);
-  const [tareas, setTareas] = useState(
-    motivoCita
-      ? [
-          { descripcion: motivoCita, precio: "" },
-          { descripcion: "", precio: "" },
-        ]
-      : [{ descripcion: "", precio: "" }]
-  );
-
-  console.log(usuarioInicial)
+  const [tareas, setTareas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [taller, setTaller] = useState(0);
+  const [admin, setAdmin] = useState(null);
+  console.log(admin)
   const horasDisponibles = [
     "09:00",
     "09:30",
@@ -56,8 +44,10 @@ export const AddReparacionCoche = () => {
 
   useEffect(() => {
     const admin = JSON.parse(localStorage.getItem("Admin"));
-    const idTaller = admin?.taller.id;
-    setTaller(idTaller);
+    console.log(admin)
+    setAdmin(admin);
+    const Taller = admin?.taller;
+    setTaller(Taller);
 
     const hoy = new Date().toISOString().split("T")[0];
     setFechaEntrega(hoy);
@@ -66,15 +56,36 @@ export const AddReparacionCoche = () => {
       try {
         setLoading(true);
 
-        const resMecanicos = await fetch(
-          `${import.meta.env.VITE_API_URL}/taller/${idTaller}/mecanicos`
+        const resCita = await fetch(
+          `${import.meta.env.VITE_API_URL}/cita/${citaId.citaId}`
+        );
+        if (!resCita.ok) throw new Error("Error al cargar la cita");
+        const cita = await resCita.json();
+
+        setUsuario(cita.usuario);
+        setCoche(cita.usuario?.coches?.[0] || null);
+        setFechaInicio(cita.fecha);
+        setHoraEntrega(cita.hora?.split("T")[1]?.slice(0, 5) || "");
+
+        const tareasDesdeFactura = (cita.facturas?.[0]?.lineaFactura || []).map(
+          (linea) => ({
+            descripcion: linea.concepto,
+          })
         );
 
-        if (!resMecanicos.ok) {
-          throw new Error("Error al cargar los mecanicos");
+        if (tareasDesdeFactura.length > 0) {
+          setTareas(tareasDesdeFactura);
+        } else if (cita.motivo) {
+          setTareas([{ descripcion: cita.motivo }]);
+        } else {
+          setTareas([{ descripcion: "" }]);
         }
-        const mecanicosData = await resMecanicos.json();
 
+        const resMecanicos = await fetch(
+          `${import.meta.env.VITE_API_URL}/taller/${Taller.id}/mecanicos`
+        );
+        if (!resMecanicos.ok) throw new Error("Error al cargar los mecánicos");
+        const mecanicosData = await resMecanicos.json();
         setMecanicos(mecanicosData.mecanicos);
       } catch (error) {
         console.error("Error al cargar datos:", error);
@@ -83,85 +94,96 @@ export const AddReparacionCoche = () => {
       }
     };
 
-    cargarDatos();
-  }, []);
+    if (citaId) cargarDatos();
+  }, [citaId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const tareasFiltradas = tareas.filter(
-      (t) => t.descripcion.trim() !== "" && !isNaN(parseFloat(t.precio))
-    );
 
-    if (tareasFiltradas.length === 0) {
-      alert("Debes añadir al menos una reparación a realizar.");
+    const tareasValidas = tareas.filter((t) => t.descripcion.trim() !== "");
+    if (tareasValidas.length === 0) {
+      alert("Debes añadir al menos una reparación.");
       return;
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/reparaciones`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/reparaciones`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          cocheId: cocheInicial?.id,
+          cocheId: coche?.id,
           mecanicoId: mecanico,
           fechaInicio,
           fechaEntrega,
-          tareas: tareasFiltradas,
-          taller: taller,
+          tareas: tareasValidas,
+          taller: taller.id,
         }),
       });
 
-      if (response.ok && citaId) {
-        const actualizarCita = await fetch(
-          `${import.meta.env.VITE_API_URL}/cita/${citaId}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              fechaEntrega: fechaEntrega,
-              horaEntrega: horaEntrega,
-            }),
-          }
-        );
-        if (!actualizarCita.ok) {
-          alert(
-            "La reparación se registró, pero no se pudo actualizar la cita."
-          );
-        } else {
-          await enviarCorreoRecogida();
-          navigate("/employees/crud/citas");
+      if (!res.ok) throw new Error("Error al registrar la reparación.");
+
+      const actualizarCita = await fetch(
+        `${import.meta.env.VITE_API_URL}/cita/${citaId.citaId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fechaEntrega: fechaEntrega,
+            horaEntrega: horaEntrega,
+            estado: "Asignado Mecanico",
+          }),
         }
-      }
+      );
+
+      if (!actualizarCita.ok) throw new Error("Error al actualizar la cita.");
+
+      await fetch(`${import.meta.env.VITE_API_URL}/notificacion`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId: usuario.id,
+          mensaje: `Su coche ha sido asignado a un mecánico para su reparación.`,
+          tipo: "asignado_mecanico",
+        }),
+      });
+
+      await fetch(`${import.meta.env.VITE_API_URL}/mail/cita/actualizada`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: usuario.email,
+          nombre: `${usuario.nombre} ${usuario.apellidos}`,
+          fecha: fechaEntrega,
+          hora: horaEntrega,
+          provincia: admin.provincia?.nombre || "Desconocida",
+          direccion: taller?.nombre || "Dirección no disponible",
+        }),
+      });
+
+      navigate("/employees/crud/citas");
     } catch (error) {
-      alert("Error de conexión con el servidor");
+      alert("Error: " + error.message);
     }
   };
 
-  const handleTareaChange = (index, field, value) => {
+  const handleTareaChange = (index, value) => {
     const nuevasTareas = [...tareas];
-    nuevasTareas[index][field] = value;
+    nuevasTareas[index].descripcion = value;
     setTareas(nuevasTareas);
 
-    if (
-      field === "descripcion" &&
-      index === tareas.length - 1 &&
-      value.trim() !== ""
-    ) {
-      setTareas([...nuevasTareas, { descripcion: "", precio: "" }]);
+    if (index === tareas.length - 1 && value.trim() !== "") {
+      setTareas([...nuevasTareas, { descripcion: "" }]);
     }
   };
 
   const enviarCorreoRecogida = async () => {
     const admin = JSON.parse(localStorage.getItem("Admin"));
-    const direccion =
-      admin?.taller?.nombre;
+    const direccion = admin?.taller?.nombre;
     await fetch(`${import.meta.env.VITE_API_URL}/mail/cita/recoger`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userId: usuarioInicial?.id,
+        userId: usuario?.id,
         fecha: fechaEntrega,
         direccion: direccion,
       }),
@@ -176,14 +198,14 @@ export const AddReparacionCoche = () => {
           <p>Cargando datos del taller...</p>
         ) : (
           <form onSubmit={handleSubmit}>
-            {usuarioInicial?.id && (
+            {usuario && (
               <>
                 <label className="reparaciones-label">
                   Nombre del cliente:
                   <input
                     type="text"
                     className="reparacion-input"
-                    value={`${usuarioInicial.nombre}  ${usuarioInicial.apellidos}`}
+                    value={`${usuario.nombre} ${usuario.apellidos}`}
                     readOnly
                   />
                 </label>
@@ -192,37 +214,24 @@ export const AddReparacionCoche = () => {
                   <input
                     type="text"
                     className="reparacion-input"
-                    value={usuarioInicial.email}
+                    value={usuario.email}
                     readOnly
                   />
                 </label>
               </>
             )}
 
-            <label className="reparaciones-label">
-              Matrícula del coche:
-              {cocheInicial ? (
+            {coche && (
+              <label className="reparaciones-label">
+                Matrícula del coche:
                 <input
                   type="text"
                   className="reparacion-input"
-                  value={`${cocheInicial.Matricula}`}
+                  value={coche.Matricula}
                   readOnly
                 />
-              ) : (
-                <select
-                  value={cocheSeleccionado}
-                  onChange={(e) => setCocheSeleccionado(e.target.value)}
-                  required
-                >
-                  <option value="">Selecciona un coche</option>
-                  {coches.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.Matricula} - {c.usuario?.nombre} {c.usuario?.apellidos}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </label>
+              </label>
+            )}
 
             <label>
               Mecánico:
@@ -272,28 +281,13 @@ export const AddReparacionCoche = () => {
                 Reparaciones a realizar:
               </label>
               {tareas.map((tarea, index) => (
-                <div
-                  key={index}
-                  style={{ display: "flex", gap: "10px", marginBottom: "10px" }}
-                >
+                <div key={index} style={{ marginBottom: "10px" }}>
                   <input
                     type="text"
                     className="reparacion-input"
                     placeholder={`Descripción ${index + 1}`}
                     value={tarea.descripcion}
-                    onChange={(e) =>
-                      handleTareaChange(index, "descripcion", e.target.value)
-                    }
-                  />
-                  <input
-                    type="number"
-                    min="0"
-                    className="reparacion-input"
-                    placeholder="€"
-                    value={tarea.precio}
-                    onChange={(e) =>
-                      handleTareaChange(index, "precio", e.target.value)
-                    }
+                    onChange={(e) => handleTareaChange(index, e.target.value)}
                   />
                 </div>
               ))}
@@ -310,7 +304,7 @@ export const AddReparacionCoche = () => {
               <button
                 type="submit"
                 disabled={
-                  (!cocheInicial && !cocheSeleccionado) ||
+                  !coche ||
                   !mecanico ||
                   tareas.every((t) => t.descripcion.trim() === "")
                 }

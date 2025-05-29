@@ -20,7 +20,7 @@ export const FormCoche = () => {
   const [errorAño, setErrorAño] = useState("");
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/marca`)
+    fetch(`${import.meta.env.VITE_API_URL}/marcas`)
       .then((res) => res.json())
       .then((data) => setMarcas(data))
       .catch((err) => console.error("Error cargando marcas:", err));

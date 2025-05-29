@@ -7,7 +7,7 @@ nelmio_cors:
             - '^http://localhost:5173$'
             - '^http://www\.carcarenow\.es(:[0-9]+)?$'
         allow_headers: ['Content-Type', 'Authorization']
-        allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        allow_methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
         expose_headers: ['Content-Type', 'Authorization']
         max_age: 3600
     paths:

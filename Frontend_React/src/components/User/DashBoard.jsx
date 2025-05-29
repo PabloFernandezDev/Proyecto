@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Header } from "../components/Header";
+import { Header } from "../Diseño/Header";
 import { FiMessageSquare, FiX } from "react-icons/fi";
 import { MapaTalleres } from "./MapaTalleres";
 import { GifAnimacion } from "./GifAnimacion";
+import { useNotificacionesStore } from "../../store/useNotificacionesStore";
 
 export const DashBoard = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { notificaciones, setNotificaciones } = useNotificacionesStore();
+
   const [usuarioTieneCoche, setUsuarioTieneCoche] = useState(false);
   const [ubicacion, setUbicacion] = useState(null);
   const [facturas, setFacturas] = useState([]);
-  const [mostrarChat, setMostrarChat] = useState(false);
-  const [mensaje, setMensaje] = useState("");
-  const [mensajes, setMensajes] = useState([]);
+  const [mostrarPanel, setMostrarPanel] = useState(false);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [imagenCoche, setImagenCoche] = useState(null);
   const [tallerId, setTallerId] = useState(null);
@@ -25,35 +26,56 @@ export const DashBoard = () => {
 
   const handleVerFacturas = () => navigate("/home/facturas");
   const handleAddCar = () => navigate("/home/addcoche");
-  const enviarMensaje = () => {
-    if (mensaje.trim() !== "") {
-      setMensajes([...mensajes, { texto: mensaje, propio: true }]);
-      setMensaje("");
+
+  const marcarComoLeido = async (id) => {
+    try {
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/notificaciones/${id}/leido`,
+        {
+          method: "PATCH",
+        }
+      );
+      setNotificaciones(
+        notificaciones.map((n) => (n.id === id ? { ...n, leido: true } : n))
+      );
+    } catch (error) {
+      console.error("Error marcando como leído:", error);
     }
   };
 
+  const contarNoLeidas = () => notificaciones.filter((n) => !n.leido).length;
+
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
-    let eventSource = null;
+    if (!userId) return;
 
-    if (userId) {
-      fetch(`${import.meta.env.VITE_API_URL}/user/${userId}/coche`)
-        .then((res) => {
-          if (!res.ok) throw new Error("Sin coche");
-          return res.json();
-        })
-        .then((data) => {
-          console.log(data);
-          setData(data);
-          setUsuarioTieneCoche(true);
-          setImagenCoche(data.imagen);
-          if (data.taller && data.taller.id) {
-            setTallerId(data.taller.id);
-          }
-          setFacturas(data.usuario.facturas);
-        })
-        .catch(() => setUsuarioTieneCoche(false));
-    }
+    const cargarDatos = async () => {
+      try {
+        const resCoche = await fetch(
+          `${import.meta.env.VITE_API_URL}/user/${userId}/coche`
+        );
+        if (!resCoche.ok) throw new Error("Error al cargar coche");
+        const data = await resCoche.json();
+        setData(data);
+        setUsuarioTieneCoche(true);
+        setImagenCoche(data.imagen);
+        if (data.taller?.id) setTallerId(data.taller.id);
+        setFacturas(data.usuario.facturas);
+
+        const resNoti = await fetch(
+          `${import.meta.env.VITE_API_URL}/user/${userId}/notificaciones`
+        );
+        const notiData = await resNoti.json();
+        setNotificaciones(notiData);
+      } catch (err) {
+        console.error("Error cargando datos periódicamente:", err);
+        setUsuarioTieneCoche(false);
+      }
+    };
+
+    cargarDatos();
+
+    const intervalo = setInterval(cargarDatos, 5000);
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -71,19 +93,6 @@ export const DashBoard = () => {
       window.history.replaceState({}, document.title);
     }
 
-    if (location.state?.citaSolicitada && location.state?.citaMensaje) {
-      setMensajes((prev) => [
-        ...prev,
-        { texto: location.state.citaMensaje, propio: true },
-        {
-          texto: "✅ Tu cita ha sido registrada. Nos pondremos en contacto.",
-          propio: false,
-        },
-      ]);
-      setMostrarChat(true);
-      window.history.replaceState({}, document.title);
-    }
-
     const revisarEstado = () => {
       const estado = localStorage.getItem("estadoVehiculo");
       const reparado = localStorage.getItem("CocheReparado");
@@ -96,17 +105,17 @@ export const DashBoard = () => {
 
         setTimeout(() => {
           localStorage.removeItem("CocheReparado");
-          window.location.reload(); 
+          window.location.reload();
         }, 3000);
       }
     };
 
     revisarEstado();
-    const intervalo = setInterval(revisarEstado, 5000);
+    const intEstado = setInterval(revisarEstado, 5000);
 
     return () => {
-      if (eventSource) eventSource.close();
       clearInterval(intervalo);
+      clearInterval(intEstado);
     };
   }, []);
 
@@ -118,6 +127,7 @@ export const DashBoard = () => {
           <h3>Ubicación</h3>
           <MapaTalleres />
         </div>
+
         <div className="dashboard-full__card dashboard-full__card--alto">
           <h3>Mi Vehículo</h3>
           {usuarioTieneCoche ? (
@@ -154,55 +164,63 @@ export const DashBoard = () => {
         <div className="dashboard-full__card">
           <h3>Estado del Vehículo</h3>
           <p>
-            {estadoVehiculo && !cocheReparado ? (
-              <GifAnimacion />
-            ) : tallerId && !cocheReparado ? (
-              "Su coche se encuentra actualmente en el taller"
-            ) : cocheReparado ? (
-              "✅ Reparación finalizada. Tu coche está listo para recoger."
-            ) : (
+            {!data.taller && !data.estado ? (
               "Tu coche está perfectamente"
-            )}
+            ) : data.taller && data.estado === "Revisión" ? (
+              "Su coche está siendo revisado. Se le notificará el presupuesto lo antes posible."
+            ) : data.taller && data.estado === "Reparando" ? (
+              <GifAnimacion />
+            ) : data.taller && data.estado === "Listo" ? (
+              "✅ Su coche ha sido reparado. Puede pasar a recogerlo."
+            ) : null}
           </p>
         </div>
       </div>
 
-      {!mostrarChat && (
-        <button className="chat-button" onClick={() => setMostrarChat(true)}>
+      {!mostrarPanel && (
+        <button className="chat-button" onClick={() => setMostrarPanel(true)}>
           <FiMessageSquare size={24} />
+          {contarNoLeidas() > 0 && (
+            <span className="chat-button__badge">
+              {contarNoLeidas() > 9 ? "9+" : contarNoLeidas()}
+            </span>
+          )}
         </button>
       )}
 
-      <div className={`chat-panel ${mostrarChat ? "slide-in" : "slide-out"}`}>
+      <div className={`chat-panel ${mostrarPanel ? "slide-in" : "slide-out"}`}>
         <div className="chat-panel__header">
-          <h4>Chat del Taller</h4>
+          <h4>Notificaciones</h4>
           <button
             className="chat-panel__close"
-            onClick={() => setMostrarChat(false)}
+            onClick={() => setMostrarPanel(false)}
           >
             <FiX size={20} />
           </button>
         </div>
         <div className="chat-panel__messages">
-          {mensajes.map((msg, index) => (
-            <div
-              key={index}
-              className={`chat-panel__mensaje ${
-                msg.propio ? "propio" : "otro"
-              }`}
-            >
-              {msg.texto}
-            </div>
-          ))}
+          {Array.isArray(notificaciones) &&
+            notificaciones
+              .slice()
+              .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+              .map((noti, index) => (
+                <div
+                  key={index}
+                  className={`chat-panel__mensaje ${
+                    noti.leido ? "leido" : "noleido"
+                  }`}
+                >
+                  <p>{noti.mensaje}</p>
+                  <small>{new Date(noti.fecha).toLocaleString()}</small>
+                  {!noti.leido && (
+                    <button onClick={() => marcarComoLeido(noti.id)}>
+                      Marcar como leído
+                    </button>
+                  )}
+                </div>
+              ))}
         </div>
         <div className="chat-panel__input">
-          <input
-            type="text"
-            value={mensaje}
-            onChange={(e) => setMensaje(e.target.value)}
-            placeholder="Escribe un mensaje..."
-          />
-          <button onClick={enviarMensaje}>Enviar</button>
           <button
             onClick={() => navigate("/home/addcita")}
             className="chat-panel__btn-cita"

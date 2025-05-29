@@ -2,8 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Factura;
+use App\Entity\LineaFactura;
+use App\Repository\FacturaRepository;
 use App\Repository\UsuarioRepository;
+use Doctrine\DBAL\Driver\Mysqli\Initializer\Options;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options as DompdfOptions;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,16 +31,36 @@ final class EmailController extends AbstractController
             return new JsonResponse(['error' => 'Email no proporcionado'], 400);
         }
 
+        $htmlContent = "
+    <div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+        <div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+            <div style='background-color: #d60000; color: white; padding: 20px; text-align: center;'>
+                <h2>¡Gracias por suscribirte!</h2>
+            </div>
+            <div style='padding: 30px;'>
+                <p style='font-size: 16px;'>Hola,</p>
+                <p style='font-size: 16px;'>Te damos la bienvenida a <strong>CareCareNow</strong>.</p>
+                <p style='font-size: 16px;'>Pronto recibirás en tu bandeja de entrada las últimas novedades, consejos de mantenimiento y ofertas exclusivas para tu vehículo.</p>
+                <p style='font-size: 14px; color: #555;'>Si no te suscribiste, puedes ignorar este mensaje.</p>
+            </div>
+            <div style='background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #888;'>
+                © " . date('Y') . " CareCareNow. Todos los derechos reservados.
+            </div>
+        </div>
+    </div>
+    ";
+
         $email = (new Email())
             ->from('carecarenow@gmail.com')
             ->to($emailUsuario)
             ->subject('¡Gracias por suscribirte!')
-            ->text('Gracias por unirte a nuestro boletín. Pronto recibirás nuestras novedades y ofertas.');
+            ->html($htmlContent);
 
         $mailer->send($email);
 
         return new JsonResponse(['message' => 'Correo enviado con éxito']);
     }
+
 
 
     #[Route('/confirmar/{token}', name: 'confirmar_usuario', methods: ['GET'])]
@@ -81,14 +107,29 @@ final class EmailController extends AbstractController
         $nombre = $usuario->getNombre();
 
         $contenido = "
-        <h2>Hola $nombre,</h2>
-        <p>Tu cita ha sido registrada correctamente.</p>
-        <p><strong>Fecha:</strong> $fecha<br/>
-        <strong>Hora:</strong> $hora<br/>
-        <strong>Provincia:</strong> $provincia<br/>
-        <strong>Dirección del taller:</strong> $direccion</p>
-        <p>Gracias por confiar en CareCare Now.</p>
-    ";
+<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+    <div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+        <div style='background-color: #d60000; color: white; padding: 20px; text-align: center;'>
+            <h2>Cita confirmada - CareCareNow</h2>
+        </div>
+        <div style='padding: 30px;'>
+            <p style='font-size: 16px;'>Hola <strong>$nombre</strong>,</p>
+            <p style='font-size: 16px;'>Tu cita ha sido registrada correctamente. A continuación te dejamos los detalles:</p>
+            <ul style='font-size: 16px; color: #333; line-height: 1.6;'>
+                <li><strong>Fecha:</strong> $fecha</li>
+                <li><strong>Hora:</strong> $hora</li>
+                <li><strong>Provincia:</strong> $provincia</li>
+                <li><strong>Dirección del taller:</strong> $direccion</li>
+            </ul>
+            <p style='font-size: 16px;'>Te esperamos puntual. Si tienes alguna duda o necesitas cambiar la cita, puedes hacerlo desde tu panel.</p>
+        </div>
+        <div style='background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #888;'>
+            © " . date('Y') . " CareCareNow. Todos los derechos reservados.
+        </div>
+    </div>
+</div>
+";
+
 
         $correo = (new Email())
             ->from('carecarenow@gmail.com')
@@ -127,14 +168,28 @@ final class EmailController extends AbstractController
         $emailMensaje = (new Email())
             ->from('carecarenow360@gmail.com')
             ->to($usuario->getEmail())
-            ->subject('Confirma cuenta')
-            ->text("Hola {$usuario->getNombre()}, haz clic en el siguiente enlace para confirmar tu cuenta: $enlaceConfirmacion")
+            ->subject('Confirma tu cuenta en CareCareNow')
             ->html("
-            <p>Hola <strong>{$usuario->getNombre()}</strong>,</p>
-            <p>Gracias por registrarte. Para activar tu cuenta, por favor haz clic en el siguiente enlace:</p>
-            <p><a href='$enlaceConfirmacion'>Confirmar cuenta</a></p>
-            <p>Si no te registraste, puedes ignorar este mensaje.</p>
-        ");
+    <div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+        <div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+            <div style='background-color: #d60000; color: white; padding: 20px; text-align: center;'>
+                <h2>Bienvenido a CareCareNow</h2>
+            </div>
+            <div style='padding: 30px;'>
+                <p style='font-size: 16px;'>Hola <strong>{$usuario->getNombre()} {$usuario->getApellidos()}</strong>,</p>
+                <p style='font-size: 16px;'>Gracias por registrarte. Para activar tu cuenta, por favor haz clic en el botón a continuación:</p>
+                <p style='text-align: center; margin: 30px 0;'>
+                    <a href='$enlaceConfirmacion' style='background-color: #d60000; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Confirmar cuenta</a>
+                </p>
+                <p style='font-size: 14px; color: #555;'>Si no te registraste, puedes ignorar este mensaje.</p>
+            </div>
+            <div style='background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #888;'>
+                © " . date('Y') . " CareCareNow. Todos los derechos reservados.
+            </div>
+        </div>
+    </div>
+    ");
+
 
         $mailer->send($emailMensaje);
 
@@ -205,6 +260,104 @@ final class EmailController extends AbstractController
         return new JsonResponse(['message' => 'Correo enviado correctamente']);
     }
 
+
+    #[Route('/mail/cita/actualizada', name: 'notificar_actualizacion_cita', methods: ['POST'])]
+    public function actualizarCita(Request $request, MailerInterface $mailer): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $email = $data['email'] ?? null;
+        $nombre = $data['nombre'] ?? 'cliente';
+        $fecha = $data['fecha'] ?? null;
+        $hora = $data['hora'] ?? null;
+        $provincia = $data['provincia'] ?? null;
+        $direccion = $data['direccion'] ?? null;
+
+        if (!$email || !$fecha || !$hora || !$provincia || !$direccion) {
+            return new JsonResponse(['error' => 'Faltan datos obligatorios'], 400);
+        }
+
+        $htmlContent = "
+    <div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+        <div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+            <div style='background-color: #d60000; color: white; padding: 20px; text-align: center;'>
+                <h2>Cita confirmada - CareCareNow</h2>
+            </div>
+            <div style='padding: 30px;'>
+                <p style='font-size: 16px;'>Hola <strong>$nombre</strong>,</p>
+                <p style='font-size: 16px;'>Tu cita ha sido actualizada. A continuación te dejamos los nuevos detalles:</p>
+                <ul style='font-size: 16px; color: #333; line-height: 1.6;'>
+                    <li><strong>Fecha:</strong> $fecha</li>
+                    <li><strong>Hora:</strong> $hora</li>
+                    <li><strong>Provincia:</strong> $provincia</li>
+                    <li><strong>Dirección del taller:</strong> $direccion</li>
+                </ul>
+                <p style='font-size: 16px;'>Te esperamos puntual. Si necesitas cambiar la cita, puedes hacerlo desde tu panel.</p>
+            </div>
+            <div style='background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #888;'>
+                © " . date('Y') . " CareCareNow. Todos los derechos reservados.
+            </div>
+        </div>
+    </div>
+    ";
+
+        $correo = (new Email())
+            ->from('carecarenow@gmail.com')
+            ->to($email)
+            ->subject('Cita actualizada - CareCareNow')
+            ->html($htmlContent);
+
+        $mailer->send($correo);
+
+        return new JsonResponse(['message' => 'Correo enviado correctamente']);
+    }
+
+
+
+    #[Route('/presupuesto/{id}/enviar', name: 'enviar_presupuesto', methods: ['POST'])]
+    public function enviarPresupuestoEmail(
+        int $id,
+        UsuarioRepository $usuarioRepository,
+        MailerInterface $mailer
+    ): JsonResponse {
+        $usuario = $usuarioRepository->find($id);
+
+        if (!$usuario) {
+            return new JsonResponse(['error' => 'Usuario no encontrada'], 404);
+        }
+
+        $nombre = $usuario->getNombre();
+        $emailDestino = $usuario->getEmail();
+
+        $htmlEmail = "
+    <div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+        <div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+            <div style='background-color: #d60000; color: white; padding: 20px; text-align: center;'>
+                <h2>Nuevo presupuesto disponible - CareCareNow</h2>
+            </div>
+            <div style='padding: 30px;'>
+                <p style='font-size: 16px;'>Hola <strong>$nombre</strong>,</p>
+                <p style='font-size: 16px;'>Hemos generado un presupuesto para la reparación de tu coche.</p>
+                <p style='font-size: 16px;'>Puedes consultarlo y confirmar tu consentimiento desde tu panel de usuario, en el apartado de <strong>Facturas</strong>.</p>
+                <p style='font-size: 16px;'>Gracias por confiar en nosotros.</p>
+            </div>
+            <div style='background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #888;'>
+                © " . date('Y') . " CareCareNow. Todos los derechos reservados.
+            </div>
+        </div>
+    </div>
+    ";
+
+        $email = (new Email())
+            ->from('carecarenow@gmail.com')
+            ->to($emailDestino)
+            ->subject('Presupuesto disponible - CareCareNow')
+            ->html($htmlEmail);
+
+        $mailer->send($email);
+
+        return new JsonResponse(['mensaje' => 'Correo enviado con éxito']);
+    }
 
 
 

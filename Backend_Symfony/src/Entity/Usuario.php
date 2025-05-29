@@ -52,7 +52,7 @@ class Usuario
      * @var Collection<int, Coche>
      */
     #[ORM\OneToMany(targetEntity: Coche::class, mappedBy: 'usuario')]
-    #[Groups(['cita:read'])]
+    #[Groups(['cita:read', 'usuario:read'])]
     private Collection $coches;
 
     /**
@@ -68,12 +68,19 @@ class Usuario
     #[Groups(['coche:read', 'facturas:read'])]
     private Collection $facturas;
 
+    /**
+     * @var Collection<int, Notificacion>
+     */
+    #[ORM\OneToMany(targetEntity: Notificacion::class, mappedBy: 'Usuario')]
+    private Collection $notificaciones;
+
 
     public function __construct()
     {
         $this->coches = new ArrayCollection();
         $this->citas = new ArrayCollection();
         $this->facturas = new ArrayCollection();
+        $this->notificaciones = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -259,6 +266,36 @@ class Usuario
             // set the owning side to null (unless already changed)
             if ($factura->getUsuario() === $this) {
                 $factura->setUsuario(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Notificacion>
+     */
+    public function getNotificaciones(): Collection
+    {
+        return $this->notificaciones;
+    }
+
+    public function addNotificacione(Notificacion $notificacione): static
+    {
+        if (!$this->notificaciones->contains($notificacione)) {
+            $this->notificaciones->add($notificacione);
+            $notificacione->setUsuario($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotificacione(Notificacion $notificacione): static
+    {
+        if ($this->notificaciones->removeElement($notificacione)) {
+            // set the owning side to null (unless already changed)
+            if ($notificacione->getUsuario() === $this) {
+                $notificacione->setUsuario(null);
             }
         }
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { HeaderAdmin } from "../HeaderAdmin";
+import { HeaderAdmin } from "../Admin/HeaderAdmin";
 
 export const LeerUsers = () => {
   const navigate = useNavigate();

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Header } from '../components/Header';
+import { Header } from '../Diseño/Header';
 import { FiUser, FiEdit2, FiCheck, FiX, FiArrowLeft, FiKey } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-import '../style.css';
 
 export const Perfil = () => {
   const navigate = useNavigate();

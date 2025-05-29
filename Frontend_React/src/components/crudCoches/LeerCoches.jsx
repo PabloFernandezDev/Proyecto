@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { HeaderAdmin } from "../HeaderAdmin";
+import { HeaderAdmin } from "../Admin/HeaderAdmin";
 
 export const LeerCoches = () => {
   const location = useLocation();
@@ -11,6 +11,8 @@ export const LeerCoches = () => {
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [fechaFiltro, setFechaFiltro] = useState("");
+  const [paginaActual, setPaginaActual] = useState(1);
+  const cochesPorPagina = 5;
 
   const admin = JSON.parse(localStorage.getItem("Admin"));
 
@@ -63,6 +65,31 @@ export const LeerCoches = () => {
 
   const cochesUnicos = Array.from(cocheMap.values());
 
+  const filtrados = cochesUnicos.filter(({ coche, reparaciones }) => {
+    const termino = busqueda.toLowerCase();
+    const coincideBusqueda =
+      coche.Matricula?.toLowerCase().includes(termino) ||
+      coche.usuario?.nombre?.toLowerCase().includes(termino) ||
+      coche.usuario?.apellidos?.toLowerCase().includes(termino) ||
+      reparaciones.some((r) =>
+        r.mecanico?.Nombre?.toLowerCase().includes(termino)
+      );
+
+    const coincideFecha =
+      fechaFiltro === "" ||
+      reparaciones.some(
+        (r) => normalizarFecha(r.fechaInicio) === fechaFiltro
+      );
+
+    return coincideBusqueda && coincideFecha;
+  });
+
+  const totalPaginas = Math.ceil(filtrados.length / cochesPorPagina);
+  const cochesPaginados = filtrados.slice(
+    (paginaActual - 1) * cochesPorPagina,
+    paginaActual * cochesPorPagina
+  );
+
   return (
     <div className="coches-panel">
       <HeaderAdmin />
@@ -97,27 +124,9 @@ export const LeerCoches = () => {
       {loading ? (
         <p>Cargando coches...</p>
       ) : (
-        <div className="lista-coches">
-          {cochesUnicos
-            .filter(({ coche, reparaciones }) => {
-              const termino = busqueda.toLowerCase();
-              const coincideBusqueda =
-                coche.Matricula?.toLowerCase().includes(termino) ||
-                coche.usuario?.nombre?.toLowerCase().includes(termino) ||
-                coche.usuario?.apellidos?.toLowerCase().includes(termino) ||
-                reparaciones.some((r) =>
-                  r.mecanico?.Nombre?.toLowerCase().includes(termino)
-                );
-
-              const coincideFecha =
-                fechaFiltro === "" ||
-                reparaciones.some(
-                  (r) => normalizarFecha(r.fechaInicio) === fechaFiltro
-                );
-
-              return coincideBusqueda && coincideFecha;
-            })
-            .map(({ coche, reparaciones }, index) => {
+        <>
+          <div className="lista-coches">
+            {cochesPaginados.map(({ coche, reparaciones }, index) => {
               const reparacionesPendientes = reparaciones.filter(
                 (r) => r.estado !== "Finalizado"
               );
@@ -158,7 +167,23 @@ export const LeerCoches = () => {
                 </div>
               );
             })}
-        </div>
+          </div>
+
+          <div className="paginacion">
+            <button
+              disabled={paginaActual === 1}
+              onClick={() => setPaginaActual(paginaActual - 1)}
+            >
+              Anterior
+            </button>
+            <button
+              disabled={paginaActual === totalPaginas}
+              onClick={() => setPaginaActual(paginaActual + 1)}
+            >
+              Siguiente
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Icon from '../assets/Icon';
-import imagenMecanico from '../assets/images/mecanico.png';
-import itv from '../assets/images/itv.png';
-import notificaciones from '../assets/images/notificaciones.jpeg';
-import recambios from '../assets/images/recambios.png';
+import Icon from '../../assets/Icon';
+import imagenMecanico from '../../assets/images/mecanico.png';
+import itv from '../../assets/images/itv.png';
+import notificaciones from '../../assets/images/notificaciones.jpeg';
+import recambios from '../../assets/images/recambios.png';
 
 export const Carrousel = () => {
   const servicios = [

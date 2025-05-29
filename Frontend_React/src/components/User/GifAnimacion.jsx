@@ -1,5 +1,5 @@
 import React from "react";
-import cocheGif from "../assets/gifs/GifDefinitivo.gif";
+import cocheGif from "../../assets/gifs/GifDefinitivo.gif";
 
 export const GifAnimacion = () => {
   return (

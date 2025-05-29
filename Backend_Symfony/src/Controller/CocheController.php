@@ -8,6 +8,7 @@ use App\Repository\AdministradorRepository;
 use App\Repository\CocheRepository;
 use App\Repository\MarcaRepository;
 use App\Repository\ModeloRepository;
+use App\Repository\TallerRepository;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -205,5 +206,41 @@ final class CocheController extends AbstractController
 
         return new JsonResponse(['mensaje' => 'Coche marcado como devuelto y citas eliminadas']);
     }
+
+    #[Route('/coche/{id}/recibir', name: 'actualizar_coche_estado_taller', methods: ['PATCH'])]
+    public function actualizarEstadoYCoche(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        CocheRepository $cocheRepo,
+        TallerRepository $tallerRepo
+    ): JsonResponse {
+        $coche = $cocheRepo->find($id);
+
+        if (!$coche) {
+            return new JsonResponse(['error' => 'Coche no encontrado'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $nuevoEstado = $data['estado'] ?? null;
+        $idTaller = $data['taller'] ?? null;
+
+        if ($nuevoEstado) {
+            $coche->setEstado($nuevoEstado);
+        }
+
+        if ($idTaller) {
+            $taller = $tallerRepo->find($idTaller);
+            if (!$taller) {
+                return new JsonResponse(['error' => 'Taller no encontrado'], 404);
+            }
+            $coche->setTaller($taller);
+        }
+
+        $em->flush();
+
+        return new JsonResponse(['mensaje' => 'Coche actualizado correctamente']);
+    }
+
 
 }

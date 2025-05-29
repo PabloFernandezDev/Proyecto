@@ -1,5 +1,5 @@
 import React from "react";
-import taller from '../assets/images/taller.png';
+import taller from '../../assets/images/taller.png';
 
 export const Bienvenida = () => {
   return (

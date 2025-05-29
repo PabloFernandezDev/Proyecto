@@ -63,8 +63,13 @@ class Coche
     private Collection $reparaciones;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['coche:read', 'coches:read', 'mecanico:read', 'cita:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'usuario:read'])]
     private ?string $Matricula = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['coche:read'])]
+
+    private ?string $estado = null;
 
 
     public function __construct()
@@ -185,6 +190,18 @@ class Coche
     public function setMatricula(string $Matricula): static
     {
         $this->Matricula = $Matricula;
+
+        return $this;
+    }
+
+    public function getEstado(): ?string
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(string $estado): static
+    {
+        $this->estado = $estado;
 
         return $this;
     }

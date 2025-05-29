@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HeaderAdmin } from "../HeaderAdmin";
+import { HeaderAdmin } from "../Admin/HeaderAdmin";
 import { useNavigate } from "react-router-dom";
 
 export const LeerCochesSuperAdmin = () => {

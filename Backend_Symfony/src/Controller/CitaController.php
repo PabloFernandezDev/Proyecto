@@ -36,7 +36,7 @@ final class CitaController extends AbstractController
         return new JsonResponse($json, 200, [], true);
     }
 
-    #[Route('/citas', name: 'crear_cita', methods: ['POST'])]
+    #[Route('/cita', name: 'crear_cita', methods: ['POST'])]
     public function crearCita(
         Request $request,
         EntityManagerInterface $em,
@@ -171,7 +171,7 @@ final class CitaController extends AbstractController
             }
         }
 
-        if (isset($data['horaEntrega'])) { 
+        if (isset($data['horaEntrega'])) {
             try {
                 $cita->setHora(new \DateTime($data['horaEntrega']));
             } catch (\Exception $e) {
@@ -180,7 +180,13 @@ final class CitaController extends AbstractController
         }
 
 
-        $cita->setEstado("Entregar");
+        if (isset($data['estado'])) {
+            try {
+                $cita->setEstado($data['estado']);
+            } catch (\Exception $e) {
+                return new JsonResponse(['detail' => 'Estado inválido'], 400);
+            }
+        }
 
         $em->flush();
 
@@ -188,31 +194,30 @@ final class CitaController extends AbstractController
     }
 
 
-    #[Route('/update/cita/mail', name: 'notificar_recogida', methods: ['POST'])]
-    public function actualizarCita(Request $request, MailerInterface $mailer): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-        $email = $data['email'] ?? null;
-        $nombre = $data['nombre'] ?? 'cliente';
-
-        if (!$email) {
-            return new JsonResponse(['error' => 'Falta el email'], 400);
+    #[Route('/cita/{id}/consentimiento', name: 'cita_consentimiento', methods: ['PATCH'])]
+    public function actualizarConsentimientoCita(
+        int $id,
+        Request $request,
+        CitaRepository $citaRepository,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $cita = $citaRepository->find($id);
+        if (!$cita) {
+            return new JsonResponse(['error' => 'Cita no encontrada'], 404);
         }
 
-        $correo = (new Email())
-            ->from('carecarenow@gmail.com')
-            ->to($email)
-            ->subject('Tu coche está listo para recoger')
-            ->html("
-            <h2>Hola $nombre,</h2>
-            <p>Te informamos que la reparación de tu coche ha sido completada.</p>
-            <p>Puedes pasar a recogerlo en cualquier momento dentro del horario del taller.</p>
-            <p><strong>¡Gracias por confiar en CareCare Now!</strong></p>
-        ");
+        $data = json_decode($request->getContent(), true);
+        if (!isset($data['consentimientoAceptado'])) {
+            return new JsonResponse(['error' => 'Falta el campo consentimientoAceptado'], 400);
+        }
 
-        $mailer->send($correo);
+        $cita->setConsentimientoAceptado((bool) $data['consentimientoAceptado']);
+        $em->flush();
 
-        return new JsonResponse(['message' => 'Correo enviado correctamente']);
+        return new JsonResponse(['mensaje' => 'Consentimiento actualizado correctamente']);
     }
+
+
+
 
 }
