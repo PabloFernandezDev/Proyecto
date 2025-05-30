@@ -36,15 +36,15 @@ class Mecanico
     private Collection $reparaciones;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['coches:read', 'mecanico:read', 'taller:read'])]
+    #[Groups(['coches:read', 'mecanico:read', 'taller:read', 'leerCoches:read'])]
     private ?string $Nombre = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['coches:read', 'mecanico:read', 'taller:read'])]
+    #[Groups(['coches:read', 'mecanico:read', 'taller:read', 'leerCoches:read'])]
     private ?string $Apellidos = null;
 
     #[ORM\Column]
-    #[Groups(['coches:read', 'mecanico:read', 'taller:read'])]
+    #[Groups(['coches:read', 'mecanico:read', 'taller:read', 'leerCoches:read'])]
     private ?int $NumEmp = null;
 
     #[ORM\Column(length: 255)]

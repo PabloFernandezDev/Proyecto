@@ -238,7 +238,7 @@ final class EmailController extends AbstractController
     }
 
 
-    #[Route('/notificar/recogida', name: 'notificar_recogida', methods: ['POST'])]
+    #[Route('/notificar/recogida', name: 'notificar_recogida_coche', methods: ['POST'])]
     public function notificarRecogida(Request $request, MailerInterface $mailer): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -249,16 +249,35 @@ final class EmailController extends AbstractController
             return new JsonResponse(['error' => 'Falta el email'], 400);
         }
 
+        $htmlContent = "
+    <div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+        <div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+            <div style='background-color: #d60000; color: white; padding: 20px; text-align: center;'>
+                <h2>Tu coche está listo para recoger</h2>
+            </div>
+            <div style='padding: 30px;'>
+                <p style='font-size: 16px;'>Hola <strong>$nombre</strong>,</p>
+                <p style='font-size: 16px;'>Nos complace informarte de que tu vehículo ha sido reparado correctamente y ya puedes venir a recogerlo.</p>
+                <p style='font-size: 14px;'>Gracias por confiar en nosotros.</p>
+            </div>
+            <div style='background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #888;'>
+                © " . date('Y') . " CareCareNow. Todos los derechos reservados.
+            </div>
+        </div>
+    </div>
+    ";
+
         $correo = (new Email())
             ->from('carecarenow@gmail.com')
             ->to($email)
             ->subject('Tu coche está listo para recoger')
-            ->text("Hola $nombre, tu coche ya está reparado y listo para ser recogido. Puedes venir cuando desees.");
+            ->html($htmlContent);
 
         $mailer->send($correo);
 
         return new JsonResponse(['message' => 'Correo enviado correctamente']);
     }
+
 
 
     #[Route('/mail/cita/actualizada', name: 'notificar_actualizacion_cita', methods: ['POST'])]

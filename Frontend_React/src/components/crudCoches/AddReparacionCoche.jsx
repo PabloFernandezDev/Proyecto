@@ -18,7 +18,7 @@ export const AddReparacionCoche = () => {
   const [loading, setLoading] = useState(true);
   const [taller, setTaller] = useState(0);
   const [admin, setAdmin] = useState(null);
-  console.log(admin)
+  console.log(admin);
   const horasDisponibles = [
     "09:00",
     "09:30",
@@ -42,15 +42,19 @@ export const AddReparacionCoche = () => {
     "19:30",
   ];
 
+  function formatearFecha(fechaISO) {
+    const fecha = new Date(fechaISO);
+    const dia = String(fecha.getDate()).padStart(2, "0");
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+    const anio = fecha.getFullYear();
+    return `${dia}/${mes}/${anio}`;
+  }
+
   useEffect(() => {
     const admin = JSON.parse(localStorage.getItem("Admin"));
-    console.log(admin)
     setAdmin(admin);
     const Taller = admin?.taller;
     setTaller(Taller);
-
-    const hoy = new Date().toISOString().split("T")[0];
-    setFechaEntrega(hoy);
 
     const cargarDatos = async () => {
       try {
@@ -61,10 +65,10 @@ export const AddReparacionCoche = () => {
         );
         if (!resCita.ok) throw new Error("Error al cargar la cita");
         const cita = await resCita.json();
-
+        console.log(cita);
         setUsuario(cita.usuario);
         setCoche(cita.usuario?.coches?.[0] || null);
-        setFechaInicio(cita.fecha);
+        setFechaEntrega(cita.fecha.split("T")[0]);
         setHoraEntrega(cita.hora?.split("T")[1]?.slice(0, 5) || "");
 
         const tareasDesdeFactura = (cita.facturas?.[0]?.lineaFactura || []).map(
@@ -137,6 +141,12 @@ export const AddReparacionCoche = () => {
 
       if (!actualizarCita.ok) throw new Error("Error al actualizar la cita.");
 
+      await fetch(`${import.meta.env.VITE_API_URL}/coche/${coche.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado: "Asignado" }),
+      });
+
       await fetch(`${import.meta.env.VITE_API_URL}/notificacion`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -155,7 +165,7 @@ export const AddReparacionCoche = () => {
           nombre: `${usuario.nombre} ${usuario.apellidos}`,
           fecha: fechaEntrega,
           hora: horaEntrega,
-          provincia: admin.provincia?.nombre || "Desconocida",
+          provincia: admin?.provincia?.nombre || "Desconocida",
           direccion: taller?.nombre || "Dirección no disponible",
         }),
       });
@@ -174,20 +184,6 @@ export const AddReparacionCoche = () => {
     if (index === tareas.length - 1 && value.trim() !== "") {
       setTareas([...nuevasTareas, { descripcion: "" }]);
     }
-  };
-
-  const enviarCorreoRecogida = async () => {
-    const admin = JSON.parse(localStorage.getItem("Admin"));
-    const direccion = admin?.taller?.nombre;
-    await fetch(`${import.meta.env.VITE_API_URL}/mail/cita/recoger`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: usuario?.id,
-        fecha: fechaEntrega,
-        direccion: direccion,
-      }),
-    });
   };
 
   return (

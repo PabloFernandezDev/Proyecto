@@ -26,7 +26,6 @@ export const DashBoard = () => {
 
   const handleVerFacturas = () => navigate("/home/facturas");
   const handleAddCar = () => navigate("/home/addcoche");
-
   const marcarComoLeido = async (id) => {
     try {
       await fetch(
@@ -168,7 +167,9 @@ export const DashBoard = () => {
               "Tu coche está perfectamente"
             ) : data.taller && data.estado === "Revisión" ? (
               "Su coche está siendo revisado. Se le notificará el presupuesto lo antes posible."
-            ) : data.taller && data.estado === "Reparando" ? (
+            ) : data.taller && data.estado === "Asignado" ? (
+              "Le he asignado un mecánico a su coche. Se le notificará cuando el mécanico comience a reparar su coche."
+            ): data.taller && data.estado === "Reparando" ? (
               <GifAnimacion />
             ) : data.taller && data.estado === "Listo" ? (
               "✅ Su coche ha sido reparado. Puede pasar a recogerlo."

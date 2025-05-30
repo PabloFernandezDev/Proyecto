@@ -14,6 +14,7 @@ export const DetalleCita = () => {
   const [loading, setLoading] = useState(true);
   const [admin, setAdmin] = useState(null);
 
+  console.log(admin)
   const horasDisponibles = [
     "09:00",
     "09:30",
@@ -148,7 +149,7 @@ export const DetalleCita = () => {
             nombre: `${cita.usuario.nombre} ${cita.usuario.apellidos}`,
             fecha: fechaEntrega,
             hora: horaEntrega,
-            provincia: cita.usuario.provincia?.nombre || "Desconocida",
+            provincia: admin?.provincia?.nombre || "Desconocida",
             direccion: admin?.taller?.nombre || "Dirección no disponible",
           }),
         }

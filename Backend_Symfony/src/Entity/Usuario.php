@@ -14,19 +14,19 @@ class Usuario
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['usuario:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read', ])]
+    #[Groups(['usuario:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read','leerCoches:read' ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read', 'leerCoches:read'])]
     private ?string $nombre = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read', 'leerCoches:read'])]
     private ?string $apellidos = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'factura:read', 'leerCoches:read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 200)]
@@ -39,7 +39,7 @@ class Usuario
     private ?string $telefono = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['usuario:read', 'coche:read', 'mecanico:read', 'cita:read', 'factura:read'])]
+    #[Groups(['usuario:read', 'coche:read', 'mecanico:read', 'cita:read', 'factura:read', 'leerCoches:read'])]
 
     private ?string $dni = null;
 

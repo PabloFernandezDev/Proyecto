@@ -15,17 +15,17 @@ class Reparaciones
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['coches:read', 'mecanico:read'])]
+    #[Groups(['coches:read', 'mecanico:read', 'leerCoches:read'])]
 
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read', 'leerCoches:read'])]
 
     private ?string $estado = null;
 
     #[ORM\ManyToOne(inversedBy: 'reparaciones')]
-    #[Groups(['mecanico:read'])]
+    #[Groups(['mecanico:read', 'coches:read', 'leerCoches:read'])]
     private ?Mecanico $mecanico = null;
 
 
@@ -36,11 +36,11 @@ class Reparaciones
     private ?Coche $coche = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['coches:read', 'mecanico:read'])]
+    #[Groups(['coches:read', 'mecanico:read', 'leerCoches:read'])]
     private ?\DateTimeInterface $fechaInicio = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['coches:read', 'mecanico:read'])]
+    #[Groups(['coches:read', 'mecanico:read', 'leerCoches:read'])]
     private ?\DateTimeInterface $fechaFin = null;
 
     #[ORM\Column(length: 255)]

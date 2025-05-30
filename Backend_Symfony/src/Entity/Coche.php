@@ -17,12 +17,12 @@ class Coche
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['coche:read', 'coches:read', 'cita:read', 'mecanico:read'])]
+    #[Groups(['coche:read', 'coches:read', 'cita:read', 'mecanico:read', 'leerCoches:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'coches')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read', 'leerCoches:read'])]
     private ?Usuario $usuario = null;
 
     #[ORM\ManyToOne(inversedBy: 'coches')]
@@ -46,7 +46,7 @@ class Coche
         mimeTypes: ["image/jpeg", "image/png", "image/webp"],
         mimeTypesMessage: "Por favor sube una imagen válida (JPG, PNG, WEBP)"
     )]
-    #[Groups(['coche:read', 'coches:read', 'mecanico:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read', 'leerCoches:read'])]
     private ?string $imagen = null;
 
 
@@ -58,16 +58,16 @@ class Coche
      * @var Collection<int, Reparaciones>
      */
     #[ORM\OneToMany(mappedBy: 'coche', targetEntity: Reparaciones::class, cascade: ['remove'], orphanRemoval: true)]
-    #[Groups(['coches:read'])]
+    #[Groups(['coches:read', 'mecanico:read', 'leerCoches:read'])]
 
     private Collection $reparaciones;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'usuario:read'])]
+    #[Groups(['coche:read', 'coches:read', 'mecanico:read', 'cita:read', 'usuario:read', 'leerCoches:read'])]
     private ?string $Matricula = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['coche:read'])]
+    #[Groups(['coche:read', 'mecanico:read', 'leerCoches:read'])]
 
     private ?string $estado = null;
 

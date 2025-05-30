@@ -9,7 +9,7 @@ export const DetalleCoche = () => {
   const [loading, setLoading] = useState(true);
   const [reparacionActiva, setReparacionActiva] = useState(false);
   const [mensajeExito, setMensajeExito] = useState("");
-  console.log(coche)
+
   useEffect(() => {
     const obtenerCoche = async () => {
       try {
@@ -35,73 +35,81 @@ export const DetalleCoche = () => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/reparacion/${id}/estado`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ estado: nuevoEstado }),
       });
 
-      if (!res.ok) {
-        console.error("Error del servidor:", await res.text());
-        alert("No se pudo actualizar el estado.");
-        return false;
-      }
-
+      if (!res.ok) throw new Error(await res.text());
       return true;
     } catch (error) {
-      console.error("Error de red:", error);
-      alert("Error al conectar con el servidor.");
+      console.error("Error al actualizar estado:", error);
       return false;
     }
   };
 
-  const handleComenzar = () => {
-    localStorage.removeItem("CocheReparado");
-    localStorage.setItem("estadoVehiculo", "🔧 Tu coche está siendo reparado");
+  const handleComenzar = async () => {
     setReparacionActiva(true);
+
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/coche/${coche.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado: "Reparando" }),
+      });
+
+      await fetch(`${import.meta.env.VITE_API_URL}/notificacion`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId: coche.usuario.id,
+          mensaje: `Tu coche ha comenzado el proceso de reparación.`,
+          tipo: "reparacion_iniciada",
+        }),
+      });
+    } catch (error) {
+      console.error("Error en comenzar reparación:", error);
+      alert("No se pudo iniciar la reparación correctamente.");
+    }
   };
 
   const handleFinalizarGlobal = async () => {
-    localStorage.removeItem("estadoVehiculo");
-    localStorage.setItem(
-      "CocheReparado",
-      "✅ Tu coche está listo para recoger"
-    );
     setReparacionActiva(false);
 
     try {
-      const facturaRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/factura/generar/${coche.usuario.id}`,
-        {
-          method: "POST",
-        }
-      );
+      await fetch(`${import.meta.env.VITE_API_URL}/coche/${coche.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado: "Listo" }),
+      });
 
-      if (!facturaRes.ok) {
-        const data = await facturaRes.json();
-        console.error("Error al generar la factura:", data.error);
-      }
-
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/notificar/recogida`, {
+      const resCorreo = await fetch(`${import.meta.env.VITE_API_URL}/notificar/recogida`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: coche.usuario?.email,
           nombre: coche.usuario?.nombre,
         }),
       });
 
-      const data = await res.json();
-      if (res.ok) {
-        setMensajeExito("Correo enviado correctamente.");
+      await fetch(`${import.meta.env.VITE_API_URL}/notificacion`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId: coche.usuario.id,
+          mensaje: "Tu coche ya está reparado y listo para ser recogido.",
+          tipo: "coche_listo",
+        }),
+      });
+
+      if (resCorreo.ok) {
+        setMensajeExito("Usuario notificado");
       } else {
-        console.error("Error al enviar correo:", data.error);
+        const data = await resCorreo.json();
         alert("No se pudo enviar el correo al usuario.");
+        console.error("Error correo:", data.error);
       }
     } catch (error) {
-      console.error("Error en el proceso final:", error);
+      console.error("Error al finalizar:", error);
       alert("Hubo un problema al finalizar la reparación.");
     }
   };
@@ -109,7 +117,6 @@ export const DetalleCoche = () => {
   const handleFinalizar = async (index) => {
     const id = reparaciones[index].id;
     const ok = await actualizarEstado(id, "Finalizado");
-
     if (ok) {
       const nuevas = [...reparaciones];
       nuevas[index].estado = "Finalizado";
@@ -129,19 +136,13 @@ export const DetalleCoche = () => {
     <div>
       <header className="admin-header">
         <span>Detalles del Coche</span>
-        <button className="volver" onClick={() => navigate(-1)}>
-          Volver
-        </button>
+        <button className="volver" onClick={() => navigate(-1)}>Volver</button>
       </header>
+
       {mensajeExito && (
         <div className="alerta__login alerta__correo">
           <span>{mensajeExito}</span>
-          <button
-            className="alerta__login-cerrar"
-            onClick={() => setMensajeExito("")}
-          >
-            X
-          </button>
+          <button className="alerta__login-cerrar" onClick={() => setMensajeExito("")}>X</button>
         </div>
       )}
 
@@ -149,32 +150,16 @@ export const DetalleCoche = () => {
         <div className="coche-reparacion-wrapper">
           <div className="coche-detalle-card">
             <img
-              src={
-                coche.imagen
-                  ? `http://127.0.0.1:8000/uploads/${coche.imagen}`
-                  : "/placeholder.jpg"
-              }
+              src={coche.imagen ? `http://127.0.0.1:8000/uploads/${coche.imagen}` : "/placeholder.jpg"}
               alt="Coche"
               className="imagen-detalle"
             />
-
             <div className="info">
-              <p>
-                <strong>Cliente:</strong> {coche.usuario?.nombre}{" "}
-                {coche.usuario?.apellidos}
-              </p>
-              <p>
-                <strong>Matrícula:</strong> {coche.Matricula}
-              </p>
-              <p>
-                <strong>Email:</strong> {coche.usuario?.email}
-              </p>
-              <p>
-                <strong>Teléfono:</strong> {coche.usuario?.telefono}
-              </p>
-              <p>
-                <strong>Año:</strong> {coche.año || "No especificado"}
-              </p>
+              <p><strong>Cliente:</strong> {coche.usuario?.nombre} {coche.usuario?.apellidos}</p>
+              <p><strong>Matrícula:</strong> {coche.Matricula}</p>
+              <p><strong>Email:</strong> {coche.usuario?.email}</p>
+              <p><strong>Teléfono:</strong> {coche.usuario?.telefono}</p>
+              <p><strong>Año:</strong> {coche.año || "No especificado"}</p>
             </div>
           </div>
 
@@ -185,10 +170,7 @@ export const DetalleCoche = () => {
               <button className="btn-comenzar-global" onClick={handleComenzar}>
                 Comenzar Reparación
               </button>
-              <button
-                className="btn-finalizar-global"
-                onClick={handleFinalizarGlobal}
-              >
+              <button className="btn-finalizar-global" onClick={handleFinalizarGlobal}>
                 Terminar Reparación
               </button>
             </div>
@@ -196,27 +178,11 @@ export const DetalleCoche = () => {
             {reparaciones.length > 0 ? (
               reparaciones.map((rep, index) => (
                 <div key={rep.id} className="reparacion-card">
-                  <p>
-                    <strong>Estado:</strong> {rep.estado}
-                  </p>
-                  <p>
-                    <strong>Mecánico:</strong>{" "}
-                    {rep.mecanico
-                      ? `${rep.mecanico.Nombre} ${rep.mecanico.Apellidos}`
-                      : "No asignado"}
-                  </p>
-                  <p>
-                    <strong>Descripción:</strong>{" "}
-                    {rep.descripcion || "No hay descripción"}
-                  </p>
-                  <p>
-                    <strong>Fecha Entrada:</strong>{" "}
-                    {formatearFecha(rep.fechaInicio)}
-                  </p>
-                  <p>
-                    <strong>Fecha Entrega:</strong>{" "}
-                    {formatearFecha(rep.fechaFin)}
-                  </p>
+                  <p><strong>Estado:</strong> {rep.estado}</p>
+                  <p><strong>Mecánico:</strong> {rep.mecanico ? `${rep.mecanico.Nombre} ${rep.mecanico.Apellidos}` : "No asignado"}</p>
+                  <p><strong>Descripción:</strong> {rep.descripcion || "No hay descripción"}</p>
+                  <p><strong>Fecha Entrada:</strong> {formatearFecha(rep.fechaInicio)}</p>
+                  <p><strong>Fecha Entrega:</strong> {formatearFecha(rep.fechaFin)}</p>
                   <div className="acciones">
                     <button
                       className="btn-actualizar"

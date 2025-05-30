@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Coche;
+use App\Entity\Notificacion;
 use App\Entity\Usuario;
 use App\Repository\AdministradorRepository;
 use App\Repository\CocheRepository;
 use App\Repository\MarcaRepository;
 use App\Repository\ModeloRepository;
+use App\Repository\NotificacionRepository;
 use App\Repository\TallerRepository;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +19,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -120,10 +124,11 @@ final class CocheController extends AbstractController
         return new JsonResponse(['detail' => 'Coche eliminado correctamente'], 200);
     }
 
-    #[Route('/admin/{id}/coches', name: 'admin_reparaciones', methods: ['GET'])]
-    public function reparacionesPorAdmin(
+    #[Route('/admin/{id}/coches', name: 'admin_coches_y_reparaciones', methods: ['GET'])]
+    public function cochesYTareasPorAdmin(
         int $id,
         AdministradorRepository $adminRepo,
+        CocheRepository $cocheRepo,
         SerializerInterface $serializer
     ): JsonResponse {
         $admin = $adminRepo->find($id);
@@ -132,27 +137,23 @@ final class CocheController extends AbstractController
             return $this->json(['detail' => 'Administrador no encontrado'], 404);
         }
 
-        $mecanicos = $admin->getMecanicos();
-
-        $todasReparaciones = [];
-
-        foreach ($mecanicos as $mecanico) {
-            foreach ($mecanico->getReparaciones() as $reparacion) {
-                $reparacion->getMecanico();
-                $todasReparaciones[] = $reparacion;
-            }
+        $taller = $admin->getTaller();
+        if (!$taller) {
+            return $this->json(['detail' => 'Este administrador no tiene taller asignado'], 400);
         }
 
+        $coches = $cocheRepo->findBy(['taller' => $taller]);
 
         $context = [
             'circular_reference_handler' => fn($object, string $format, array $context) => $object->getId(),
-            'groups' => ['mecanico:read'],
+            'groups' => ['leerCoches:read'],
             'enable_max_depth' => true,
         ];
 
-        $json = $serializer->serialize($todasReparaciones, 'json', $context);
+        $json = $serializer->serialize($coches, 'json', $context);
         return new JsonResponse($json, 200, [], true);
     }
+
 
 
 
@@ -180,7 +181,9 @@ final class CocheController extends AbstractController
     public function devolverCoche(
         int $id,
         EntityManagerInterface $em,
-        CocheRepository $cocheRepository
+        CocheRepository $cocheRepository,
+        NotificacionRepository $notificacionRepository,
+        MailerInterface $mailer
     ): JsonResponse {
         $coche = $cocheRepository->find($id);
 
@@ -194,18 +197,47 @@ final class CocheController extends AbstractController
             $em->remove($reparacion);
         }
 
-        if ($usuario) {
-            foreach ($usuario->getCitas() as $cita) {
-                $em->remove($cita);
-            }
-        }
-
         $coche->setTaller(null);
+        $coche->setEstado(null);
+
+        $notificacion = new Notificacion();
+        $notificacion->setUsuario($usuario);
+        $notificacion->setLeido(false);
+        $notificacion->setMensaje('Su coche ha sido devuelto. Gracias por confiar en nosotros.');
+        $notificacion->setFecha(new \DateTime());
+        $em->persist($notificacion);
+
+        if ($usuario && $usuario->getEmail()) {
+            $correo = (new Email())
+                ->from('carecarenow@gmail.com')
+                ->to($usuario->getEmail())
+                ->subject('Tu coche ha sido devuelto')
+                ->html("
+                <div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+                    <div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+                        <div style='background-color: #d60000; color: white; padding: 20px; text-align: center;'>
+                            <h2>CareCareNow</h2>
+                        </div>
+                        <div style='padding: 30px;'>
+                            <p style='font-size: 16px;'>Hola <strong>{$usuario->getNombre()} {$usuario->getApellidos()}</strong>,</p>
+                            <p style='font-size: 16px;'>Tu coche ha sido devuelto. Gracias por confiar en nosotros.</p>
+                            <p style='font-size: 16px;'>Puedes volver cuando lo necesites.</p>
+                        </div>
+                        <div style='background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #888;'>
+                            © " . date('Y') . " CareCareNow. Todos los derechos reservados.
+                        </div>
+                    </div>
+                </div>
+            ");
+
+            $mailer->send($correo);
+        }
 
         $em->flush();
 
-        return new JsonResponse(['mensaje' => 'Coche marcado como devuelto y citas eliminadas']);
+        return new JsonResponse(['success' => true, 'mensaje' => 'Coche devuelto correctamente']);
     }
+
 
     #[Route('/coche/{id}/recibir', name: 'actualizar_coche_estado_taller', methods: ['PATCH'])]
     public function actualizarEstadoYCoche(
@@ -241,6 +273,24 @@ final class CocheController extends AbstractController
 
         return new JsonResponse(['mensaje' => 'Coche actualizado correctamente']);
     }
+
+    #[Route('/coche/{id}', name: 'actualizar_coche_estado_asignado', methods: ['PATCH'])]
+    public function updateCocheEstado(int $id, Request $request, CocheRepository $repo, EntityManagerInterface $em): JsonResponse
+    {
+        $coche = $repo->find($id);
+        if (!$coche) {
+            return new JsonResponse(['detail' => 'Coche no encontrado'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        if (isset($data['estado'])) {
+            $coche->setEstado($data['estado']);
+        }
+
+        $em->flush();
+        return new JsonResponse(['message' => 'Estado del coche actualizado correctamente']);
+    }
+
 
 
 }
