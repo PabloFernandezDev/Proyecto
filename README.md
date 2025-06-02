@@ -74,6 +74,8 @@ DATABASE_URL="mysql://root:password@127.0.0.1:3306/proyecto?serverVersion=10.4.3
 #  5: Versión del servidor de base de datos
 ```
 
+Modifica estos valores segun tu conexión a la base de datos
+
 4. Crea la base de datos:
 
 ```bash
