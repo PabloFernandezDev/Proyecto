@@ -9,8 +9,7 @@ Repositorio: [https://github.com/PabloFernandezDev/Proyecto](https://github.com/
 - [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Configuración del Backend](#-configuración-del-backend)
 - [Configuración del Frontend](#-configuración-del-frontend)
-- [Uso](#-uso)
-- [Desarrollo](#-desarrollo)
+- [Acceso](#-acceso)
 
 ## 🎯 Descripción
 
