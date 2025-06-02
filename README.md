@@ -9,8 +9,7 @@ Repositorio: [https://github.com/PabloFernandezDev/Proyecto](https://github.com/
 - [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Configuración del Backend](#-configuración-del-backend)
 - [Configuración del Frontend](#-configuración-del-frontend)
-- [Uso](#-uso)
-- [Desarrollo](#-desarrollo)
+- [Acceso](#-acceso)
 
 ## 🎯 Descripción
 
@@ -62,7 +61,6 @@ cd Backend_Symfony
 composer install
 ```
 
-
 3. Configura la conexión a la base de datos en el archivo `.env`. Ejemplo:
 
 ```env
@@ -75,7 +73,7 @@ DATABASE_URL="mysql://root:password@127.0.0.1:3306/proyecto?serverVersion=10.4.3
 #  4: Nombre de la base de datos
 #  5: Versión del servidor de base de datos
 ```
- 
+
 4. Crea la base de datos:
 
 ```bash
