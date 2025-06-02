@@ -9,9 +9,8 @@ export const LeerAdmins = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const elementosPorPagina = 10;
 
-    const navigate = useNavigate();
-  
-    
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/admins`)
       .then((res) => res.json())
@@ -71,22 +70,11 @@ export const LeerAdmins = () => {
       <HeaderAdmin />
       <div className="leer-users">
         <h2>Administradores</h2>
-        <button
-          className="btn-volver"
-          onClick={() => navigate("/employees/admin/panel")}
-        >
-          Volver al Panel
-        </button>
-        <button
-          className="btn-crear"
-          onClick={() => navigate("/employees/crud/admins/addAdmin")}
-        >
-          Añadir Administrador
-        </button>
+
         <div className="filtros-superiores">
           <input
             type="text"
-            placeholder="Buscar por nombre, apellidos o número de empleado"
+            placeholder="Buscar por nombre,número de empleado"
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
             className="buscador"
@@ -104,6 +92,19 @@ export const LeerAdmins = () => {
               </option>
             ))}
           </select>
+
+          <button
+            className="btn-volver"
+            onClick={() => navigate("/employees/admin/panel")}
+          >
+            Volver
+          </button>
+          <button
+            className="btn-crear"
+            onClick={() => navigate("/employees/crud/admins/addAdmin")}
+          >
+            Añadir Administrador
+          </button>
         </div>
 
         <div className="tabla-contenedor">

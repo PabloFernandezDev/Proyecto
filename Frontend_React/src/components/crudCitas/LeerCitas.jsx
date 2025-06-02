@@ -11,7 +11,6 @@ export const LeerCitas = () => {
   const [busqueda, setBusqueda] = useState("");
   const [fechaFiltro, setFechaFiltro] = useState("");
   const [operacionExitosa, setOperacionExitosa] = useState(false);
-  const [vista, setVista] = useState("pendientes");
   const [paginaActual, setPaginaActual] = useState(1);
   const citasPorPagina = 10;
 
@@ -51,32 +50,26 @@ export const LeerCitas = () => {
     }
 
     if (location.state?.operacionExitosa) {
-      setOperacionExitosa(true);
+      setOperacionExitosa(location.state.operacionExitosa);
       window.history.replaceState({}, document.title);
     }
   }, []);
 
-  const citasFiltradas = citas.filter((cita) => {
-    const termino = busqueda.toLowerCase();
-    const coincideBusqueda =
-      cita.usuario?.nombre?.toLowerCase().includes(termino) ||
-      cita.usuario?.apellidos?.toLowerCase().includes(termino) ||
-      (cita.usuario?.coches?.[0]?.Matricula || "")
-        .toLowerCase()
-        .includes(termino);
-    const coincideFecha =
-      fechaFiltro === "" || formatearFecha(cita.fecha) === fechaFiltro;
+  const citasFiltradas = citas
+    .filter((cita) => {
+      const termino = busqueda.toLowerCase();
+      const coincideBusqueda =
+        cita.usuario?.nombre?.toLowerCase().includes(termino) ||
+        cita.usuario?.apellidos?.toLowerCase().includes(termino) ||
+        (cita.usuario?.coches?.[0]?.Matricula || "")
+          .toLowerCase()
+          .includes(termino);
+      const coincideFecha =
+        fechaFiltro === "" || formatearFecha(cita.fecha) === fechaFiltro;
 
-    const esPendiente = cita.estado !== "Entregar";
-    const esRecogida = cita.estado === "Entregar";
-
-    return (
-      coincideBusqueda &&
-      coincideFecha &&
-      ((vista === "pendientes" && esPendiente) ||
-        (vista === "recoger" && esRecogida))
-    );
-  });
+      return coincideBusqueda && coincideFecha;
+    })
+    .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
   const totalPaginas = Math.ceil(citasFiltradas.length / citasPorPagina);
   const indiceInicio = (paginaActual - 1) * citasPorPagina;
@@ -111,6 +104,20 @@ export const LeerCitas = () => {
       <HeaderAdmin />
       <div className="leer-users">
         <h2>Citas del Taller</h2>
+        {operacionExitosa === "presupuesto" && (
+          <div className="alerta__login alerta__citas">
+            <span>Presupuesto creado y enviado correctamente.</span>
+            <button onClick={() => setOperacionExitosa(false)}>X</button>
+          </div>
+        )}
+
+        {operacionExitosa === "cita" && (
+          <div className="alerta__login alerta__citas">
+            <span>Cita actualizada correctamente.</span>
+            <button onClick={() => setOperacionExitosa(false)}>X</button>
+          </div>
+        )}
+
         <div className="filtros-superiores">
           <input
             type="text"
@@ -125,12 +132,6 @@ export const LeerCitas = () => {
             onChange={(e) => setFechaFiltro(e.target.value)}
             className="selector-provincia"
           />
-          <button onClick={() => setVista("pendientes")} className="btn-volver">
-            Recibir
-          </button>
-          <button onClick={() => setVista("recoger")} className="btn-volver">
-            Entregar
-          </button>
           <button
             onClick={() => navigate("/employees/admin/panel")}
             className="btn-volver"
@@ -138,13 +139,6 @@ export const LeerCitas = () => {
             Volver
           </button>
         </div>
-
-        {operacionExitosa && (
-          <div className="alerta__login alerta__citas">
-            <span>¡Operación con éxito!</span>
-            <button onClick={() => setOperacionExitosa(false)}>X</button>
-          </div>
-        )}
 
         {loading ? (
           <p>Cargando citas...</p>
@@ -187,7 +181,7 @@ export const LeerCitas = () => {
                           ? "Aceptado"
                           : "No aceptado"}
                       </td>
-                      <td>
+                      <td className="cita-botones">
                         <button
                           onClick={() =>
                             navigate(`/employees/crud/citas/${cita.id}/detalle`)

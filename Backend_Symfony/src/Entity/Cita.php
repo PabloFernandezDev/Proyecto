@@ -47,12 +47,6 @@ class Cita
     #[Groups(['factura:read', 'cita:read'])]
     private bool $consentimientoAceptado = false;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $fechaConsentimiento = null;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $presupuestoPdf = null;
-
     /**
      * @var Collection<int, Factura>
      */
@@ -149,28 +143,6 @@ class Cita
     public function setConsentimientoAceptado(bool $consentimientoAceptado): self
     {
         $this->consentimientoAceptado = $consentimientoAceptado;
-        return $this;
-    }
-
-    public function getFechaConsentimiento(): ?\DateTimeInterface
-    {
-        return $this->fechaConsentimiento;
-    }
-
-    public function setFechaConsentimiento(?\DateTimeInterface $fechaConsentimiento): self
-    {
-        $this->fechaConsentimiento = $fechaConsentimiento;
-        return $this;
-    }
-
-    public function getPresupuestoPdf(): ?string
-    {
-        return $this->presupuestoPdf;
-    }
-
-    public function setPresupuestoPdf(?string $presupuestoPdf): self
-    {
-        $this->presupuestoPdf = $presupuestoPdf;
         return $this;
     }
 

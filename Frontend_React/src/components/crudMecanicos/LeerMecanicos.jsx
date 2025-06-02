@@ -88,12 +88,7 @@ export const LeerMecanicos = () => {
       <HeaderAdmin />
       <div className="leer-users">
         <h2>Todos los Mecánicos</h2>
-        <button
-          className="btn-volver"
-          onClick={() => navigate("/employees/admin/panel")}
-        >
-          Volver al Panel
-        </button>
+        
         <div className="filtros-superiores">
           <input
             type="text"
@@ -115,7 +110,13 @@ export const LeerMecanicos = () => {
               </option>
             ))}
           </select>
-          <button className="btn-volver" onClick={() => navigate("/employees/crud/mecanicos/addMecanico")}>
+          <button
+          className="btn-volver"
+          onClick={() => navigate("/employees/admin/panel")}
+        >
+          Volver
+        </button>
+          <button className="btn-crear" onClick={() => navigate("/employees/crud/mecanicos/addMecanico")}>
           Añadir Mecanico
         </button>
         </div>

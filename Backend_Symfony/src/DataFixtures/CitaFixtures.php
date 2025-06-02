@@ -18,8 +18,8 @@ class CitaFixtures extends Fixture implements DependentFixtureInterface
 
         for ($i = 0; $i < 10; $i++) {
             $cita = new Cita();
-            $usuarioRef = $this->getReference('usuario_' . ($i % 5), Usuario::class); // 5 usuarios
-            $provinciaRef = $this->getReference('Provincia-Madrid', Provincia::class); // Usa Madrid como ejemplo
+            $usuarioRef = $this->getReference('usuario_' . ($i % 5), Usuario::class); 
+            $provinciaRef = $this->getReference('Provincia-Madrid', Provincia::class); 
 
             $cita->setUsuario($usuarioRef);
             $cita->setProvincia($provinciaRef);

@@ -182,7 +182,6 @@ final class CocheController extends AbstractController
         int $id,
         EntityManagerInterface $em,
         CocheRepository $cocheRepository,
-        NotificacionRepository $notificacionRepository,
         MailerInterface $mailer
     ): JsonResponse {
         $coche = $cocheRepository->find($id);
@@ -198,11 +197,12 @@ final class CocheController extends AbstractController
         }
 
         $coche->setTaller(null);
-        $coche->setEstado(null);
+        $coche->setEstado('');
 
         $notificacion = new Notificacion();
         $notificacion->setUsuario($usuario);
         $notificacion->setLeido(false);
+        $notificacion->setTipo('entregar_coche');
         $notificacion->setMensaje('Su coche ha sido devuelto. Gracias por confiar en nosotros.');
         $notificacion->setFecha(new \DateTime());
         $em->persist($notificacion);

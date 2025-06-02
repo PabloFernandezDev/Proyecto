@@ -216,7 +216,7 @@ export const FormCita = () => {
             required
           />
 
-          <button type="submit">Enviar Cita</button>
+          <button className="boton login__boton" type="submit">Enviar Cita</button>
         </form>
       </div>
     </div>

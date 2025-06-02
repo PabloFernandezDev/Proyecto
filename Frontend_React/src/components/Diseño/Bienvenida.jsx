@@ -9,7 +9,7 @@ export const Bienvenida = () => {
           <img src={taller} alt="Taller mecánico" />
         </figure>
         <div className="bienvenida__texto">
-          <h2 className="bienvenida__titulo">Bienvenido a CarCareNow+</h2>
+          <h2 className="bienvenida__titulo">Bienvenido a CarCareNow</h2>
           <p>
             En <b>CarCareNow</b> modernizamos tu experiencia con el taller mecánico. Ya no tendrás que 
             llamar o esperar por respuestas: te informamos de cada paso en tiempo real, desde el diagnóstico 

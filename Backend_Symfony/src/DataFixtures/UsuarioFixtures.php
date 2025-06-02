@@ -50,6 +50,46 @@ class UsuarioFixtures extends Fixture
                 'password'  => '1234',
                 'telefono'  => '600999000',
                 'dni'       => '56789012E'
+            ],
+            [
+                'nombre'    => 'Sofía',
+                'apellidos' => 'Ramírez Ortega',
+                'email'     => 'sofia.ramirez@example.com',
+                'password'  => '1234',
+                'telefono'  => '601111222',
+                'dni'       => '67890123F'
+            ],
+            [
+                'nombre'    => 'David',
+                'apellidos' => 'Navarro Torres',
+                'email'     => 'david.navarro@example.com',
+                'password'  => '1234',
+                'telefono'  => '601333444',
+                'dni'       => '78901234G'
+            ],
+            [
+                'nombre'    => 'Laura',
+                'apellidos' => 'Serrano Díaz',
+                'email'     => 'laura.serrano@example.com',
+                'password'  => '1234',
+                'telefono'  => '601555666',
+                'dni'       => '89012345H'
+            ],
+            [
+                'nombre'    => 'Miguel',
+                'apellidos' => 'Vega Morales',
+                'email'     => 'miguel.vega@example.com',
+                'password'  => '1234',
+                'telefono'  => '601777888',
+                'dni'       => '90123456J'
+            ],
+            [
+                'nombre'    => 'Elena',
+                'apellidos' => 'Castro Nieto',
+                'email'     => 'elena.castro@example.com',
+                'password'  => '1234',
+                'telefono'  => '601999000',
+                'dni'       => '01234567K'
             ]
         ];
 

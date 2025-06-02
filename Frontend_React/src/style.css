@@ -12,6 +12,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 /* Botones globales */
@@ -37,6 +38,12 @@ button[type="button"]:hover {
   opacity: 0.9;
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* Botones por color */
 .boton--principal {
   background-color: var(--color_header);
@@ -48,7 +55,6 @@ button[type="button"]:hover {
   color: white;
 }
 
-
 .boton--rojo {
   background-color: #dc3545;
   color: white;
@@ -58,12 +64,13 @@ button[type="button"]:hover {
 .navbar {
   display: flex;
   align-items: center;
-  padding: 0.5rem;
+  padding: 0.8rem;
   background-color: var(--color_header);
   border-radius: 0.5rem;
   color: var(--color_blanco);
-  margin: 0.1rem;  
-  
+  margin: 0.1rem;
+  gap: 5rem;
+  width: 99%;
 }
 
 .navbar a {
@@ -76,6 +83,8 @@ button[type="button"]:hover {
 
 .navbar-enlaces {
   display: flex;
+  width: 100%;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -85,6 +94,11 @@ button[type="button"]:hover {
   border-radius: 8px;
   color: var(--color_blanco);
   cursor: pointer;
+}
+
+.logo {
+  width: 130px;
+  filter: brightness(0) invert(1);
 }
 
 /* AboutUs */
@@ -107,7 +121,7 @@ button[type="button"]:hover {
 
 .aboutus__titulo {
   font-size: 2.6rem;
-  color: #d60000;
+  color: var(--color_negro);
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -229,7 +243,7 @@ button[type="button"]:hover {
 
 .wherearewe__titulo {
   font-size: 2.5rem;
-  color: #d60000;
+  color: var(--color_negro);
   margin-bottom: 2rem;
 }
 
@@ -627,6 +641,8 @@ button[type="button"]:hover {
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
+  align-self: center;
+  text-align: center;
 }
 
 .login__boton:hover {
@@ -1011,10 +1027,20 @@ button[type="button"]:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   transition: background-color 0.3s ease;
+  width: 60px;
 }
 
 .chat-button:hover {
   background-color: var(--color_header);
+}
+
+.chat-button__badge {
+  background-color: var(--color_boton);
+  padding: 0.2rem;
+  border-radius: 50%;
+  position: absolute;
+  width: 30px;
+  top: -5px;
 }
 
 .chat-panel {
@@ -1198,7 +1224,7 @@ button[type="button"]:hover {
 
 .add-coche__titulo {
   text-align: center;
-  color: var(--color_header);
+  color: var(--color_negro);
   margin-bottom: 2rem;
   font-size: 2.5rem;
 }
@@ -1241,6 +1267,9 @@ button[type="button"]:hover {
   font-size: 1.1rem;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+  width: 35%;
+  align-self: center;
 }
 
 .boton.add-coche__boton:hover {
@@ -1470,6 +1499,7 @@ button[type="button"]:hover {
 }
 
 .admin-header {
+  margin: 1rem 1rem 0 1rem;
   background-color: #c60000;
   color: white;
   padding: 1rem 2rem;
@@ -1481,7 +1511,6 @@ button[type="button"]:hover {
   margin-bottom: 3rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   align-items: center;
-  margin: 1rem;
 }
 
 .admin-buttons {
@@ -1941,6 +1970,18 @@ button.reparar:disabled {
   background-color: var(--color_boton);
 }
 
+.botones-formulario-cita {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.presupuesto-boton {
+  background-color: var(--color_footer);
+  color: var(--color_blanco);
+}
+
 /* Citas */
 
 .leer-citas__container {
@@ -1979,6 +2020,12 @@ button.reparar:disabled {
 .leer-citas__item strong {
   color: #222;
   font-weight: 600;
+}
+
+.alerta__citas {
+  align-self: center;
+  width: 50%;
+  margin: 0 auto;
 }
 
 .citas-panel {
@@ -2021,11 +2068,18 @@ button.reparar:disabled {
   color: #d32f2f;
 }
 
+.filtros-superiores {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
 .cita-botones {
-  margin-top: 1.5rem;
   display: flex;
-  gap: 10px;
-  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
   justify-content: center;
 }
 
@@ -2034,9 +2088,10 @@ button.reparar:disabled {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  width: 100%;
 }
 
-.cita-botones .btn-borrar {
+.tabla-usuarios .btn-borrar {
   background: #d32f2f;
   color: white;
 }
@@ -2075,9 +2130,8 @@ button.reparar:disabled {
 }
 
 .btn-volver {
-  margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background-color: var(--color_boton);
+  background-color: var(--color_header);
   color: white;
   border: none;
   border-radius: 6px;
@@ -2185,16 +2239,7 @@ button.reparar:disabled {
 }
 
 .add-coche__range {
-  width: 100%;
-  margin-bottom: 10px;
-}
-.add-coche__label {
-  display: block;
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-
-.add-coche__range {
+  -webkit-appearance: none;
   width: 100%;
   height: 8px;
   background: #ddd;
@@ -2210,7 +2255,6 @@ button.reparar:disabled {
 }
 
 .add-coche__range::-webkit-slider-thumb {
-  -webkit-appearance: none;
   appearance: none;
   width: 18px;
   height: 18px;
@@ -2277,6 +2321,10 @@ button.reparar:disabled {
 
 .factura-detalle {
   padding: 30px;
+}
+
+.mensaje-consentimiento {
+  text-align: center;
 }
 
 .factura-header {
@@ -2439,19 +2487,8 @@ button.reparar:disabled {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
-.buscador {
-  padding: 10px 14px;
-  margin-bottom: 24px;
-  width: 100%;
-  max-width: 500px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-}
-
 .buscador:focus {
-  border-color: #007bff;
+  border-color: var(--color_header);
   outline: none;
 }
 
@@ -2496,14 +2533,6 @@ button.reparar:disabled {
   text-align: center;
 }
 
-.boton--añadir {
-  background-color: #007bff;
-  color: white;
-}
-
-.boton--añadir:hover {
-  background-color: #0056b3;
-}
 
 .boton--eliminar {
   background-color: #dc3545;
@@ -2529,9 +2558,8 @@ button.reparar:disabled {
 }
 
 .buscador {
-  width: 100%;
+  width: 60%;
   padding: 0.75rem;
-  margin-bottom: 1.5rem;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -2574,7 +2602,7 @@ button.reparar:disabled {
 }
 
 .selector-provincia {
-  padding: 0.5rem;
+  padding: 0.75rem;
   border-radius: 6px;
   border: 1px solid #ccc;
   margin-left: 1rem;
@@ -2626,13 +2654,15 @@ button.reparar:disabled {
 }
 
 .boton--añadir {
-  background-color: #0077cc;
   color: white;
   border: none;
   padding: 0.75rem;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
+  width: 40%;
+  text-align: center;
+  align-self: center;
 }
 
 .mensaje-error {
@@ -2674,13 +2704,19 @@ button.reparar:disabled {
   opacity: 0.8;
 }
 
-.formulario-reparacion {
-  max-width: 800px;
-  margin: auto;
+/* Presupuesto */
+
+.formulario-presupuesto {
+  max-width: 1000px;
+  margin: 2rem auto;
   padding: 2rem;
-  background: #fdfdfd;
+  background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .linea-presupuesto {
@@ -2719,19 +2755,13 @@ button[type="submit"] {
   cursor: pointer;
 }
 
-button[type="button"] {
-  background-color: #6c63ff;
-  color: white;
-}
-
 button[type="button"]:hover {
-  background-color: #554fe4;
+  background-color: var(--color_boton);
 }
 
 button[type="submit"] {
   background-color: var(--color_header);
   color: white;
-  margin-left: 1rem;
 }
 
 button[type="submit"]:hover {
@@ -2809,9 +2839,6 @@ button[type="submit"]:hover {
 
 /* Responsive */
 
-/* Vista inicio */
-
-/* ========== Responsive Mobile Styles (<=768px) ========== */
 @media (max-width: 768px) {
   /* HEADER */
   .navbar {
@@ -2820,6 +2847,7 @@ button[type="submit"]:hover {
     padding: 1rem;
     position: relative;
     align-items: center;
+    gap: 0;
   }
 
   .navbar-enlaces {
@@ -2860,13 +2888,18 @@ button[type="submit"]:hover {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    z-index: 999;
+    z-index: 1001;
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
   }
 
   .mobile-menu.active {
     transform: translateX(0);
+  }
+
+  .mobile-menu button {
+    margin-top: 1.5rem;
+    width: 50%;
   }
 
   .mobile-menu a {
@@ -2974,5 +3007,77 @@ button[type="submit"]:hover {
     text-align: left;
     gap: 0;
   }
-}
 
+  .icono-perfil {
+    display: none;
+  }
+
+  /* DASHBOARD */
+  .dashboard-full {
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .dashboard-full__grid {
+    margin: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .dashboard-full__card {
+    width: 90%;
+    height: 400px;
+  }
+
+  .dashboard-full__car-img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1rem auto 0;
+  }
+
+  .chat-panel {
+    z-index: 1002;
+  }
+
+  .abajo {
+    height: 100px;
+  }
+
+  /* DETALLE COCHE */
+  .detalle-coche-container {
+    padding: 2rem;
+    max-width: 600px;
+  }
+
+  .detalle-coche-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .detalle-coche-imagen img {
+    width: 100%;
+    height: auto;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .detalle-coche-info {
+    font-size: 1rem;
+  }
+
+  .detalle-coche-subtitulo {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+  }
+
+  .detalle-coche-botones {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+}

@@ -88,12 +88,7 @@ export const LeerCochesSuperAdmin = () => {
       <HeaderAdmin />
       <div className="leer-users">
         <h2>Todos los Coches</h2>
-        <button
-          className="btn-volver"
-          onClick={() => navigate("/employees/admin/panel")}
-        >
-          Volver al Panel
-        </button>
+        
         <div className="filtros-superiores">
           <input
             type="text"
@@ -127,6 +122,12 @@ export const LeerCochesSuperAdmin = () => {
               </option>
             ))}
           </select>
+          <button
+            className="btn-volver"
+            onClick={() => navigate("/employees/admin/panel")}
+          >
+            Volver
+          </button>
         </div>
 
         <div className="tabla-contenedor">

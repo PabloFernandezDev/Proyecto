@@ -64,12 +64,7 @@ export const LeerFacturas = () => {
       <div className="leer-users">
         <h2>Listado de Facturas</h2>
 
-        <button
-          className="btn-volver"
-          onClick={() => navigate("/employees/admin/panel")}
-        >
-          Volver al Panel
-        </button>  
+        
         <div className="filtros-superiores">
           <input
             type="text"
@@ -84,6 +79,12 @@ export const LeerFacturas = () => {
             onChange={(e) => setFiltroFecha(e.target.value)}
             className="buscador"
           />
+          <button
+          className="btn-volver"
+          onClick={() => navigate("/employees/admin/panel")}
+        >
+          Volver
+        </button>  
         </div>
 
         <div className="tabla-contenedor">
@@ -108,9 +109,9 @@ export const LeerFacturas = () => {
                     {factura.usuario?.nombre} {factura.usuario?.apellidos}
                   </td>
                   <td>{factura.metodoPago}</td>
-                  <td>
+                  <td className="cita-botones">
                     <button
-                      className="dashboard__boton-detalles"
+                      className="btn-detalles"
                       onClick={() =>
                         navigate(
                           `/employees/crud/facturas/${factura.id}/detalle`

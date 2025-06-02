@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Icon from "../../assets/Icon";
+import icono from "../../assets/images/iconoCarCareNow.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -22,16 +23,11 @@ export const Header = () => {
     <>
       <nav className="navbar">
         <NavLink to={isLoggedIn ? "/home" : "/"}>
-          <Icon
-            icon="directions_car"
-            size={50}
-            color="white"
-            className="icon"
-          />
+          <img src={icono} className="logo" alt="CarCareNow Logo" />
         </NavLink>
 
         <div className="navbar-enlaces">
-          <NavLink to="/">Inicio</NavLink>
+          <NavLink to={isLoggedIn ? "/home" : "/"}>Inicio</NavLink>
           <NavLink to="/aboutus">Sobre Nosotros</NavLink>
           <NavLink to="/where">Donde Estamos</NavLink>
 
@@ -57,13 +53,33 @@ export const Header = () => {
               </NavLink>
             </>
           )}
+          <div className={`mobile-menu ${menuAbierto ? "active" : ""}`}>
+            {!isLoggedIn ? (
+              <>
+                <NavLink to="/login" onClick={() => setMenuAbierto(false)}>
+                  Iniciar Sesión
+                </NavLink>
+                <NavLink to="/register" onClick={() => setMenuAbierto(false)}>
+                  Registrarse
+                </NavLink>
+              </>
+            ) : (
+              <>
+                <button onClick={handleLogout}>Salir</button>
+                <NavLink
+                  to="/home/perfil"
+                  onClick={() => setMenuAbierto(false)}
+                >
+                  <FiUser size={24} /> Perfil
+                </NavLink>
+              </>
+            )}
+          </div>
         </div>
         <button className="menu-toggle" onClick={toggleMenu}>
           {menuAbierto ? <IoClose /> : <GiHamburgerMenu />}
         </button>
       </nav>
-
-      
     </>
   );
 };

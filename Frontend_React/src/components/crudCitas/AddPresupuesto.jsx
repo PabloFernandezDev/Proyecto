@@ -15,23 +15,17 @@ export const AddPresupuesto = () => {
     { concepto: "", descripcion: "", precio: "", cantidad: 1 },
   ]);
   const [loading, setLoading] = useState(true);
-  console.log(usuario);
+
   useEffect(() => {
-    if (!citaId) {
-      alert("No se ha proporcionado una cita para el presupuesto.");
-    }
+    if (!citaId) alert("No se ha proporcionado una cita para el presupuesto.");
 
     const fetchUsuario = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/user/${usuarioId}`
-        );
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/user/${usuarioId}`);
         if (!res.ok) throw new Error("Usuario no encontrado");
-
         const data = await res.json();
         setUsuario(data);
       } catch (err) {
-        console.error("Error al cargar el usuario:", err.message);
         alert("Usuario no válido. Redirigiendo...");
         navigate("/employees/crud/citas");
       } finally {
@@ -43,40 +37,29 @@ export const AddPresupuesto = () => {
   }, [usuarioId, navigate]);
 
   const handleLineaChange = (index, field, value) => {
-    const updatedLineas = [...lineas];
-    updatedLineas[index][field] =
-      field === "cantidad" ? parseInt(value) : value;
-    setLineas(updatedLineas);
+    const updated = [...lineas];
+    updated[index][field] = field === "cantidad" ? parseInt(value) : value;
+    setLineas(updated);
   };
 
   const agregarLinea = () => {
-    setLineas([
-      ...lineas,
-      { concepto: "", descripcion: "", precio: "", cantidad: 1 },
-    ]);
+    setLineas([...lineas, { concepto: "", descripcion: "", precio: "", cantidad: 1 }]);
   };
 
   const eliminarLinea = (index) => {
-    const updatedLineas = [...lineas];
-    updatedLineas.splice(index, 1);
-    setLineas(updatedLineas);
+    const updated = [...lineas];
+    updated.splice(index, 1);
+    setLineas(updated);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const hayErrores = lineas.some((l) => {
-      return (
-        !l.concepto ||
-        isNaN(parseFloat(l.precio)) ||
-        isNaN(parseInt(l.cantidad))
-      );
-    });
-
+    const hayErrores = lineas.some(
+      (l) => !l.concepto || isNaN(parseFloat(l.precio)) || isNaN(parseInt(l.cantidad))
+    );
     if (hayErrores) {
-      alert(
-        "Revisa los campos. Todos los precios y cantidades deben ser válidos."
-      );
+      alert("Revisa los campos. Todos los precios y cantidades deben ser válidos.");
       return;
     }
 
@@ -99,7 +82,6 @@ export const AddPresupuesto = () => {
           body: JSON.stringify(payload),
         }
       );
-
       if (!facturaRes.ok) throw new Error("Error al crear la factura");
 
       await fetch(`${import.meta.env.VITE_API_URL}/notificacion`, {
@@ -107,8 +89,7 @@ export const AddPresupuesto = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           usuarioId: usuario.id,
-          mensaje:
-            "Se le ha asignado un presupuesto. Lo puede consultar en la seccion de facturas",
+          mensaje: "Se le ha asignado un presupuesto. Lo puede consultar en la sección de facturas",
           tipo: "Presupuesto",
         }),
       });
@@ -118,20 +99,13 @@ export const AddPresupuesto = () => {
 
       const emailRes = await fetch(
         `${import.meta.env.VITE_API_URL}/presupuesto/${usuarioId}/enviar`,
-        {
-          method: "POST",
-        }
+        { method: "POST" }
       );
-
       if (!emailRes.ok) throw new Error("Error al enviar el correo");
 
       dispararRecarga();
-      console.log("🔔 Notificación: dispararRecarga() ejecutado");
-
-      alert("Presupuesto creado y enviado con éxito.");
-      navigate("/employees/crud/citas");
+      navigate("/employees/crud/citas", { state: { operacionExitosa: "presupuesto" } });
     } catch (error) {
-      console.error("Error al enviar presupuesto:", error);
       alert("Error al procesar el presupuesto.");
     }
   };
@@ -141,8 +115,8 @@ export const AddPresupuesto = () => {
   return (
     <div>
       <HeaderAdmin />
-      <div className="formulario-reparacion">
-        <h2>Crear Presupuesto</h2>
+      <div className="formulario-presupuesto">
+        <h2 >Crear Presupuesto</h2>
         <p>
           <strong>Cliente:</strong> {usuario.nombre} {usuario.apellidos}
         </p>
@@ -152,74 +126,47 @@ export const AddPresupuesto = () => {
 
         <form onSubmit={handleSubmit}>
           {lineas.map((linea, index) => (
-            <div
-              key={index}
-              className="linea-presupuesto"
-              style={{ marginBottom: "1rem" }}
-            >
+            <div key={index} className="linea-presupuesto">
               <input
                 type="text"
                 placeholder="Concepto"
                 value={linea.concepto}
-                onChange={(e) =>
-                  handleLineaChange(index, "concepto", e.target.value)
-                }
+                onChange={(e) => handleLineaChange(index, "concepto", e.target.value)}
                 required
-                style={{ marginRight: "8px", padding: "6px" }}
               />
               <input
                 type="text"
                 placeholder="Descripción (opcional)"
                 value={linea.descripcion}
-                onChange={(e) =>
-                  handleLineaChange(index, "descripcion", e.target.value)
-                }
-                style={{ marginRight: "8px", padding: "6px" }}
+                onChange={(e) => handleLineaChange(index, "descripcion", e.target.value)}
               />
               <input
                 type="number"
                 placeholder="Precio"
                 step="0.01"
                 value={linea.precio}
-                onChange={(e) =>
-                  handleLineaChange(index, "precio", e.target.value)
-                }
+                onChange={(e) => handleLineaChange(index, "precio", e.target.value)}
                 required
-                style={{ width: "100px", marginRight: "8px", padding: "6px" }}
               />
               <input
                 type="number"
                 placeholder="Cantidad"
-                value={linea.cantidad}
                 min="1"
-                onChange={(e) =>
-                  handleLineaChange(index, "cantidad", e.target.value)
-                }
+                value={linea.cantidad}
+                onChange={(e) => handleLineaChange(index, "cantidad", e.target.value)}
                 required
-                style={{ width: "80px", marginRight: "8px", padding: "6px" }}
               />
-              <button
-                type="button"
-                onClick={() => eliminarLinea(index)}
-                style={{ padding: "6px" }}
-              >
+              <button type="button" onClick={() => eliminarLinea(index)}>
                 Eliminar
               </button>
             </div>
           ))}
 
-          <button
-            type="button"
-            onClick={agregarLinea}
-            style={{ marginBottom: "1rem", padding: "8px 12px" }}
-          >
+          <button type="button" onClick={agregarLinea} className="boton">
             Añadir reparación
           </button>
           <br />
-          <button
-            type="submit"
-            style={{ padding: "10px 20px", fontWeight: "bold" }}
-          >
+          <button type="submit" className="boton enviar">
             Enviar presupuesto
           </button>
         </form>

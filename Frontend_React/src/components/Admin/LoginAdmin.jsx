@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const LoginAdmin = () => {
-  const [numEmp, setNumEmp] = useState(0);
+  const [numEmp, setNumEmp] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
@@ -10,13 +10,16 @@ export const LoginAdmin = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ numEmp: numEmp, password }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ numEmp: parseInt(numEmp), password }),
+        }
+      );
       if (!numEmp || isNaN(numEmp) || !password) {
         alert("Rellena ambos campos correctamente");
         return;
@@ -33,7 +36,7 @@ export const LoginAdmin = () => {
             numAdmin: data.numEmp,
             provincia: data.provincia,
             taller: data.taller,
-            rol: data.rol
+            rol: data.rol,
           })
         );
       } else {

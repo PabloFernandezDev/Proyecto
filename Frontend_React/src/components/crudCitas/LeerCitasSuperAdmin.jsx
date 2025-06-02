@@ -69,12 +69,7 @@ export const LeerCitasSuperAdmin = () => {
       <HeaderAdmin />
       <div className="leer-users">
         <h2>Todas las Citas</h2>
-        <button
-          className="btn-volver"
-          onClick={() => navigate("/employees/admin/panel")}
-        >
-          Volver al Panel
-        </button>
+        
         <div className="filtros-superiores">
           <input
             type="text"
@@ -89,6 +84,12 @@ export const LeerCitasSuperAdmin = () => {
             onChange={(e) => setFiltroFecha(e.target.value)}
             className="buscador"
           />
+          <button
+          className="btn-volver"
+          onClick={() => navigate("/employees/admin/panel")}
+        >
+          Volver
+        </button>
         </div>
 
         <div className="tabla-contenedor">
@@ -113,14 +114,22 @@ export const LeerCitasSuperAdmin = () => {
                   <td>{cita.hora?.split("T")[1]?.substring(0, 5)}</td>
                   <td>{cita.motivo}</td>
                   <td>{cita.estado}</td>
-                  <td>
-                    <button
-                      className="btn-eliminar"
-                      onClick={() => eliminarCita(cita.id)}
-                    >
-                      Eliminar
-                    </button>
-                  </td>
+                  <td className="cita-botones">
+                        <button
+                          onClick={() =>
+                            navigate(`/employees/crud/citas/${cita.id}/detalle`)
+                          }
+                          className="btn-detalles"
+                        >
+                          Detalles
+                        </button>
+                        <button
+                          onClick={() => handleBorrar(cita.id)}
+                          className="btn-borrar"
+                        >
+                          Borrar
+                        </button>
+                      </td>
                 </tr>
               ))}
               {citasFiltradas.length === 0 && (

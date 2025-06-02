@@ -14,7 +14,7 @@ export const DetalleCita = () => {
   const [loading, setLoading] = useState(true);
   const [admin, setAdmin] = useState(null);
 
-  console.log(admin)
+  console.log(admin);
   const horasDisponibles = [
     "09:00",
     "09:30",
@@ -249,23 +249,27 @@ export const DetalleCita = () => {
             </select>
           </label>
 
-          <div className="botones-formulario">
-            <button
-              type="button"
-              className="boton auth-buttons__enlace"
-              onClick={() => navigate(-1)}
-            >
-              Volver
-            </button>
+          <div className="botones-formulario-cita">
 
             {!cita.consentimientoAceptado && (
-              <button type="submit">Actualizar cita</button>
+              <div className="botones-formulario-cita">
+                <button
+                  type="button"
+                  className="boton"
+                  onClick={() => navigate(-1)}
+                >
+                  Volver
+                </button>
+                <button type="submit" className="boton">
+                  Actualizar cita
+                </button>
+              </div>
             )}
           </div>
         </form>
 
         {!cita.consentimientoAceptado && cita.estado === "Confirmar" && (
-          <div className="botones-formulario">
+          <div className="botones-formulario-cita">
             <button
               className="boton presupuesto-boton"
               onClick={() =>
@@ -278,25 +282,17 @@ export const DetalleCita = () => {
             </button>
           </div>
         )}
-
         {cita.consentimientoAceptado && (
-          <>
-            <div className="alerta__consentimiento">
-              <p>
-                ✅ El consentimiento del usuario ha sido firmado correctamente.
-              </p>
-            </div>
-            <div className="botones-formulario">
-              <button
-                className="boton"
-                onClick={() =>
-                  navigate(`/employees/crud/coches/addreparacion/${cita.id}`)
-                }
-              >
-                Añadir reparaciones
-              </button>
-            </div>
-          </>
+          <div className="botones-formulario-cita">
+            <button
+              className="boton"
+              onClick={() =>
+                navigate(`/employees/crud/coches/addreparacion/${cita.id}`)
+              }
+            >
+              Añadir reparaciones
+            </button>
+          </div>
         )}
       </div>
     </div>

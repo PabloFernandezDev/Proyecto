@@ -18,7 +18,9 @@ export const LeerCoches = () => {
   const obtenerCoches = async (adminId) => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/${adminId}/coches`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/${adminId}/coches`
+      );
       if (!response.ok) throw new Error("Error al obtener coches");
       const data = await response.json();
       setCoches(data);
@@ -31,17 +33,22 @@ export const LeerCoches = () => {
   };
 
   const marcarComoDevuelto = async (id) => {
-    console.log(id)
+    console.log(id);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/coche/${id}/devolver`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/coche/${id}/devolver`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
-      if (!res.ok) throw new Error("Error al devolver el coche");
-
+      if (!res.ok) {
+        const errorTexto = await res.text(); // Captura el error del servidor como texto
+        throw new Error(errorTexto || "Error desconocido del servidor");
+      }
       setMensaje("Coche devuelto correctamente");
-      obtenerCoches(admin.idAdmin); 
+      obtenerCoches(admin.idAdmin);
     } catch (error) {
       console.error("Error al devolver el coche:", error);
       alert("Error al devolver el coche.");
@@ -99,26 +106,30 @@ export const LeerCoches = () => {
       {mensaje && (
         <div className="alerta__login operacion__Exitosa">
           <span>{mensaje}</span>
-          <button className="alerta__login-cerrar" onClick={() => setMensaje(false)}>X</button>
+          <button
+            className="alerta__login-cerrar"
+            onClick={() => setMensaje(false)}
+          >
+            X
+          </button>
         </div>
       )}
 
-      <div className="barra-superior">
+      <div className="filtros-superiores">
         <input
           type="text"
           placeholder="Buscar por matrícula, cliente o mecánico..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
+          className="buscador"
         />
         <input
           type="date"
           value={fechaFiltro}
           onChange={(e) => setFechaFiltro(e.target.value)}
+          className="selector-provincia"
         />
-        <button
-          className="perfil__boton perfil__boton--volver"
-          onClick={() => navigate(-1)}
-        >
+        <button className="btn-volver" onClick={() => navigate(-1)}>
           Volver
         </button>
       </div>
@@ -130,8 +141,11 @@ export const LeerCoches = () => {
           <div className="lista-coches">
             {cochesPaginados.map((coche, index) => {
               const reparaciones = coche.reparaciones || [];
-              const reparacionesPendientes = reparaciones.filter((r) => r.estado !== "Finalizado");
-              const ultimaReparacion = reparaciones[reparaciones.length - 1] || {};
+              const reparacionesPendientes = reparaciones.filter(
+                (r) => r.estado !== "Finalizado"
+              );
+              const ultimaReparacion =
+                reparaciones[reparaciones.length - 1] || {};
               const fechaInicio = formatearFecha(ultimaReparacion.fechaInicio);
               const fechaFin = formatearFecha(ultimaReparacion.fechaFin);
               const mecanico = ultimaReparacion.mecanico
@@ -158,23 +172,44 @@ export const LeerCoches = () => {
                     className="coche-imagen"
                   />
                   <div className="coche-info">
-                    <div><strong>Cliente:</strong> {`${coche.usuario.nombre} ${coche.usuario.apellidos}`}</div>
-                    <div><strong>Matrícula:</strong> {coche.Matricula}</div>
-                    <div><strong>Total reparaciones:</strong> {reparaciones.length}</div>
-                    <div><strong>Pendientes:</strong> {reparacionesPendientes.length}</div>
-                    <div><strong>Fecha entrada:</strong> {fechaInicio}</div>
-                    <div><strong>Fecha entrega:</strong> {fechaFin}</div>
-                    <div><strong>Mecánico:</strong> {mecanico}</div>
-                    {reparaciones.length === 0 && coche.estado === "Revisión" && (
-                      <p style={{ color: "#c00", fontWeight: "bold" }}>
-                        Este coche aún no tiene reparaciones registradas.
-                      </p>
-                    )}
+                    <div>
+                      <strong>Cliente:</strong>{" "}
+                      {`${coche.usuario.nombre} ${coche.usuario.apellidos}`}
+                    </div>
+                    <div>
+                      <strong>Matrícula:</strong> {coche.Matricula}
+                    </div>
+                    <div>
+                      <strong>Total reparaciones:</strong> {reparaciones.length}
+                    </div>
+                    <div>
+                      <strong>Pendientes:</strong>{" "}
+                      {reparacionesPendientes.length}
+                    </div>
+                    <div>
+                      <strong>Fecha entrada:</strong> {fechaInicio}
+                    </div>
+                    <div>
+                      <strong>Fecha entrega:</strong> {fechaFin}
+                    </div>
+                    <div>
+                      <strong>Mecánico:</strong> {mecanico}
+                    </div>
+                    {reparaciones.length === 0 &&
+                      coche.estado === "Revisión" && (
+                        <p style={{ color: "#c00", fontWeight: "bold" }}>
+                          Este coche aún no tiene reparaciones registradas.
+                        </p>
+                      )}
                     <div className="coche-botones">
                       {mostrarReparar && (
                         <button
                           className="reparar"
-                          onClick={() => navigate(`/employees/crud/coches/${coche.id}/detalle`)}
+                          onClick={() =>
+                            navigate(
+                              `/employees/crud/coches/${coche.id}/detalle`
+                            )
+                          }
                         >
                           Reparar
                         </button>

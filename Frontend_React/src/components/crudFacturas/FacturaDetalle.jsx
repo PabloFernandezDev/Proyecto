@@ -3,18 +3,25 @@ import { useParams } from "react-router-dom";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { Header } from "../Diseño/Header";
+import { HeaderAdmin } from "../Admin/HeaderAdmin";
 
 export const FacturaDetalle = () => {
   const { id } = useParams();
   const [factura, setFactura] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [admin, setAdmin] = useState(false);
   const facturaRef = useRef();
 
-  const [consentimientoReparacion, setConsentimientoReparacion] = useState(false);
-  const [consentimientoPresupuesto, setConsentimientoPresupuesto] = useState(false);
+  const [consentimientoReparacion, setConsentimientoReparacion] =
+    useState(false);
+  const [consentimientoPresupuesto, setConsentimientoPresupuesto] =
+    useState(false);
   const [mensajeConsentimiento, setMensajeConsentimiento] = useState("");
 
   const fetchFactura = async () => {
+    const adminStorage = JSON.parse(localStorage.getItem("Admin"));
+    setAdmin(!!adminStorage);
+
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/factura/${id}`);
       if (!res.ok) throw new Error("Error al cargar la factura");
@@ -49,13 +56,17 @@ export const FacturaDetalle = () => {
   const confirmarConsentimiento = async () => {
     if (consentimientoReparacion && consentimientoPresupuesto) {
       if (!factura.cita?.id) {
-        setMensajeConsentimiento("No se encontró una cita asociada a esta factura.");
+        setMensajeConsentimiento(
+          "No se encontró una cita asociada a esta factura."
+        );
         return;
       }
 
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/cita/${factura.cita.id}/consentimiento`,
+          `${import.meta.env.VITE_API_URL}/cita/${
+            factura.cita.id
+          }/consentimiento`,
           {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
@@ -70,24 +81,24 @@ export const FacturaDetalle = () => {
 
         setMensajeConsentimiento("Consentimiento firmado correctamente.");
 
-        // Recargar factura para actualizar estado
         fetchFactura();
       } catch (error) {
         console.error("Error al actualizar la cita:", error);
-        setMensajeConsentimiento("Hubo un problema al registrar el consentimiento.");
+        setMensajeConsentimiento(
+          "Hubo un problema al registrar el consentimiento."
+        );
       }
     }
   };
 
-  const formatearFecha = (fecha) =>
-    new Date(fecha).toLocaleDateString("es-ES");
+  const formatearFecha = (fecha) => new Date(fecha).toLocaleDateString("es-ES");
 
   if (loading) return <p>Cargando factura...</p>;
   if (!factura) return <p>Factura no encontrada</p>;
 
   return (
     <div>
-      <Header />
+      {admin ? <HeaderAdmin /> : <Header />}
       <div className="factura-detalle-container">
         <div className="factura-detalle" ref={facturaRef}>
           <div className="factura-header">
@@ -106,7 +117,9 @@ export const FacturaDetalle = () => {
             </div>
             <div>
               <h4>Para:</h4>
-              <p>{factura.usuario?.nombre} {factura.usuario?.apellidos}</p>
+              <p>
+                {factura.usuario?.nombre} {factura.usuario?.apellidos}
+              </p>
               <p>DNI: {factura.usuario?.dni}</p>
               <p>Teléfono: {factura.usuario?.telefono}</p>
               <p>Email: {factura.usuario?.email}</p>
@@ -144,9 +157,7 @@ export const FacturaDetalle = () => {
           </div>
         </div>
 
-        
-
-        {!factura.cita?.consentimientoAceptado && (
+        {!factura.cita?.consentimientoAceptado && !admin && (
           <div className="factura-consentimiento">
             <h3>Consentimiento del Usuario</h3>
             <div>
@@ -154,9 +165,12 @@ export const FacturaDetalle = () => {
                 <input
                   type="checkbox"
                   checked={consentimientoReparacion}
-                  onChange={(e) => setConsentimientoReparacion(e.target.checked)}
+                  onChange={(e) =>
+                    setConsentimientoReparacion(e.target.checked)
+                  }
                 />
-                Doy mi consentimiento para proceder con la reparación del vehículo
+                Doy mi consentimiento para proceder con la reparación del
+                vehículo
               </label>
             </div>
             <div>
@@ -164,7 +178,9 @@ export const FacturaDetalle = () => {
                 <input
                   type="checkbox"
                   checked={consentimientoPresupuesto}
-                  onChange={(e) => setConsentimientoPresupuesto(e.target.checked)}
+                  onChange={(e) =>
+                    setConsentimientoPresupuesto(e.target.checked)
+                  }
                 />
                 Confirmo que acepto el presupuesto mostrado
               </label>
@@ -172,7 +188,9 @@ export const FacturaDetalle = () => {
             <button
               className="boton-confirmar"
               onClick={confirmarConsentimiento}
-              disabled={!(consentimientoReparacion && consentimientoPresupuesto)}
+              disabled={
+                !(consentimientoReparacion && consentimientoPresupuesto)
+              }
             >
               Confirmar consentimiento
             </button>
@@ -184,8 +202,13 @@ export const FacturaDetalle = () => {
         </button>
       </div>
       {mensajeConsentimiento && (
-          <p className="mensaje-consentimiento">{mensajeConsentimiento}</p>
-        )}
+        <div className="mensaje-consentimiento">
+          <span className="alerta__login alerta__citas">
+            {mensajeConsentimiento}
+            <button onClick={() => setMensajeConsentimiento(false)}>X</button>
+          </span>
+        </div>
+      )}
     </div>
   );
 };

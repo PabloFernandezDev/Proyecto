@@ -62,18 +62,19 @@ cd Backend_Symfony
 composer install
 ```
 
-3. Configura la conexión a la base de datos en el archivo `.env`:
 
+3. Configura la conexión a la base de datos en el archivo `.env`. Ejemplo:
+
+```env
 DATABASE_URL="mysql://root:password@127.0.0.1:3306/proyecto?serverVersion=10.4.32-MariaDB&charset=utf8mb4"
-                        ↑     ↑                 ↑      ↑                        ↑
-                        1     2                 3      4                        5
-
-    -1: Usuario de la base de datos
-    -2: Contraseña del usuario
-    -3: Puerto de la base de datos
-    -4: Nombre de la base de datos
-    -5: Versión de la base de datos
-
+#                  ↑       ↑                 ↑      ↑                        ↑
+#                  1       2                 3      4                        5
+#  1: Usuario de la base de datos
+#  2: Contraseña del usuario
+#  3: Puerto de la base de datos
+#  4: Nombre de la base de datos
+#  5: Versión del servidor de base de datos
+```
  
 4. Crea la base de datos:
 

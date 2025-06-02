@@ -16,21 +16,32 @@ export const CocheDetails = () => {
       .catch((err) => console.error("Error cargando coche:", err));
   }, []);
 
-  const handleDelete = () => {
-    if (window.confirm("¿Seguro que quieres eliminar este coche?")) {
-      fetch(`${import.meta.env.VITE_API_URL}/coche/${coche.id}`, {
-        method: "DELETE",
-      })
-        .then(() => {
-          alert("Coche eliminado correctamente");
-          navigate("/home");
-        })
-        .catch((err) => console.error("Error al eliminar coche:", err));
+  const handleDelete = async () => {
+    const confirmacion = window.confirm(
+      "¿Seguro que quieres eliminar este coche?"
+    );
+    if (!confirmacion) return;
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/coche/${coche.id}/delete`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        navigate("/home");
+      } else {
+        console.error("Error al eliminar coche:", await response.text());
+      }
+    } catch (err) {
+      console.error("Error al eliminar coche:", err);
     }
   };
   return (
     <>
-      <Header/>
+      <Header />
       <div className="detalle-coche-container">
         <h2 className="detalle-coche-titulo">
           <FaCar /> Detalles del Coche

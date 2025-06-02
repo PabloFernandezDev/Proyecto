@@ -61,16 +61,22 @@ export const LeerUsers = () => {
       <HeaderAdmin />
       <div className="leer-users">
         <h2>Usuarios Registrados</h2>
-        <button className="btn-volver" onClick={() => navigate("/employees/admin/panel")}>
-          Volver al Panel
-        </button>
-        <input
-          type="text"
-          placeholder="Buscar por nombre, apellidos, DNI o email"
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-          className="buscador"
-        />
+
+        <div className="filtros-superiores">
+          <input
+            type="text"
+            placeholder="Buscar por nombre, apellidos, DNI o email"
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            className="buscador"
+          />
+          <button
+            className="btn-volver"
+            onClick={() => navigate("/employees/admin/panel")}
+          >
+            Volver
+          </button>
+        </div>
 
         <div className="tabla-contenedor">
           <table className="tabla-usuarios">
@@ -121,9 +127,7 @@ export const LeerUsers = () => {
             </button>
             <button
               onClick={() =>
-                setPaginaActual((prev) =>
-                  Math.min(prev + 1, totalPaginas)
-                )
+                setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))
               }
               disabled={paginaActual === totalPaginas || totalPaginas === 0}
             >

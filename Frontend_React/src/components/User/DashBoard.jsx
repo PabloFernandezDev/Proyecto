@@ -151,7 +151,7 @@ export const DashBoard = () => {
           )}
         </div>
 
-        <div className="dashboard-full__card">
+        <div className="dashboard-full__card abajo">
           <h3>Facturas recientes</h3>
           {facturas.length > 0 ? (
             <button onClick={handleVerFacturas}>Ver todas las facturas</button>
