@@ -36,7 +36,7 @@ class LineaFactura
     private ?float $total = null;
 
     #[ORM\ManyToOne(inversedBy: 'lineaFactura')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Factura $factura = null;
 
     public function getId(): ?int

@@ -8,24 +8,62 @@
   --color_negro: #000000;
 }
 
-/* Reset general */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* ---------------- Header ---------------- */
+/* Botones globales */
+.boton,
+button,
+input[type="submit"],
+button[type="submit"],
+button[type="button"] {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.boton:hover,
+button:hover,
+input[type="submit"]:hover,
+button[type="submit"]:hover,
+button[type="button"]:hover {
+  opacity: 0.9;
+}
+
+/* Botones por color */
+.boton--principal {
+  background-color: var(--color_header);
+  color: white;
+}
+
+.boton--secundario {
+  background-color: var(--color_footer);
+  color: white;
+}
+
+
+.boton--rojo {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Header */
 .navbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0.5rem;
   background-color: var(--color_header);
   border-radius: 0.5rem;
   color: var(--color_blanco);
-  margin: 0.1rem;
-  width: 100%;
+  margin: 0.1rem;  
+  
 }
 
 .navbar a {
@@ -34,6 +72,11 @@
   margin: 0 1.2rem;
   font-weight: 500;
   font-size: 1rem;
+}
+
+.navbar-enlaces {
+  display: flex;
+  align-items: center;
 }
 
 .auth-buttons__enlace {
@@ -86,7 +129,7 @@
 .aboutus__perfil {
   display: flex;
   justify-content: space-between;
-  
+
   align-items: center;
   gap: 3rem;
   flex-wrap: wrap;
@@ -155,7 +198,7 @@
 }
 
 .aboutus__timeline li::before {
-  content: '';
+  content: "";
   position: absolute;
   left: -10px;
   top: 5px;
@@ -203,12 +246,9 @@
   overflow: hidden;
 }
 
-
-
-/* ---------------- Carrousel ---------------- */
+/* Carrousel */
 .caja {
   padding: 2rem;
-
 }
 
 .carousel-container {
@@ -227,8 +267,6 @@
   transition: transform 0.4s ease-in-out;
   animation: slideEffect 0.4s ease;
 }
-
-
 
 @keyframes slide-left {
   from {
@@ -260,7 +298,6 @@
   animation: slide-right 0.3s ease-in-out;
 }
 
-
 .carousel-item {
   flex: 0 0 33.33%;
   padding: 1rem;
@@ -273,7 +310,7 @@
 
 .carousel-image {
   width: 100%;
-  height:500px;
+  height: 500px;
   object-fit: cover;
   border-radius: 12px;
 }
@@ -294,7 +331,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-
 /* Botones del carrusel */
 .carousel-button {
   background: none;
@@ -304,7 +340,7 @@
   margin: 0.5rem;
 }
 
-/* ---------------- Bienvenida ---------------- */
+/*  Bienvenida */
 .bienvenida {
   padding: 3rem 0;
   background-color: var(--color_blanco);
@@ -342,7 +378,7 @@
   color: var(--color_negro);
 }
 
-/* ---------------- Newsletter ---------------- */
+/* Newsletter */
 .newsletter {
   padding: 2rem;
   margin: 2rem 0;
@@ -354,7 +390,6 @@
 .newsletter__contenedor {
   max-width: 600px;
   margin: 0 auto;
-
 }
 
 .newsletter__titulo {
@@ -394,7 +429,7 @@
   background-color: var(--color_footer);
 }
 
-/* ---------------- Botones Login/Register ---------------- */
+/* Botones Login/Register */
 .botones-login {
   display: flex;
   gap: 2rem;
@@ -439,7 +474,7 @@
   background-color: var(--color_header);
 }
 
-/* ---------------- Footer ---------------- */
+/* Footer */
 .footer {
   background-color: var(--color_footer);
   color: var(--color_blanco);
@@ -506,9 +541,7 @@
   color: #ccc;
 }
 
-
-
-/* ---------------- Contenedor de Newsletter + Botones ---------------- */
+/* Newsletter */
 .containerComponents {
   display: flex;
   justify-content: center;
@@ -517,18 +550,18 @@
   padding: 2rem;
 }
 
-/* Aseguramos altura pareja */
-.newsletter, .botones-login {
+.newsletter,
+.botones-login {
   flex: 1;
   max-width: 600px;
 }
 
-
 /* Login */
 .login-background {
-  background: url('assets/images/fondo.png') center center / cover no-repeat;
+  background: url("assets/images/fondo.png") center center / cover no-repeat;
   position: fixed;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   z-index: -2;
@@ -704,18 +737,16 @@
   background-color: #115293;
 }
 
-
 /* Layout general */
 .dashboard-full {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* vertical */
-  align-items: center;     /* horizontal */
+  justify-content: center;
+  align-items: center;
   padding: 0.2rem;
   background-color: #f5f5f5;
 }
-
 
 .dashboard-full__titulo {
   font-size: 2.2rem;
@@ -733,7 +764,6 @@
   width: 100%;
   max-width: 1400px;
   margin: auto auto;
-
 }
 
 /* Tarjetas */
@@ -758,7 +788,7 @@
   color: var(--color_header);
 }
 
-/* Imagen del coche */
+/* Imagen coche */
 .dashboard-full__car-img {
   width: 100%;
   height: auto;
@@ -770,7 +800,6 @@
   margin-top: 1rem;
 }
 
-/* Placeholder de coche no registrado */
 .dashboard-full__placeholder {
   display: flex;
   flex-direction: column;
@@ -803,7 +832,7 @@
   background-color: var(--color_footer);
 }
 
-/* Lista de facturas */
+/* Facturas */
 .dashboard-full__card ul {
   list-style: none;
   padding: 0;
@@ -816,7 +845,6 @@
   color: var(--color_negro);
 }
 
-/* Botones secundarios */
 .dashboard-full__card button {
   background-color: var(--color_boton);
   color: var(--color_blanco);
@@ -875,7 +903,6 @@
 .dashboard__boton-detalles:hover {
   background-color: var(--color_header);
 }
-
 
 /* Perfil */
 .icono-perfil {
@@ -958,20 +985,21 @@
 }
 
 .perfil__boton--volver {
-    background-color: #ccc;
-
+  background-color: #ccc;
 }
 
 .perfil__boton:hover {
   opacity: 0.9;
 }
 
+.chat-button:hover {
+  background-color: var(--color_header);
+}
 
-
-/* Botón flotante del chat */
+/* Notifiaciones */
 .chat-button {
   position: fixed;
-  top: 100px; /* justo debajo del Header */
+  top: 100px;
   right: 30px;
   background-color: var(--color_footer);
   color: var(--color_blanco);
@@ -989,28 +1017,6 @@
   background-color: var(--color_header);
 }
 
-/* Encabezado del chat */
-.chat-button {
-  position: fixed;
-  top: 100px; /* debajo del header */
-  right: 30px;
-  background-color: var(--color_footer);
-  color: var(--color_blanco);
-  border: none;
-  padding: 0.8rem;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  transition: background-color 0.3s ease;
-}
-
-.chat-button:hover {
-  background-color: var(--color_header);
-}
-
-/* Panel lateral del chat */
 .chat-panel {
   position: fixed;
   top: 0;
@@ -1041,8 +1047,6 @@
   background-color: #45a049;
 }
 
-
-/* Animaciones */
 @keyframes slideIn {
   from {
     transform: translateX(100%);
@@ -1069,7 +1073,6 @@
   animation: slideOut 0.3s forwards;
 }
 
-/* Encabezado del chat */
 .chat-panel__header {
   display: flex;
   justify-content: space-between;
@@ -1092,7 +1095,6 @@
   cursor: pointer;
 }
 
-/* Área de mensajes */
 .chat-panel__messages {
   flex: 1;
   padding: 1rem;
@@ -1103,7 +1105,6 @@
   background-color: #fafafa;
 }
 
-/* Burbuja de mensaje */
 .chat-panel__mensaje {
   padding: 0.6rem 1rem;
   border-radius: 16px;
@@ -1124,7 +1125,6 @@
   align-self: flex-start;
 }
 
-/* Input de mensaje */
 .chat-panel__input {
   padding: 1rem;
   border-top: 1px solid #ddd;
@@ -1158,7 +1158,6 @@
   background-color: var(--color_footer);
 }
 
-
 @keyframes slideIn {
   from {
     right: -300px;
@@ -1170,7 +1169,7 @@
 
 /* Añadir coche  */
 .form-background {
-  background: url('assets/images/taller.png') center center / cover no-repeat;
+  background: url("assets/images/taller.png") center center / cover no-repeat;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -1182,8 +1181,10 @@
 .form-background::before {
   content: "";
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(6px);
   z-index: 0;
@@ -1194,7 +1195,6 @@
   width: 100%;
   max-width: 600px;
 }
-
 
 .add-coche__titulo {
   text-align: center;
@@ -1247,7 +1247,6 @@
   background-color: #a80000;
   transform: scale(1.05);
 }
-
 
 .add-coche__boton:hover {
   transform: scale(1.05);
@@ -1336,14 +1335,13 @@
   background-color: #ccc;
 }
 
-
-/* Login Empleados */
+/* Login Admins */
 .login-empleados-background {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-image: url('./assets/images/fondoEmpleados.png');
+  background-image: url("./assets/images/fondoEmpleados.png");
 }
 
 .login-empleados-card {
@@ -1378,7 +1376,7 @@
   background-color: var(--color_header);
   color: white;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .botones-rol button:hover {
@@ -1450,17 +1448,15 @@
   transform: scale(0.98);
 }
 
-/* Login Administrador */
 .login-admin-background {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-image: url('./assets/images/fondoFormAdminMecanico.png');
+  background-image: url("./assets/images/fondoFormAdminMecanico.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  
 }
 
 /* Panel Administrador */
@@ -1532,7 +1528,7 @@
   align-items: center;
   padding: 1rem;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   align-self: center;
   width: 50%;
 }
@@ -1553,7 +1549,6 @@
   gap: 0.5rem;
   height: 100%;
 }
-
 
 .estado {
   padding: 0.2rem 0.6rem;
@@ -1579,8 +1574,8 @@
 }
 
 .coche-botones {
-  grid-column: 1 / -1; /* Ocupar ambas columnas */
-  align-self: end;     /* ⬇️ Alinea los botones al fondo de la celda */
+  grid-column: 1 / -1;
+  align-self: end;
   display: flex;
   gap: 0.5rem;
   margin: auto;
@@ -1649,10 +1644,9 @@ button.reparar:disabled {
   padding: 2rem;
   background: #f7e9e9;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
 }
-
 
 .volver {
   padding: 0.5rem 1rem;
@@ -1716,7 +1710,7 @@ button.reparar:disabled {
 }
 
 .reparacion-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .reparacion-card p {
@@ -1730,7 +1724,8 @@ button.reparar:disabled {
   gap: 1rem;
 }
 
-.btn-comenzar, .btn-finalizar {
+.btn-comenzar,
+.btn-finalizar {
   padding: 0.5rem 1.2rem;
   font-weight: 600;
   border: none;
@@ -1749,10 +1744,10 @@ button.reparar:disabled {
   color: white;
 }
 
-.btn-comenzar:hover, .btn-finalizar:hover {
+.btn-comenzar:hover,
+.btn-finalizar:hover {
   transform: scale(1.05);
 }
-
 
 .barra-superior {
   display: flex;
@@ -1799,7 +1794,7 @@ button.reparar:disabled {
   background-color: #a81818;
 }
 
-/* Formulario Recibir Coche */
+/* Añadir Reparacion */
 .formulario-reparacion {
   max-width: 600px;
   margin: 2rem auto;
@@ -1887,7 +1882,7 @@ button.reparar:disabled {
   margin-bottom: 1rem;
 }
 
-/* Cita */
+/* Añadir Cita */
 .formulario-cita__container {
   background: white;
   padding: 2rem 3rem;
@@ -1988,7 +1983,7 @@ button.reparar:disabled {
 
 .citas-panel {
   padding: 2rem;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   background-color: #fefefe;
   text-align: center;
 }
@@ -2018,7 +2013,7 @@ button.reparar:disabled {
   margin: 1rem 0;
   border-radius: 8px;
   font-family: "Segoe UI", sans-serif;
-  box-shadow: 0 0 5px rgba(0,0,0,0.25);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
   width: 20%;
 }
 
@@ -2090,7 +2085,7 @@ button.reparar:disabled {
 }
 
 .btn-actualizar {
-   padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem;
   background-color: var(--color_header);
   color: white;
   border: none;
@@ -2200,7 +2195,6 @@ button.reparar:disabled {
 }
 
 .add-coche__range {
-  -webkit-appearance: none;
   width: 100%;
   height: 8px;
   background: #ddd;
@@ -2215,7 +2209,6 @@ button.reparar:disabled {
   background: #ccc;
 }
 
-/* Estilo del thumb (deslizador) */
 .add-coche__range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -2239,7 +2232,6 @@ button.reparar:disabled {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Track en Firefox */
 .add-coche__range::-moz-range-track {
   height: 8px;
   background: #ddd;
@@ -2276,9 +2268,9 @@ button.reparar:disabled {
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   background-color: #fff;
-  border: 2px solid #d62828; /* rojo oscuro */
+  border: 2px solid #d62828;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -2371,7 +2363,7 @@ button.reparar:disabled {
   max-width: 1000px;
   margin: 40px auto;
   padding: 20px;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 .facturas-panel h2 {
@@ -2664,7 +2656,6 @@ button.reparar:disabled {
   z-index: 10;
 }
 
-
 /* Notificación no leída */
 .chat-panel__mensaje.noleido {
   background-color: #ffe5e5;
@@ -2738,13 +2729,13 @@ button[type="button"]:hover {
 }
 
 button[type="submit"] {
-  background-color: #28a745;
+  background-color: var(--color_header);
   color: white;
   margin-left: 1rem;
 }
 
 button[type="submit"]:hover {
-  background-color: #218838;
+  background-color: var(--color_boton);
 }
 
 .factura-consentimiento {
@@ -2802,3 +2793,186 @@ button[type="submit"]:hover {
 .boton-confirmar:hover:enabled {
   background-color: #005a2f;
 }
+
+/* DESKTOP DEFAULTS */
+.menu-toggle {
+  display: none;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+.navbar a {
+  display: inline;
+}
+
+/* Responsive */
+
+/* Vista inicio */
+
+/* ========== Responsive Mobile Styles (<=768px) ========== */
+@media (max-width: 768px) {
+  /* HEADER */
+  .navbar {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1rem;
+    position: relative;
+    align-items: center;
+  }
+
+  .navbar-enlaces {
+    display: block;
+  }
+
+  .navbar .icon {
+    display: block;
+  }
+
+  .menu-toggle {
+    display: block;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    right: 1rem;
+    z-index: 1001;
+  }
+  .navbar-enlaces .auth-buttons__enlace {
+    display: none;
+  }
+
+  .auth-buttons__enlace {
+    width: 75%;
+  }
+  .mobile-menu {
+    margin-top: 0.1rem;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 20vh;
+    background-color: var(--color_footer);
+    color: white;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 999;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .mobile-menu.active {
+    transform: translateX(0);
+  }
+
+  .mobile-menu a {
+    color: white;
+    font-size: 1.2rem;
+    text-decoration: none;
+  }
+
+  /* CARROUSEL */
+  .carousel-container {
+    overflow: hidden;
+  }
+
+  .carousel-wrapper {
+    width: 100%;
+  }
+
+  .carousel-item {
+    flex: 0 0 100%;
+  }
+
+  .carousel-image {
+    height: 400px;
+    width: 400px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+
+  .carousel-text-overlay {
+    width: 50%;
+    font-size: 1.2rem;
+    bottom: 20px;
+  }
+
+  .carousel-button {
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  .carousel-button.left {
+    left: 40px;
+  }
+
+  .carousel-button.right {
+    right: 40px;
+  }
+
+  /* BIENVENIDA */
+  .bienvenida__contenido {
+    flex-direction: column;
+    text-align: center;
+    margin: 0 7rem 0 7rem;
+  }
+
+  .bienvenida__imagen {
+    display: flex;
+    justify-content: center;
+  }
+
+  .bienvenida__imagen img {
+    max-width: 90%;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  /* CONTAINER COMPONENTS */
+  .containerComponents {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    margin: 0 6rem 0 6rem;
+  }
+
+  .newsletter,
+  .botones-login {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .botones-login {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .botones-login__card {
+    width: 90%;
+  }
+
+  .botones-login__boton {
+    align-self: center;
+    width: 50%;
+  }
+
+  .footer__contenedor {
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    text-align: left;
+    gap: 0;
+  }
+}
+
